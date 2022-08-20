@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Add Material{% endblock %}
+
+{% block content %}
+<h1>{{ object }}</h1>
+<table>
+    <tr>
+        <th>Serial Number</th>
+        <td>{{ object.serial_number }}</td>
+    </tr>
+    <tr>
+        <th>Material Number</th>
+        <td>{{ object.material_number }}</td>
+    </tr>
+    <tr>
+        <th>Manufacturer</th>
+        <td>{{ object.manufacturer }}</td>
+    </tr>
+    <tr>
+        <th>Description</th>
+        <td>{{ object.description }}</td>
+    </tr>
+    <tr>
+        <th>Department</th>
+        <td>{{ object.department }}</td>
+    </tr>
+    <tr>
+        <th>Owner</th>
+        <td>{{ object.owner }}</td>
+    </tr>
+    <tr>
+        <th>Active</th>
+        <td>{{ object.is_active }}</td>
+    </tr>
+</table>
+<a href="{% url "material-edit" object.identifier %}">Edit</a>
+
+{% if object.owner != user %}
+<a href="#">Borrow</a>
+{% endif %}
+{% endblock %}

@@ -37,7 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'netaccess_users.apps.NetaccessUsersConfig',
+    'matman.apps.MatmanConfig',
+    'users.apps.UsersConfig',
     'django.contrib.admin',
+    # 'django_registration',
 ]
 
 MIDDLEWARE = [
@@ -129,6 +132,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGIN_URL = 'login'
 #LOGOUT_URL = 'logout'
+
+# ACCOUNT_ACTIVATION_DAYS = 7
 
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

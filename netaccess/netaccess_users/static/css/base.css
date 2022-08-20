@@ -1,5 +1,21 @@
 @import url(//fonts.googleapis.com/css?family=Muli);
 
+:root {
+  /* --blue: #1e90ff; */
+  --white: #ffffff;
+  --grey: #bbb;
+  --grey2: #ccc;
+  --dark_grey: #333;
+  --green1: #1cdf78;
+  --green2: #12c064;
+  --green3: #00a74f;
+  --green4: #1b6d32;
+  --citrus: #f3f7cc;
+  --red_error: #cc0033;
+
+
+}
+
 body {
     margin:0;
     padding:0;
@@ -11,18 +27,18 @@ p {
 }
 
 a {
-    color:#12c064;
+    color:var(--green2);
     text-decoration:none;
 }
 
 a:hover {
-    color:#00a74f;
+    color:var(--green3);
 }
 
 h1, h2, h3, h4, h5 , h6 { font-family: 'Muli', helvetica; font-weight:normal; }
 
 h1 {
-    border-bottom:1px solid #bbb;
+    border-bottom:1px solid var(--grey);
     padding:0 0 10px 0;
     margin:10px 0 20px 0;
 }
@@ -35,49 +51,63 @@ ol {
     line-height:1.5;
 }
 
-#header {
+header {
     padding:10px 100px;
     font-size:14px;
-    background:#12c064;
-    color:#fff;
-    border-bottom:4px solid #1cdf78;
+    background:var(--green2);
+    color:var(--white);
+    border-bottom:4px solid var(--green1);
     overflow:auto;
 }
 
-#header .logo {
+header .logo {
     font-family: 'Muli', helvetica;
     float:left;
-    color:#f3f7cc;
+    color:var(--citrus);
     font-size:20px;
     margin-right:10%;
 }
 
-#header ul.menu {
+header ul.menu {
     list-style:none;
     float:left;
     margin:0;
     padding:0;
 }
-#header ul.menu li {
+header ul.menu li {
     float:left;
     padding:4px 10px;
 }
 
-#header ul.menu li.selected a, #header ul.menu li.selected a:hover {
-    color:#1b6d32;
+header ul.menu li.selected a, #header ul.menu li.selected a:hover {
+    color:var(--green4);
     font-weight:bold;
 }
 
-#header a {
-    color:#f3f7cc;
+header a {
+    color:var(--citrus);
 }
-#header a:hover {
-    color:#fff;
+header a:hover {
+    color:var(--white);
 }
 
-#header .user {
+header .user {
     float:right;
     padding-top:4px;
+}
+
+footer{
+    float:bottom;
+    position:fixed;
+    width:100%;
+    bottom:0%;
+    /* padding-top:4px; */
+    padding:10px 100px;
+    font-size:14px;
+    background:var(--green2);
+    color:var(--white);
+    border-bottom:4px solid var(--green1);
+    /* overflow:auto; */
 }
 
 #content {
@@ -97,7 +127,7 @@ form p {
 label {
     float:left;
     clear:both;
-    color:#333;
+    color:var(--dark_grey);
     margin-bottom:4px;
 }
 input, textarea {
@@ -111,8 +141,8 @@ input, textarea {
 }
 input[type=submit], a.button {
     font-weight:bold;
-    background:#12c064;
-    color:#fff;
+    background:var(--green2);
+    color:var(--white);
     padding:10px 20px;
     font-size:14px;
     text-transform:uppercase;
@@ -144,7 +174,7 @@ ul.messages li.info {
     margin:0;
     padding:14px 20px;
     list-style:none;
-    color:#fff;
+    color:var(--white);
 }
 
 ul.messages li.success { background:#81ce81; }
@@ -185,7 +215,7 @@ ul.messages li a.close {
     width:100%;
     height:100%;
     display:block;
-    color:#fff;
+    color:var(--white);
 }
 .social li.facebook { background:#3b5399; }
 .social li.twitter { background:#00cffa; }
@@ -219,7 +249,7 @@ a.like, a.follow { float:right; margin-top:-8px; }
     width:220px;
     height:300px;
     margin:0 10px 10px 10px;
-    border-top:8px solid #12c064;
+    border-top:8px solid var(--green2);
     background:#eee;
 }
 #image-list img { width:220px; height:220px; }
@@ -274,4 +304,48 @@ img.user-detail {
 .action .date {
     font-style:italic;
     color:#ccc;
+}
+
+.sidebar {
+  width: 200px;
+  position: fixed;
+  z-index: 1;
+  top: 100px;
+  left: 10px;
+  background: #eee;
+  overflow-x: hidden;
+  padding: 8px 0;
+}
+
+.sidebar a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  color: var(--green2);
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-color: var(--green4);
+  display: block;
+}
+
+.sidebar :last-child{
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+  }
+
+.sidebar a:hover {
+  color: var(--white);
+  background-color: var(--green2);
+  /* border-style: none; */
+}
+
+.sidebar .selected {
+    color: var(--white);
+    background-color: var(--grey2);
+    /* border-style: none; */
+  }
+
+.indented {
+  margin-left: 140px; /* Same width as the sidebar + left position in px */
+
+  padding: 0px 10px;
 }
