@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load matman_tags %}
+
+{% block title %}My Materials{% endblock %}
+
+{% block content %}
+<h1>Materials of {{ user }}</h1>
+<section>
+    {% materials_borrowed user as mb %}
+    <h1>Materials I have currently borrowed ({{ md| length }})</h1>
+    <section>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Owner</th>
+                <th>Serial Number</th>
+                <th>Material Number</th>
+                <th>Manufacturer</th>
+                <th>Department</th>
+                <th>Location</th>
+                <th>Tags</th>
+            </tr>
+            {% for object in mb %}
+            <tr>
+                <th><a href="{% url "material-detail" object.identifier %}">{{ object.identifier }}</a></th>
+                <td><a href="{% url "profile" object.owner %}">{{ object.owner }}</a></td>
+                <td>{{ object.serial_number }}</td>
+                <td>{{ object.material_number }}</td>
+                <td>{{ object.manufacturer }}</td>
+                <td>{{ object.department }}</td>
+                <td>{{ object.location }}</td>
+                <td>{{ object.tags.all|join:", " }}</td>
+            </tr>
+            {% empty %}
+            <tr><td>None</td></tr>
+            {% endfor %}
+        </table>
+    </section>
+</section>
+<section>
+    {% materials_borrowed_fromme user as mf %}
+    <h1>Materials currently borrowed from me ({{ mf| length }})</h1>
+    <section>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Borrowed By</th>
+                <th>Serial Number</th>
+                <th>Material Number</th>
+                <th>Manufacturer</th>
+                <th>Department</th>
+                <th>Location</th>
+                <th>Owner</th>
+                <th>Tags</th>
+            </tr>
+            {% for object in mf %}
+            <tr>
+                <th><a href="{% url "material-detail" object.identifier %}">{{ object.identifier }}</a></th>
+                {% with by=object.get_active_borrow.borrowed_by %}
+                <td><a href="{% url "profile" by %}">{{ by }}</a></td>
+                {% endwith %}
+                <td>{{ object.serial_number }}</td>
+                <td>{{ object.material_number }}</td>
+                <td>{{ object.manufacturer }}</td>
+                <td>{{ object.department }}</td>
+                <td>{{ object.location }}</td>
+                <td>{{ object.owner }}</td>
+                <td>{{ object.tags.all|join:", " }}</td>
+            </tr>
+            {% empty %}
+            <tr><td>None</td></tr>
+            {% endfor %}
+        </table>
+    </section>
+</section>
+<section>
+    {% materials_owned user as mo %}
+    <h1>Materials I own ({{ mo| length }})</h1>
+    <section>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Serial Number</th>
+                <th>Material Number</th>
+                <th>Manufacturer</th>
+                <th>Department</th>
+                <th>Location</th>
+                <th>Tags</th>
+            </tr>
+            {% for object in mo %}
+            <tr>
+                <th><a href="{% url "material-detail" object.identifier %}">{{ object.identifier }}</a></th>
+                <td>{{ object.serial_number }}</td>
+                <td>{{ object.material_number }}</td>
+                <td>{{ object.manufacturer }}</td>
+                <td>{{ object.department }}</td>
+                <td>{{ object.location }}</td>
+                <td>{{ object.tags.all|join:", " }}</td>
+            </tr>
+            {% empty %}
+            <tr><td>None</td></tr>
+            {% endfor %}
+        </table>
+    </section>
+</section>
+{% endblock %}

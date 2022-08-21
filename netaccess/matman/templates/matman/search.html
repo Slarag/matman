@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Search Material{% endblock %}
+
+{% block content %}
+<h1>Search Material</h1>
+<p>Enter an identifier, one or more tags or any other criteria to search for:</p>
+<form method="get">
+  {{ form.as_p }}
+<!--  {% csrf_token %}-->
+  <input type="submit" value="Search">
+</form>
+{% if query %}
+<section>
+  <h2>Results</h2>
+  <p>Found {{ results.count }} result{{ results.count|pluralize }}.</p>
+  {% if results %}
+  <table>
+      <tr>
+          <th>ID</th>
+          <th>Serial Number</th>
+          <th>Material Number</th>
+          <th>Manufacturer</th>
+          <th>Department</th>
+          <th>Location</th>
+          <th>Owner</th>
+          <th>Tags</th>
+      </tr>
+  {% for object in results %}
+      <tr>
+          <th><a href="{% url "material-detail" object.identifier %}">{{ object.identifier }}</a></th>
+          <td>{{ object.serial_number }}</td>
+          <td>{{ object.material_number }}</td>
+          <td>{{ object.manufacturer }}</td>
+          <td>{{ object.department }}</td>
+          <td>{{ object.location }}</td>
+          <td><a href="{% url "profile" object.owner %}">{{ object.owner }}</a></td>
+          <td>{{ object.tags.all|join:", " }}</td>
+        </tr>
+  {% endfor %}
+  </table>
+  {% endif %}
+</section>
+{% endif %}
+{% endblock %}
