@@ -11,4 +11,6 @@ class BorrowForm(forms.ModelForm):
 
 
 class SearchForm(forms.Form):
-    query = forms.CharField()
+    query = forms.CharField(
+        widget=forms.TextInput(attrs={'autofocus': True})
+    )

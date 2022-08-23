@@ -6,6 +6,7 @@ from django.views.generic import RedirectView
 from . import views
 
 urlpatterns = [
+    path('', include('django.contrib.auth.urls')),
     path('material', views.MaterialListView.as_view(), name='list-material'),
     path('material/add', views.MaterialAddView.as_view(), name='add-material'),
     path('material/<slug:identifier>/detail', views.MaterialDetailView.as_view(), name='material-detail'),
@@ -15,11 +16,10 @@ urlpatterns = [
     path('material/search', views.search, name='search'),
     path('home', views.HomeView.as_view(), name='home'),
     path('profile/<slug:user>', views.ProfileView.as_view(), name='profile'),
-    #
-    # path('departments'),
-    # path('departments/add'),
-    # path('departments/<slug:identifier>/detail'),
-    # path('departments/<slug:identifier>/edit'),
-    # path('departments/<slug:identifier>/delete'),
-    #
+
+    path('schemes/list', views.SchemeListView.as_view(), name='list-schemes'),
+    path('schemes/add', views.SchemeAddView.as_view(), name='add-scheme'),
+    path('schemes/<int:pk>/edit', views.SchemeEditView.as_view(), name='edit-scheme'),
+
+    path('settings', views.SettingsView.as_view(), name='profile-settings'),
     ]
