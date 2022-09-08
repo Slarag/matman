@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load bootstrap5 %}
 
 {% block title %}Add Material{% endblock %}
 
@@ -6,10 +7,12 @@
 <h1>Add Material</h1>
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
+    {% bootstrap_form form %}
     {{ formset.non_form_errors }}
-    {{ formset.as_p }}
-    <input type="submit" value="Save" name="save">
-    <input type="submit" value="Save and add another" name="add_other">
+    {% bootstrap_formset formset %}
+    {% buttons %}
+    <input type="submit" value="Save" name="save" class="btn btn-primary">
+    <input type="submit" value="Save and add another" name="add_other" class="btn btn-secondary">
+    {% endbuttons %}
 </form>
 {% endblock %}

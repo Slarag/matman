@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load matman_tags %}
+{% load bootstrap5 %}
 
 {% block title %}Material Details{% endblock %}
 
@@ -55,14 +56,14 @@
         <section class="descriptionbox">
             {{ object.description|markdown }}
         </section>
-    <p><a class="button" href="{% url "material-edit" object.identifier %}">Edit</a></p>
+    <p><a class="btn btn-secondary" href="{% url "material-edit" object.identifier %}">Edit</a></p>
 </section>
 
 
 {% if object.owner != user and not object.get_active_borrow %}
-<p><a class="button" href="{% url "borrow" object.identifier %}">Borrow</a></p>
+<p><a class="btn btn-primary" href="{% url "borrow" object.identifier %}">Borrow Item</a></p>
 {% endif %}
 {% if object.get_active_borrow.borrowed_by == user %}
-<p><a class="button" href="{% url "return" object.identifier %}">Return</a></p>
+<p><a class="btn btn-primary" href="{% url "return" object.identifier %}">Return Item</a></p>
 {% endif %}
 {% endblock %}

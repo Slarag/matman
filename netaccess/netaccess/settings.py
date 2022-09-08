@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'taggit',
     'django.contrib.postgres',
+    'bootstrap5',
     # 'django.contrib.sites',
     # 'django_registration',
 ]

@@ -1,88 +1,76 @@
 {% load static %}
+{% load bootstrap5 %}
 <! DOCTYPE html>
 <html>
 <head>
     <title>{% block title %}{% endblock %}</title>
+    {% comment %}
     <link href="{% static "css/base.css" %}" rel="stylesheet">
     <link href="{% static "css/slideshow.css" %}" rel="stylesheet">
+    {% endcomment %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
 </head>
 <body>
     <header>
-        <span class="logo">Matman</span>
+        <nav class="navbar navbar-expand-lg bg-light">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="#">MatMan</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-        <nav>
-            <ul class="menu">
-                <li {% if section == "search" %}class="selected"{% endif %}>
-                    <a href="{% url "search" %}">Search</a>
+                <li class="nav-item">
+                    <a href="{% url "home" %}" class="nav-link active" aria-current="page">Home</a>
                 </li>
-                <li {% if section == "home" %}class="selected"{% endif %}>
-                    <a href="{% url "home" %}">Home</a>
+                <li class="nav-item">
+                    <a href="{% url "list-material" %}" class="nav-link active" aria-current="page">All Materials</a>
                 </li>
-                <li {% if section == "dhcp" %}class="selected"{% endif %}>
-                    <a href="{% url "list-material" %}">All Materials</a>
+                <li class="nav-item">
+                    <a href="{% url "add-material" %}" class="nav-link active" aria-current="page">Add Material</a>
                 </li>
-                <li {% if section == "dhcp" %}class="selected"{% endif %}>
-                    <a href="{% url "add-material" %}">Add Material</a>
+                <li class="nav-item">
+                    <a href="{% url "list-schemes" %}" class="nav-link active" aria-current="page">Schemes</a>
                 </li>
-                <li {% if section == "schemes" %}class="selected"{% endif %}>
-                    <a href="{% url "list-schemes" %}">Schemes</a>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Profile
+                  </a>
+                  <ul class="dropdown-menu">
+                      <li class="dropdown-item">
+                        <a href="{% url "profile-settings" %}" class="dropdown-item" aria-current="page">Settings</a>
+                      </li>
+                      <li><hr class="dropdown-divider"></li>
+                    {% if request.user.is_authenticated %}
+                      <li><a class="dropdown-item" href="{% url "logout" %}" class="dropdown-item">Logout</a></li>
+                    {% else %}
+                      <li><a class="dropdown-item" href="{% url "login" %}" class="dropdown-item">Login</a></li>
+                    {% endif %}
+                  </ul>
                 </li>
-                <li {% if section == "settings" %}class="selected"{% endif %}>
-                    <a href="{% url "profile-settings" %}">Settings</a>
-                </li>
-            </ul>
+              </ul>
+              <form class="d-flex" role="search" action="{% url "search" %}">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+              </form>
+            </div>
+          </div>
         </nav>
-
-        <span class="user">
-            {% if request.user.is_authenticated %}
-            Hello {{ request.user.first_name }}, <a href="{% url "logout" %}">Logout</a>
-            {% else %}
-            <a href="{% url "login" %}">Log-in</a>
-            {% endif %}
-        </span>
     </header>
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li class="{{ message.tags }}">
-            {{ message|safe }}
-            <a href="#" class="close">X</a>
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    <div id="sidebar">
-        {% block sidebar %}
-        {% endblock %}
-    </div>
-    <div id="content">
+    {% bootstrap_messages %}
+
+    <main id="content">
         {% block content %}
         {% endblock %}
-    </div>
-    <footer>
+    </main>
+    <footer class="bg-dark text-white">
         <section>
             <h4>About</h4>
             <p>This software is licensed under the GPLv2. Source code is available at <a href="www.github.com/slarag/matman" target="_blank">Github</a></p>
         </section>
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script>
-    $(document).ready(function(){
-        const csrftoken = Cookies.get('csrftoken');
-        function csrfSafeMethod(method) {
-            return /^GET|HEAD|OPTIONS|TRACE)$/.test(method));
-        }
-        $.ajaxSetup({
-            beforeSend: function(xhr, settings) {
-                if(!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                }
-            }
-        });
-        {% block domready %}
-        {% endblock %}
-    })
-    </script>
 </body>
 </html>

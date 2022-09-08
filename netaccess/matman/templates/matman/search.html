@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load bootstrap5 %}
 
 {% block title %}Search Material{% endblock %}
 
@@ -6,9 +7,11 @@
 <h1>Search Material</h1>
 <p>Enter an identifier, one or more tags or any other criteria to search for:</p>
 <form method="get">
-  {{ form.as_p }}
-<!--  {% csrf_token %}-->
-  <input type="submit" value="Search">
+  {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+    <input type="submit" value="Search" class="btn btn-primary">
+    {% endbuttons %}
 </form>
 {% if query %}
 <section>
