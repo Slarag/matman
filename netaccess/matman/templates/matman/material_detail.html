@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 {% load matman_tags %}
 
-{% block title %}Add Material{% endblock %}
+{% block title %}Material Details{% endblock %}
 
 {% block content %}
 <h1>{{ object }}</h1>
 <section>
+    {% include "matman/slideshow.html" with pictures=object.pictures %}
     <table class="vertical-table">
         <tr>
             <th>Serial Number:</th>

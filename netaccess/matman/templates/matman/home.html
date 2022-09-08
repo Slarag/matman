@@ -6,8 +6,7 @@
 {% block content %}
 <h1>My Materials</h1>
 <section>
-    {% materials_borrowed request.user as mb %}
-    <h1>Materials I have currently borrowed ({{ md| length }})</h1>
+    <h1>Materials I have currently borrowed ({{ borrowed| length }})</h1>
     <section>
         <table>
             <tr>
@@ -20,7 +19,7 @@
                 <th>Location</th>
                 <th>Tags</th>
             </tr>
-            {% for object in mb %}
+            {% for object in borrowed %}
             <tr>
                 <th><a href="{% url "material-detail" object.identifier %}">{{ object.identifier }}</a></th>
                 <td><a href="{% url "profile" object.owner %}">{{ object.owner }}</a></td>
@@ -36,10 +35,26 @@
             {% endfor %}
         </table>
     </section>
+    <div class="pagination">
+        <span class="step-links">
+            {% if borrowed.has_previous %}
+                <a href="?borrowed_page=1">&laquo; first</a>
+                <a href="?borrowed_page={{ borrowed.previous_page_number }}">previous</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ borrowed.number }} of {{ borrowed.paginator.num_pages }}.
+            </span>
+    
+            {% if borrowed.has_next %}
+                <a href="?borrowed_page={{ borrowed.next_page_number }}">next</a>
+                <a href="?borrowed_page={{ borrowed.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
 </section>
 <section>
-    {% materials_borrowed_fromme request.user as mf %}
-    <h1>Materials currently borrowed from me ({{ mf| length }})</h1>
+    <h1>Materials currently borrowed from me ({{ lent| length }})</h1>
     <section>
         <table>
             <tr>
@@ -52,7 +67,7 @@
                 <th>Location</th>
                 <th>Tags</th>
             </tr>
-            {% for object in mf %}
+            {% for object in lent %}
             <tr>
                 <th><a href="{% url "material-detail" object.identifier %}">{{ object.identifier }}</a></th>
                 {% with by=object.get_active_borrow.borrowed_by %}
@@ -70,10 +85,26 @@
             {% endfor %}
         </table>
     </section>
+    <div class="pagination">
+        <span class="step-links">
+            {% if lent.has_previous %}
+                <a href="?lent_page=1">&laquo; first</a>
+                <a href="?lent_page={{ lent.previous_page_number }}">previous</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ lent.number }} of {{ lent.paginator.num_pages }}.
+            </span>
+    
+            {% if lent.has_next %}
+                <a href="?lent_page={{ lent.next_page_number }}">next</a>
+                <a href="?lent_page={{ lent.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
 </section>
 <section>
-    {% materials_owned request.user as mo %}
-    <h1>Materials I own ({{ mo| length }})</h1>
+    <h1>Materials I own ({{ my_materials| length }})</h1>
     <section>
         <table>
             <tr>
@@ -86,7 +117,7 @@
                 <th>Owner</th>
                 <th>Tags</th>
             </tr>
-            {% for object in mo %}
+            {% for object in my_materials %}
             <tr>
                 <th><a href="{% url "material-detail" object.identifier %}">{{ object.identifier }}</a></th>
                 <td>{{ object.serial_number }}</td>
@@ -102,5 +133,22 @@
             {% endfor %}
         </table>
     </section>
+    <div class="pagination">
+        <span class="step-links">
+            {% if my_materials.has_previous %}
+                <a href="?my_materials_page=1">&laquo; first</a>
+                <a href="?my_materials_page={{ my_materials.previous_page_number }}">previous</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ my_materials.number }} of {{ my_materials.paginator.num_pages }}.
+            </span>
+    
+            {% if my_materials.has_next %}
+                <a href="?my_materials_page={{ my_materials.next_page_number }}">next</a>
+                <a href="?my_materials_page={{ my_materials.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
 </section>
 {% endblock %}

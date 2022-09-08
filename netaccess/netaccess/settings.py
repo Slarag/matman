@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import os.path
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -89,8 +91,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'matman',
         'USER': 'matman',
-        'PASSWORD': 'matmanpw',
-        'HOST': 'ubuntu',
+        'PASSWORD': '14Me14You',
+        'HOST': 'localhost',
         'PORT': 5432,
     }
 }
@@ -151,3 +153,6 @@ if DEBUG:
 
 # TAGGIT
 TAGGIT_CASE_INSENSITIVE = True
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')

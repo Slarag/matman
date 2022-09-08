@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.generic import TemplateView
@@ -11,17 +12,18 @@ from django.urls import reverse_lazy
 from django.utils.timezone import now
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.postgres.search import SearchVector, TrigramSimilarity, SearchQuery
 
 from .models import Material, Borrow, Scheme, UserProfile
-from .forms import BorrowForm, SearchForm
+from .forms import BorrowForm, SearchForm, MaterialForm, SettingsForm, PictureFormset
 
 
 class MaterialAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Material
     template_name_suffix = '_create'
-    fields = ['serial_number', 'material_number', 'manufacturer', 'description', 'scheme', 'owner', 'tags',
-              'is_active']
+    form_class = MaterialForm
+    formset = PictureFormset
 
     def get_initial(self):
         initial = super().get_initial().copy()
@@ -37,10 +39,62 @@ class MaterialAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
             return reverse_lazy('add-material')
         return super().get_success_url()
 
-    def form_valid(self, form):
-        scheme = form.instance.scheme
-        form.instance.identifier = scheme.get_next_id()
-        return super().form_valid(form)
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        formset = self.formset()
+
+        return self.render_to_response(
+            self.get_context_data(form=form, formset=formset)
+        )
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        formset = self.formset(self.request.POST, self.request.FILES)
+        print(self.request.POST)
+        print(self.request.FILES)
+        print(formset.errors)
+
+        if form.is_valid() and formset.is_valid():
+            return self.form_valid(form, formset)
+
+        return self.form_invalid(form, formset)
+
+    def form_valid(self, form, formset):
+        """
+        Called if all forms are valid. Creates a Author instance along
+        with associated books and then redirects to a success page.
+        """
+        self.object = form.save()
+        formset.instance = self.object
+        formset.save()
+
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, form, formset):
+        """
+        Called if whether a form is invalid. Re-renders the context
+        data with the data-filled forms and errors.
+        """
+        return self.render_to_response(
+            self.get_context_data(form=form, formset=formset)
+        )
+
+    def get_context_data(self, **kwargs):
+        """ Add formset and formhelper to the context_data. """
+        context = super().get_context_data(**kwargs)
+
+        if self.request.POST:
+            context['form'] = context.get('form', self.get_form_class()(self.request.POST))
+            context['formset'] = context.get('formset', self.formset(self.request.POST))
+        else:
+            context['form'] = self.get_form_class()(self.get_initial())
+            context['book_form'] = self.formset()
+
+        return context
 
 
 # Important: No login required for details
@@ -54,8 +108,8 @@ class MaterialDetailView(DetailView):
 class MaterialEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Material
     template_name_suffix = '_edit'
-    fields = ['serial_number', 'material_number', 'manufacturer', 'description', 'scheme', 'location', 'owner',
-              'tags', 'is_active']
+    fields = ['serial_number', 'material_number', 'manufacturer', 'description', 'scheme', 'location',
+              'owner', 'tags', 'is_active']
     slug_field = 'identifier'
     slug_url_kwarg = 'identifier'
 
@@ -82,7 +136,7 @@ def borrow(request, identifier):
             return redirect(reverse_lazy('material-detail', kwargs={'identifier': material.identifier}))
     else:
         form = BorrowForm(initial={'object': material})
-    return render(request, 'matman/borrow.html', {'material': material})
+    return render(request, 'matman/borrow.html', {'material': material, 'form': form})
 
 
 @login_required
@@ -113,9 +167,40 @@ class MaterialListView(ListView):
     fields = ['serial_number', 'material_number', 'manufacturer', 'scheme', 'owner', 'tags', 'is_active']
     paginate_by = 50
 
+    def get_ordering(self):
+        ordering = self.request.GET.get('orderby', '-identifier')
+        return ordering
+
 
 class HomeView(LoginRequiredMixin, TemplateView):
     template_name = "matman/home.html"
+    paginate_by = 5
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        queries = {
+            'my_materials': Material.objects.filter(owner=self.request.user),
+            'borrowed': Material.objects.filter(borrows__borrowed_by=self.request.user,
+                                                borrows__returned_at__isnull=True),
+            'lent': Material.objects.exclude(borrows=None).filter(owner=self.request.user,
+                                                                  borrows__returned_at__isnull=True),
+        }
+
+        for name, query in queries.items():
+            ordering = self.request.GET.get(f'{name}_orderby', 'identifier')
+            query = query.order_by(ordering)
+            paginator = Paginator(query, self.paginate_by)
+            materials_page = self.request.GET.get(f'{name}_page')
+            try:
+                page_content = paginator.page(materials_page)
+            except PageNotAnInteger:
+                page_content = paginator.page(1)
+            except EmptyPage:
+                page_content = paginator.page(paginator.num_pages)
+            context[name] = page_content
+
+        return context
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
@@ -170,30 +255,29 @@ class SchemeAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Scheme
     template_name_suffix = '_create'
     fields = ['name', 'prefix', 'numlen', 'postfix', 'is_active']
+    success_url = reverse_lazy('list-schemes')
 
     def get_success_message(self, cleaned_data):
         return f'Successfully created scheme "{self.object}"'
 
-    def get_success_url(self):
-        if 'add_other' in self.request.POST:
-            return reverse_lazy('add-scheme')
-        return super().get_success_url()
+    # def get_success_url(self):
+    #     return reverse_lazy('add-scheme')
 
 
 class SchemeEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Scheme
     template_name_suffix = '_edit'
-    fields = ['name', 'prefix', 'numlen', 'postfix', 'is_active']
-    # slug_field = 'slug'
-    # slug_url_kwarg = 'slug'
+    fields = ['name', 'is_active']
+    success_url = reverse_lazy('list-schemes')
 
     def get_success_message(self, cleaned_data):
         return f'Successfully updated scheme "{self.object}"'
 
 
 class SettingsView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = UserProfile
+    form_class = SettingsForm
     template_name_suffix = '_edit'
-    fields = ['default_scheme']
     success_message = 'Profile settings updated successfully'
 
     def get_success_url(self):

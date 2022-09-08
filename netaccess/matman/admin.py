@@ -1,10 +1,11 @@
 from django.contrib import admin
 
-from .models import Material, Scheme, Borrow, UserProfile
+from .models import Material, Scheme, Borrow, UserProfile, MaterialPicture
 
 admin.site.register(Scheme)
 admin.site.register(Borrow)
 admin.site.register(UserProfile)
+admin.site.register(MaterialPicture)
 
 
 @admin.register(Material)
