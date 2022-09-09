@@ -165,7 +165,7 @@ class MaterialListView(ListView):
     model = Material
     template_name_suffix = '_list'
     fields = ['serial_number', 'material_number', 'manufacturer', 'scheme', 'owner', 'tags', 'is_active']
-    paginate_by = 50
+    paginate_by = 20
 
     def get_ordering(self):
         ordering = self.request.GET.get('orderby', '-identifier')
