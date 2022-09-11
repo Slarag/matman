@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load bootstrap5 %}
+{% load crispy_forms_tags %}
 
 {% block title %}Search Material{% endblock %}
 
@@ -7,10 +7,10 @@
 <h1>Search Material</h1>
 <p>Enter an identifier, one or more tags or any other criteria to search for:</p>
 <form method="get">
-    {% bootstrap_form form %}
-    {% buttons %}
-    <input type="submit" value="Search" class="btn btn-primary">
-    {% endbuttons %}
+    {% crispy form %}
+    <div>
+        <input type="submit" value="Search" class="btn btn-primary">
+    </div>
 </form>
 {% if query %}
 <section>

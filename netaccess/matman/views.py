@@ -32,7 +32,8 @@ class MaterialAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return initial
 
     def get_success_message(self, cleaned_data):
-        return f'Successfully created material "{self.object}"'
+        url = self.object.get_absolute_url()
+        return f'Successfully created material <a href="{url}" class="alert-link">{self.object}</a>'
 
     def get_success_url(self):
         if 'add_other' in self.request.POST:
@@ -92,7 +93,8 @@ class MaterialEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     slug_url_kwarg = 'identifier'
 
     def get_success_message(self, cleaned_data):
-        return f'Successfully updated material "{self.object}"'
+        url = self.object.get_absolute_url()
+        return f'Successfully updated material <a href="{url}" class="alert-link">{self.object}</a>'
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object(self.queryset)
@@ -264,10 +266,8 @@ class SchemeAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     success_url = reverse_lazy('list-schemes')
 
     def get_success_message(self, cleaned_data):
-        return f'Successfully created scheme "{self.object}"'
-
-    # def get_success_url(self):
-    #     return reverse_lazy('add-scheme')
+        url = self.object.get_absolute_url()
+        return f'Successfully created scheme <a href="{url}" class="alert-link">{self.object}</a>'
 
 
 class SchemeEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -277,7 +277,8 @@ class SchemeEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_url = reverse_lazy('list-schemes')
 
     def get_success_message(self, cleaned_data):
-        return f'Successfully updated scheme "{self.object}"'
+        url = self.object.get_absolute_url()
+        return f'Successfully updated scheme <a href="{url}" class="alert-link">{self.object}</a>'
 
 
 class SettingsView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):

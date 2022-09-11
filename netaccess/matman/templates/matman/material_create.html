@@ -6,7 +6,7 @@
 {% block content %}
 <h1>Add Material</h1>
 <form method="post" enctype="multipart/form-data">
-    {{ csrf_token }}
+    {% csrf_token %}
     {% crispy form %}
     {% crispy formset %}
     <div>

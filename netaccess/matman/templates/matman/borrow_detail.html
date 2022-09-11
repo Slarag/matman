@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 {% load matman_tags %}
 
-{% block title %}Material Details{% endblock %}
+{% block title %}Borrow Details{% endblock %}
 
 {% block content %}
-{% with borrow=object.get_active_borrow %}
 <h1>{{ object }}</h1>
 <section>
     {% if object.pictures.all %}
@@ -70,5 +69,4 @@
         {% endif %}
     </div>
 </section>
-{% endwith %}
 {% endblock %}
