@@ -26,3 +26,10 @@ def markdown_format(text):
 # @register.simple_tag
 # def materials_borrowed_fromme(user):
 #     return Material.objects.exclude(borrows=None).filter(owner=user, borrows__returned_at__isnull=True)
+
+@register.simple_tag(takes_context=True)
+def get_params(context):
+    get = context['request'].GET
+    if not get:
+        return ''
+    return get.urlencode() + '&'

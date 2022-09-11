@@ -1,17 +1,14 @@
-<p class="pagination">
-    <span class="step-links">
+{% load matman_tags %}
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
         {% if page_obj.has_previous %}
-            <a class="button" href="?page=1">&laquo; first</a>
-            <a class="button" href="?page={{ page_obj.previous_page_number }}">previous</a>
+        <li class="page-item"><a class="page-link" href="?{% get_params %}{{ page_param }}=1">First</a></li>
+        <li class="page-item"><a class="page-link" href="??{% get_params %}{{ page_param }}={{ page_obj.previous_page_number }}">Previous</a></li>
         {% endif %}
-
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-        </span>
-
+        <li class="page-item"><a class="page-link active" href="#">{{ page_obj.number }}</a></li>
         {% if page_obj.has_next %}
-            <a class="button" href="?page={{ page_obj.next_page_number }}">next</a>
-            <a class="button" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        <li class="page-item"><a class="page-link" href="?{% get_params %}{{ page_param }}={{ page_obj.next_page_number }}">Next</a></li>
+        <li class="page-item"><a class="page-link" href="?{% get_params %}{{ page_param }}={{ page_obj.paginator.num_pages }}">Last</a></li>
         {% endif %}
-    </span>
-</p>
+    </ul>
+</nav>

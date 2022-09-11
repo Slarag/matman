@@ -7,7 +7,6 @@
 <h1>Search Material</h1>
 <p>Enter an identifier, one or more tags or any other criteria to search for:</p>
 <form method="get">
-  {% csrf_token %}
     {% bootstrap_form form %}
     {% buttons %}
     <input type="submit" value="Search" class="btn btn-primary">
@@ -15,10 +14,9 @@
 </form>
 {% if query %}
 <section>
-  <h2>Results</h2>
-  <p>Found {{ results.count }} result{{ results.count|pluralize }}.</p>
+  <h2>Results ({{ results.count }})</h2>
   {% if results %}
-  <table>
+  <table class="table table-striped table-hover">
       <tr>
           <th>ID</th>
           <th>Serial Number</th>
