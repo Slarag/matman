@@ -14,7 +14,7 @@ class SambaPwSetFakeValidator:
         return None
 
     def get_help_text(self):
-        return ''
+        return 'Your password will also be used for your samba account.'
 
     def password_changed(self, password, user=None):
         # ToDo: Change samba password for user

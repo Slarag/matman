@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Dashboard</h1>
+    <p>
+        Welcome to your dashboard.
+    </p>
+    <p>You have {{ ssh_keys_total }} SSH keys, {{ ssh_keys_active }} are active.</p>
+    <p>You can <a href="{% url "edit" %}">edit</a> your profile or <a href="{% url "password_change" %}">change</a> your password.</p>
+{% endblock %}

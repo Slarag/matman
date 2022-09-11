@@ -9,12 +9,12 @@ from django.conf import settings
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def handle_user_changed(sender, instance, created, **kwargs):
     # ToDo
-    if created:
-        # User was created, create linux and samba accounts
-        pass
-    if sender.has_perm('can_use_samba'):
-        # enable samba account
-        pass
-    else:
-        # disable samba account
-        pass
+    # if created:
+    #     # User was created, create linux and samba accounts
+    #     pass
+    # if sender.has_perm('netaccess_user.can_use_samba'):
+    #     # enable samba account
+    #     pass
+    # else:
+    #     # disable samba account
+   pass
