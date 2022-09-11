@@ -50,7 +50,8 @@ class MaterialForm(forms.ModelForm):
 
 
 PictureFormset = forms.inlineformset_factory(models.Material, models.MaterialPicture,
-                                             fields=['file', 'description'], extra=5, max_num=5, can_order=True)
+                                             fields=['file', 'title', 'description'],
+                                             extra=5, max_num=5, can_order=True)
 PictureFormset.helper = FormHelper()
 PictureFormset.helper.form_tag = False
 

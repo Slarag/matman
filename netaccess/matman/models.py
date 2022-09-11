@@ -3,6 +3,8 @@ from django.conf import settings
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 from taggit.managers import TaggableManager
 
@@ -40,6 +42,9 @@ class Scheme(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('edit-scheme', kwargs={'pk': self.id})
 
 
 class Material(models.Model):
@@ -107,5 +112,19 @@ class UserProfile(models.Model):
         return f'Profile for user {self.user.username}'
 
 
+class Comment(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
+    creation_date = models.DateTimeField(auto_now_add=True)
+    text = models.TextField()
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
 
+    def __str__(self):
+        return f'Comment(pk={self.pk})'
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["content_type", "object_id"]),
+        ]
 

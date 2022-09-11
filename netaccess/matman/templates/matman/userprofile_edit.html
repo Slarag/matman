@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load bootstrap5 %}
+{% load crispy_forms_tags %}
 
 {% block title %}Profile Settings{% endblock %}
 
@@ -7,9 +7,9 @@
 <h1>Profile Settings</h1>
 <form method="post">
     {% csrf_token %}
-    {% bootstrap_form form %}
-    {% buttons %}
-    <input type="submit" value="Update" class="btn btn-primary">
-    {% endbuttons %}
+    {% crispy form %}
+    <div>
+        <input type="submit" value="Update" class="btn btn-primary">
+    </div>
 </form>
 {% endblock %}
