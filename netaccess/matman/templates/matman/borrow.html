@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Borrow {{ material }}{% endblock %}
+
+{% block content %}
+  <h1>Borrow {{ material }}?</h1>
+  <p>Do you want to borrow {{ material }}?</p>
+  <form method="post">
+    {{ form.as_p }}
+    {% csrf_token %}
+    <input type="submit" value="No, go back" name="no">
+    <input type="submit" value="Yes, borrow" name="yes">
+  </form>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load matman_tags %}
+
+{% block title %}Material{% endblock %}
+
+{% block content %}
+<h1>Materials</h1>
+<section>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Serial Number</th>
+            <th>Material Number</th>
+            <th>Manufacturer</th>
+            <th>Department</th>
+            <th>Location</th>
+            <th>Owner</th>
+            <th>Tags</th>
+        </tr>
+        {% for object in object_list %}
+        <tr>
+            <th><a href="{% url "material-detail" object.identifier %}">{{ object.identifier }}</a></th>
+            <td>{{ object.serial_number }}</td>
+            <td>{{ object.material_number }}</td>
+            <td>{{ object.manufacturer }}</td>
+            <td>{{ object.department }}</td>
+            <td>{{ object.location }}</td>
+            <td><a href="{% url "profile" object.owner %}">{{ object.owner }}</a></td>
+            <td>{{ object.tags.all|join:", " }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a class="button" href="?page=1">&laquo; first</a>
+                <a class="button" href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a class="button" href="?page={{ page_obj.next_page_number }}">next</a>
+                <a class="button" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </p>
+</section>
+{% endblock %}

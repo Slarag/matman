@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Return {{ material }}{% endblock %}
+
+{% block content %}
+  <h1>Return {{ material }}?</h1>
+  <p>Do you want to return {{ material }}?</p>
+  <p>IMPORTANT: Only do this when you physically return the material! Not anytime before!</p>
+  <form method="post">
+    {{ form.as_p }}
+    {% csrf_token %}
+    <input type="submit" value="No, go back" name="no">
+    <input type="submit" value="Yes, return {{ material }}" name="yes">
+  </form>
+{% endblock %}

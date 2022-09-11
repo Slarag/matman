@@ -7,21 +7,21 @@
 </head>
 <body>
     <header>
-        <span class="logo">Netaccess</span>
+        <span class="logo">Matman</span>
         {% if request.user.is_authenticated %}
         <nav>
             <ul class="menu">
-                <li {% if section == "dashboard" %}class="selected"{% endif %}>
-                    <a href="{% url "dashboard" %}">My dashboard</a>
+                <li {% if section == "search" %}class="selected"{% endif %}>
+                    <a href="{% url "search" %}">Search</a>
                 </li>
-                <li {% if section == "keys" %}class="selected"{% endif %}>
-                    <a href="{% url "key-list" %}">SSH keys</a>
-                </li>
-                <li {% if section == "profile_settings" %}class="selected"{% endif %}>
-                    <a href="{% url "profile-edit" %}">Profile Settings</a>
+                <li {% if section == "home" %}class="selected"{% endif %}>
+                    <a href="{% url "home" %}">Home</a>
                 </li>
                 <li {% if section == "dhcp" %}class="selected"{% endif %}>
-                    <a href="{% url "dashboard" %}">DHCP</a>
+                    <a href="{% url "list-material" %}">Material Manager</a>
+                </li>
+                <li {% if section == "dhcp" %}class="selected"{% endif %}>
+                    <a href="{% url "add-material" %}">Add Material</a>
                 </li>
             </ul>
         </nav>

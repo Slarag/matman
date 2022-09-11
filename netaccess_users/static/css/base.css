@@ -12,8 +12,14 @@
   --green4: #1b6d32;
   --citrus: #f3f7cc;
   --red_error: #cc0033;
+}
 
+.button {
+    block:True;
+}
 
+.descriptionbox {
+    background: var(--grey2);
 }
 
 body {
@@ -97,8 +103,6 @@ header .user {
 }
 
 footer{
-    float:bottom;
-    position:fixed;
     width:100%;
     bottom:0%;
     /* padding-top:4px; */

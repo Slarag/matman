@@ -36,10 +36,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'netaccess_users.apps.NetaccessUsersConfig',
+    #'netaccess_users.apps.NetaccessUsersConfig',
     'matman.apps.MatmanConfig',
     'users.apps.UsersConfig',
     'django.contrib.admin',
+    'taggit',
+    'django.contrib.postgres',
+    # 'django.contrib.sites',
     # 'django_registration',
 ]
 
@@ -78,9 +81,17 @@ WSGI_APPLICATION = 'netaccess.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'matman',
+        'USER': 'matman',
+        'PASSWORD': 'matmanpw',
+        'HOST': 'ubuntu',
+        'PORT': 5432,
     }
 }
 
@@ -101,9 +112,9 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
-    {
-        'NAME': 'netaccess_users.validators.SambaPwSetFakeValidator'
-    }
+    # {
+    #     'NAME': 'netaccess_users.validators.SambaPwSetFakeValidator'
+    # }
 ]
 
 
@@ -129,7 +140,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = 'dashboard'
+LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
 #LOGOUT_URL = 'logout'
 
@@ -137,3 +148,6 @@ LOGIN_URL = 'login'
 
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# TAGGIT
+TAGGIT_CASE_INSENSITIVE = True
