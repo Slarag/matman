@@ -1,12 +1,15 @@
 {% extends "base.html" %}
+{% load bootstrap5 %}
 
-{% block title %}Add Material{% endblock %}
+{% block title %}Edit Material{% endblock %}
 
 {% block content %}
 <h1>Edit material {{ object }}</h1>
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Update">
+    {% bootstrap_form form %}
+    {% buttons %}
+    <input type="submit" value="Update" class="btn btn-primary">
+    {% endbuttons %}
 </form>
 {% endblock %}

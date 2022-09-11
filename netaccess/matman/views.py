@@ -72,7 +72,7 @@ class MaterialAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         formset.instance = self.object
         formset.save()
 
-        return HttpResponseRedirect(self.get_success_url())
+        return super().form_valid(form)
 
     def form_invalid(self, form, formset):
         """

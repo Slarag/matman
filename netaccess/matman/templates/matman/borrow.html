@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load bootstrap5 %}
 
 {% block title %}Borrow {{ material }}{% endblock %}
 
@@ -6,9 +7,11 @@
   <h1>Borrow {{ material }}?</h1>
   <p>Do you want to borrow {{ material }}?</p>
   <form method="post">
-    {{ form.as_p }}
     {% csrf_token %}
-    <input type="submit" value="No, go back" name="no">
-    <input type="submit" value="Yes, borrow" name="yes">
+    {% bootstrap_form form %}
+    {% buttons %}
+    <input type="submit" value="Yes, borrow" name="yes" class="btn btn-secondary">
+    <input type="submit" value="No, go back" name="no" class="btn btn-primary">
+    {% endbuttons %}
   </form>
 {% endblock %}

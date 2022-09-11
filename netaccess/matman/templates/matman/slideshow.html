@@ -1,36 +1,24 @@
-<!--https://www.w3schools.com/howto/howto_js_slideshow_gallery.asp-->
-
 {% load static %}
-
-<!-- Container for the image gallery -->
-<div class="container">
-  <!-- Full-width images with number text -->
-  {% with total=pictures.all|length %}
-  {% for picture in pictures.all %}
-  <div class="mySlides">
-    <div class="numbertext">{{ forloop.counter }} / {{ total }}</div>
-      <img src="{{ picture.file.url }}" style="width:100%">
-  </div>
-  {% endfor %}
-
-  <!-- Next and previous buttons -->
-  <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-  <a class="next" onclick="plusSlides(1)">&#10095;</a>
-
-  <!-- Image text -->
-  <div class="caption-container">
-    <p id="caption"></p>
-  </div>
-
-  <!-- Thumbnail images -->
-  <div class="row">
+<div id="materialCarousel" class="carousel slide bg-dark" data-bs-ride="true">
+  <div class="carousel-indicators">
     {% for picture in pictures.all %}
-    <div class="column">
-      <img class="demo cursor" src="{{ picture.file.url }}" style="width:100%" \
-           onclick="currentSlide({{ forloop.counter }})" alt="{{ picture.description }}">
-    </div>
-	{% endfor %}
+    <button type="button" data-bs-target="#materialCarousel" data-bs-slide-to="{{ forloop.counter0 }}" {% if not forloop.counter0 %}class="active"{% endif %} aria-current="true" aria-label="Slide {{ forloop.counter }}"></button>
+    {% endfor %}
   </div>
-  {% endwith %}
+  <div class="carousel-inner">
+    {% for picture in pictures.all %}
+    <div class="carousel-item{% if not forloop.counter0 %} active{% endif %}">
+      <img src="{{ picture.file.url }}" class="d-block mx-auto" alt="{{ picture.description }}">
+    </div>
+    {% endfor %}
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#materialCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#materialCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
 </div>
-<script src="{% static 'js/slideshow.js' %}"></script>
+
