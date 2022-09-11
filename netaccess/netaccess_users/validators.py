@@ -18,4 +18,5 @@ class SambaPwSetFakeValidator:
 
     def password_changed(self, password, user=None):
         # ToDo: Change samba password for user
-        pass
+        print(f'CHANGE SAMBA PASSWORD FOR {str(user).upper()}'.center(80, '+'))
+

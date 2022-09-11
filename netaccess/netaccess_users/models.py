@@ -1,14 +1,7 @@
 import datetime
 from django.db import models
 from django.conf import settings
-
-
-class Profile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
-    department = models.CharField(max_length=64)
-
-    def __str__(self):
-        return f'Profile for user {self.user.username}'
+from django.shortcuts import reverse
 
 
 class SshPubKey(models.Model):
@@ -39,6 +32,9 @@ class SshPubKey(models.Model):
             s += f'expiry-time={self.expiration_date.strftime("%Y%m%d")}'
         s += f' {self.pubkey}'
         return s
+
+    def get_absolute_url(self):
+        return reverse('key-detail', args=[str(self.id)])
 
 
 class PermitOpenRestriction(models.Model):

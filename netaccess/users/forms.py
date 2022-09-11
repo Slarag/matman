@@ -1,8 +1,7 @@
 from django import forms
-from django.forms import ModelForm
 from django.contrib.auth.models import User
 
-from netaccess_users import models
+from . import models
 
 
 class UserRegistrationForm(forms.ModelForm):

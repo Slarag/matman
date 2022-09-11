@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{# {% extends is_ajax|yesno:"base_ajax_modal.html,base.html" %} #}
+
+{% block title %}Edit SSH key{% endblock %}
+
+{% block content %}
+<h1>Edit SSH Key</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Save">
+</form>
+{% endblock %}
