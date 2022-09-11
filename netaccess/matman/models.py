@@ -8,9 +8,9 @@ from taggit.managers import TaggableManager
 
 
 class Scheme(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-    # slug = models.SlugField(unique=True)
-    prefix = models.CharField(max_length=10)
+    name = models.CharField(max_length=30, unique=True)
+    description = models.CharField(max_length=100)
+    prefix = models.CharField(max_length=10, blank=True, default='')
     numlen = models.PositiveIntegerField(default=6)
     postfix = models.CharField(max_length=10, blank=True, default='')
     is_active = models.BooleanField(default=True)
@@ -26,6 +26,8 @@ class Scheme(models.Model):
 
     def clean(self, *args, **kwargs):
         cls = type(self)
+        if not any((self.prefix, self.postfix)):
+            raise ValidationError('At least either prefix or postfix must be specified')
         try:
             if self != Scheme.objects.get(prefix=self.prefix, postfix=self.postfix):
                 raise ValidationError('Combination of prefix and postfix must be unique')
@@ -76,11 +78,9 @@ class Material(models.Model):
 
 class MaterialPicture(models.Model):
     material = models.ForeignKey(Material, related_name='pictures', on_delete=models.CASCADE, blank=True)
-    description = models.CharField(max_length=50)
+    title = models.CharField(max_length=30)
+    description = models.CharField(max_length=100)
     file = models.ImageField(upload_to='pictures/')
-    #
-    # def __unicode__(self):
-    #     return self.file.url
 
     @property
     def absolute_image_url(self):

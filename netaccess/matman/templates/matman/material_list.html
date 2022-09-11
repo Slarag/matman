@@ -8,32 +8,29 @@
 <p>
     <a href="{% url "add-material" %}" class="btn btn-outline-success" aria-current="page">Add Material</a>
 </p>
-
-<section>
-    <table class="table table-striped table-hover">
-        <tr>
-            <th>ID</th>
-            <th>Serial Number</th>
-            <th>Material Number</th>
-            <th>Manufacturer</th>
-            <th>Department</th>
-            <th>Location</th>
-            <th>Owner</th>
-            <th>Tags</th>
-        </tr>
-        {% for object in object_list %}
-        <tr>
-            <th><a href="{% url "material-detail" object.identifier %}">{{ object.identifier }}</a></th>
-            <td>{{ object.serial_number }}</td>
-            <td>{{ object.material_number }}</td>
-            <td>{{ object.manufacturer }}</td>
-            <td>{{ object.department }}</td>
-            <td>{{ object.location }}</td>
-            <td><a href="{% url "profile" object.owner %}">{{ object.owner }}</a></td>
-            <td>{{ object.tags.all|join:", " }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% include "pagination.html" with page_param="page" %}
-</section>
+<table class="table table-striped table-hover">
+    <tr>
+        <th>ID</th>
+        <th>Serial Number</th>
+        <th>Material Number</th>
+        <th>Manufacturer</th>
+        <th>Department</th>
+        <th>Location</th>
+        <th>Owner</th>
+        <th>Tags</th>
+    </tr>
+    {% for object in object_list %}
+    <tr>
+        <th><a href="{% url "material-detail" object.identifier %}">{{ object.identifier }}</a></th>
+        <td>{{ object.serial_number }}</td>
+        <td>{{ object.material_number }}</td>
+        <td>{{ object.manufacturer }}</td>
+        <td>{{ object.department }}</td>
+        <td>{{ object.location }}</td>
+        <td><a href="{% url "profile" object.owner %}">{{ object.owner }}</a></td>
+        <td>{{ object.tags.all|join:", " }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% include "pagination.html" with page_param="page" %}
 {% endblock %}

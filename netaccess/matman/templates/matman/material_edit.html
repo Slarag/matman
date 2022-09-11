@@ -1,15 +1,16 @@
 {% extends "base.html" %}
-{% load bootstrap5 %}
+{% load crispy_forms_tags %}
 
 {% block title %}Edit Material{% endblock %}
 
 {% block content %}
 <h1>Edit material {{ object }}</h1>
 <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {% bootstrap_form form %}
-    {% buttons %}
-    <input type="submit" value="Update" class="btn btn-primary">
-    {% endbuttons %}
+    {{ csrf_token }}
+    {% crispy form %}
+    {% crispy formset %}
+    <div>
+        <input type="submit" value="Save" name="save" class="btn btn-primary">
+    </div>
 </form>
 {% endblock %}

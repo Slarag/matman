@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load bootstrap5 %}
+{% load crispy_forms_tags %}
 
 {% block title %}Borrow {{ material }}{% endblock %}
 
@@ -8,10 +8,10 @@
   <p>Do you want to borrow {{ material }}?</p>
   <form method="post">
     {% csrf_token %}
-    {% bootstrap_form form %}
-    {% buttons %}
-    <input type="submit" value="Yes, borrow" name="yes" class="btn btn-secondary">
-    <input type="submit" value="No, go back" name="no" class="btn btn-primary">
-    {% endbuttons %}
+    {% crispy form %}
+    <div>
+      <input type="button" value="No, go back" name="no" class="btn btn-secondary" onclick="history.back()">
+      <input type="submit" value="Yes, borrow" name="yes" class="btn btn-primary">
+    </div>
   </form>
 {% endblock %}
