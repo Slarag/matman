@@ -4,6 +4,20 @@
 
 {% block content %}
 <h1>Edit scheme {{ object.name }}</h1>
+<table>
+    <tr>
+        <th>Prefix:</th>
+        <td>{{ object.prefix }}</td>
+    </tr>
+    <tr>
+        <th>Numlen:</th>
+        <td>{{ object.numlen }}</td>
+    </tr>
+    <tr>
+        <th>Postfix:</th>
+        <td>{{ object.prefix }}</td>
+    </tr>
+</table>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}

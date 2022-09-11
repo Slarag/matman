@@ -4,9 +4,11 @@
 
 {% block content %}
 <h1>Add Material</h1>
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
+    {{ formset.non_form_errors }}
+    {{ formset.as_p }}
     <input type="submit" value="Save" name="save">
     <input type="submit" value="Save and add another" name="add_other">
 </form>
