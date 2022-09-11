@@ -1,73 +1,25 @@
 {% load static %}
-{% load bootstrap5 %}
 <! DOCTYPE html>
 <html>
 <head>
     <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link href="https://getbootstrap.com/docs/5.2/assets/css/docs.css" rel="stylesheet">
     <link href="{% static "css/base.css" %}" rel="stylesheet">
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
 </head>
 <body class="d-flex flex-column h-100">
     <header>
-        <nav class="navbar navbar-expand-lg bg-light">
-          <div class="container-fluid">
-            <a class="navbar-brand" href="#">MatMan</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-                <li class="nav-item">
-                    <a href="{% url "home" %}" class="nav-link" aria-current="page">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url "list-material" %}" class="nav-link" aria-current="page">All Materials</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url "list-schemes" %}" class="nav-link" aria-current="page">Schemes</a>
-                </li>
-                <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Profile
-                  </a>
-                  <ul class="dropdown-menu">
-                      <li>
-                        <a href="{% url "profile-settings" %}" class="dropdown-item" aria-current="page">Settings</a>
-                      </li>
-                      <li><hr class="dropdown-divider"></li>
-                    {% if request.user.is_authenticated %}
-                      <li><a class="dropdown-item" href="{% url "logout" %}" class="dropdown-item">Logout</a></li>
-                    {% else %}
-                      <li><a class="dropdown-item" href="{% url "login" %}" class="dropdown-item">Login</a></li>
-                    {% endif %}
-                  </ul>
-                </li>
-              </ul>
-              <form class="d-flex" role="search" action="{% url "search" %}" method="get">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
-                <button class="btn btn-outline-success" type="submit">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                      <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                    </svg>
-                </button>
-              </form>
-            </div>
-          </div>
-        </nav>
+        {% include "header.html"  %}
     </header>
-    {% bootstrap_messages %}
-
-    <main id="content" class="m-10">
+    {% include "messages.html"  %}
+    <main id="content" class="p-3">
         {% block content %}
         {% endblock %}
     </main>
     <footer class="footer mt-auto py-3 bg-light m-1">
-        <section>
-            <h4>About</h4>
-            <p>This software is licensed under the GPLv2. Source code is available at <a href="www.github.com/slarag/matman" target="_blank">Github</a></p>
-        </section>
+        {% include "footer.html"  %}
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
 </body>
 </html>

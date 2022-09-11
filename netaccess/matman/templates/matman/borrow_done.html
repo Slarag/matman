@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load bootstrap5 %}
+{% load crispy_forms_tags %}
 
 {% block title %}Return {{ material }}{% endblock %}
 
@@ -9,10 +9,9 @@
   <p>IMPORTANT: Only do this when you physically return the material! Not anytime before!</p>
   <form method="post">
     {% csrf_token %}
-    {% bootstrap_form form %}
-    {% buttons %}
-    <input type="submit" value="No, go back" name="no" class="btn btn-secondary">
-    <input type="submit" value="Yes, return {{ material }}" name="yes" class="btn btn-primary">
-    {% endbuttons %}
+    <div>
+      <input type="button" value="No, go back" name="no" class="btn btn-secondary" onclick="history.back()">
+      <input type="submit" value="Yes, return {{ material }}" name="yes" class="btn btn-primary">
+    </div>
   </form>
 {% endblock %}

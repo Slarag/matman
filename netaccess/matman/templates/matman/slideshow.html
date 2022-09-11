@@ -1,5 +1,5 @@
 {% load static %}
-<div id="materialCarousel" class="carousel slide bg-dark" data-bs-ride="true">
+<div id="materialCarousel" class="carousel slide bg-dark justify-content-center p-3" data-bs-ride="true">
   <div class="carousel-indicators">
     {% for picture in pictures.all %}
     <button type="button" data-bs-target="#materialCarousel" data-bs-slide-to="{{ forloop.counter0 }}" {% if not forloop.counter0 %}class="active"{% endif %} aria-current="true" aria-label="Slide {{ forloop.counter }}"></button>
@@ -8,7 +8,13 @@
   <div class="carousel-inner">
     {% for picture in pictures.all %}
     <div class="carousel-item{% if not forloop.counter0 %} active{% endif %}">
-      <img src="{{ picture.file.url }}" class="d-block mx-auto" alt="{{ picture.description }}">
+      <img src="{{ picture.file.url }}" class="d-block mx-auto" alt="{{ picture.description }} d-inline-flex">
+      <div class="carousel-caption d-none d-md-block">
+        <div>
+          <div><h5 class="bg-dark d-inline-flex rounded px-2">{{ picture.title }}</h5></div>
+          <div><p class="bg-dark d-inline-flex rounded px-2">{{ picture.description }}</p></div>
+        </div>
+      </div>
     </div>
     {% endfor %}
   </div>
@@ -21,4 +27,3 @@
     <span class="visually-hidden">Next</span>
   </button>
 </div>
-

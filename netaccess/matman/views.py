@@ -16,14 +16,14 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.postgres.search import SearchVector, TrigramSimilarity, SearchQuery
 
 from .models import Material, Borrow, Scheme, UserProfile
-from .forms import BorrowForm, SearchForm, MaterialForm, SettingsForm, PictureFormset
+from .forms import BorrowForm, SearchForm, MaterialForm, SettingsForm, PictureFormset, SchemeCreateForm, SchemeEditForm
 
 
 class MaterialAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Material
     template_name_suffix = '_create'
     form_class = MaterialForm
-    formset = PictureFormset
+    formset_class = PictureFormset
 
     def get_initial(self):
         initial = super().get_initial().copy()
@@ -43,7 +43,7 @@ class MaterialAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        formset = self.formset()
+        formset = self.formset_class(instance=form.instance)
 
         return self.render_to_response(
             self.get_context_data(form=form, formset=formset)
@@ -53,10 +53,7 @@ class MaterialAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        formset = self.formset(self.request.POST, self.request.FILES)
-        print(self.request.POST)
-        print(self.request.FILES)
-        print(formset.errors)
+        formset = self.formset_class(self.request.POST, self.request.FILES)
 
         if form.is_valid() and formset.is_valid():
             return self.form_valid(form, formset)
@@ -64,37 +61,17 @@ class MaterialAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         return self.form_invalid(form, formset)
 
     def form_valid(self, form, formset):
-        """
-        Called if all forms are valid. Creates a Author instance along
-        with associated books and then redirects to a success page.
-        """
         self.object = form.save()
-        formset.instance = self.object
+        formset.instance=form.instance
         formset.save()
 
         return super().form_valid(form)
 
     def form_invalid(self, form, formset):
-        """
-        Called if whether a form is invalid. Re-renders the context
-        data with the data-filled forms and errors.
-        """
+        messages.error(self.request, 'An error occurred while updating the material')
         return self.render_to_response(
             self.get_context_data(form=form, formset=formset)
         )
-
-    def get_context_data(self, **kwargs):
-        """ Add formset and formhelper to the context_data. """
-        context = super().get_context_data(**kwargs)
-
-        if self.request.POST:
-            context['form'] = context.get('form', self.get_form_class()(self.request.POST))
-            context['formset'] = context.get('formset', self.formset(self.request.POST))
-        else:
-            context['form'] = self.get_form_class()(self.get_initial())
-            context['book_form'] = self.formset()
-
-        return context
 
 
 # Important: No login required for details
@@ -108,13 +85,48 @@ class MaterialDetailView(DetailView):
 class MaterialEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Material
     template_name_suffix = '_edit'
-    fields = ['serial_number', 'material_number', 'manufacturer', 'description', 'scheme', 'location',
-              'owner', 'tags', 'is_active']
+    form_class = MaterialForm
+    formset_class = PictureFormset
+    related_name = 'pictures'
     slug_field = 'identifier'
     slug_url_kwarg = 'identifier'
 
     def get_success_message(self, cleaned_data):
         return f'Successfully updated material "{self.object}"'
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(self.queryset)
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        formset = self.formset_class(instance=form.instance)
+
+        return self.render_to_response(
+            self.get_context_data(form=form, formset=formset)
+        )
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object(self.queryset)
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        formset = self.formset_class(self.request.POST, self.request.FILES, instance=form.instance)
+
+        if form.is_valid() and formset.is_valid():
+            return self.form_valid(form, formset)
+
+        return self.form_invalid(form, formset)
+
+    def form_valid(self, form, formset):
+        self.object = form.save()
+        formset.save()
+
+        return super().form_valid(form)
+
+    def form_invalid(self, form, formset):
+        messages.error(self.request, 'An error occurred while updating the material')
+        return self.render_to_response(
+            self.get_context_data(form=form, formset=formset)
+        )
+
 
 
 @login_required
@@ -125,14 +137,11 @@ def borrow(request, identifier):
         messages.error(request, f'{material} is already borrowed by {active_borrow.borrowed_by}')
         return redirect(reverse_lazy('material-detail', kwargs={'identifier': material.identifier}))
     if request.method == 'POST':
-        if 'yes' in request.POST:
-            form = BorrowForm(request.POST)
-            if form.is_valid():
-                b = Borrow(item=material, borrowed_by=request.user)
-                b.save()
-                messages.success(request, f'{material} successfully borrowed')
-                return redirect(reverse_lazy('material-detail', kwargs={'identifier': material.identifier}))
-        else:
+        form = BorrowForm(request.POST)
+        if form.is_valid():
+            b = Borrow(item=material, borrowed_by=request.user)
+            b.save()
+            messages.success(request, f'{material} successfully borrowed')
             return redirect(reverse_lazy('material-detail', kwargs={'identifier': material.identifier}))
     else:
         form = BorrowForm(initial={'object': material})
@@ -147,17 +156,10 @@ def end_borrow(request, identifier):
         messages.error(request, f'You have currently not borrowed { material }!')
         return redirect(reverse_lazy('material-detail', kwargs={'identifier': material.identifier}))
     if request.method == 'POST':
-        form = BorrowForm(request.POST)
-        if 'yes' in request.POST:
-            if form.is_valid():
-                active_borrow.returned_at = now()
-                active_borrow.save()
-                messages.success(request, f'You have returned {material} to {material.owner}')
-                return redirect(reverse_lazy('material-detail', kwargs={'identifier': material.identifier}))
-        else:
-            return redirect(reverse_lazy('material-detail', kwargs={'identifier': material.identifier}))
-    else:
-        form = BorrowForm(active_borrow)
+        active_borrow.returned_at = now()
+        active_borrow.save()
+        messages.success(request, f'You have returned {material} to {material.owner}')
+        return redirect(reverse_lazy('material-detail', kwargs={'identifier': material.identifier}))
     return render(request, 'matman/borrow_done.html', {'material': material})
 
 
@@ -176,14 +178,19 @@ class HomeView(LoginRequiredMixin, TemplateView):
     template_name = "matman/home.html"
     paginate_by = 5
 
+    def get_user(self):
+        return self.request.user
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user = self.get_user()
+        context['user'] = user
 
         queries = {
-            'my_materials': Material.objects.filter(owner=self.request.user),
-            'borrowed': Material.objects.filter(borrows__borrowed_by=self.request.user,
+            'my_materials': Material.objects.filter(owner=user),
+            'borrowed': Material.objects.filter(borrows__borrowed_by=user,
                                                 borrows__returned_at__isnull=True),
-            'lent': Material.objects.exclude(borrows=None).filter(owner=self.request.user,
+            'lent': Material.objects.exclude(borrows=None).filter(owner=user,
                                                                   borrows__returned_at__isnull=True),
         }
 
@@ -203,13 +210,12 @@ class HomeView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class ProfileView(LoginRequiredMixin, TemplateView):
+class ProfileView(HomeView):
     template_name = "matman/profile.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['user'] = User.objects.get(username=self.kwargs['user'])
-        return context
+    def get_user(self):
+        return User.objects.get(username=self.kwargs['user'])
+
 
 
 def search(request):
@@ -254,7 +260,7 @@ class SchemeListView(ListView):
 class SchemeAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Scheme
     template_name_suffix = '_create'
-    fields = ['name', 'prefix', 'numlen', 'postfix', 'is_active']
+    form_class = SchemeCreateForm
     success_url = reverse_lazy('list-schemes')
 
     def get_success_message(self, cleaned_data):
@@ -267,7 +273,7 @@ class SchemeAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 class SchemeEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Scheme
     template_name_suffix = '_edit'
-    fields = ['name', 'is_active']
+    form_class = SchemeEditForm
     success_url = reverse_lazy('list-schemes')
 
     def get_success_message(self, cleaned_data):
