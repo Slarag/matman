@@ -8,7 +8,7 @@
 <body>
     <header>
         <span class="logo">Matman</span>
-        {% if request.user.is_authenticated %}
+
         <nav>
             <ul class="menu">
                 <li {% if section == "search" %}class="selected"{% endif %}>
@@ -18,14 +18,20 @@
                     <a href="{% url "home" %}">Home</a>
                 </li>
                 <li {% if section == "dhcp" %}class="selected"{% endif %}>
-                    <a href="{% url "list-material" %}">Material Manager</a>
+                    <a href="{% url "list-material" %}">All Materials</a>
                 </li>
                 <li {% if section == "dhcp" %}class="selected"{% endif %}>
                     <a href="{% url "add-material" %}">Add Material</a>
                 </li>
+                <li {% if section == "schemes" %}class="selected"{% endif %}>
+                    <a href="{% url "list-schemes" %}">Schemes</a>
+                </li>
+                <li {% if section == "settings" %}class="selected"{% endif %}>
+                    <a href="{% url "profile-settings" %}">Settings</a>
+                </li>
             </ul>
         </nav>
-        {% endif %}
+
         <span class="user">
             {% if request.user.is_authenticated %}
             Hello {{ request.user.first_name }}, <a href="{% url "logout" %}">Logout</a>
@@ -54,8 +60,8 @@
     </div>
     <footer>
         <section>
-            <h4>Icons</h4>
-            <a href="https://www.flaticon.com/free-icons/access" title="access icons">Access icons created by Flat Icons - Flaticon</a>
+            <h4>About</h4>
+            <p>This software is licensed under the GPLv2. Source code is available at <a href="www.github.com/slarag/matman" target="_blank">Github</a></p>
         </section>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
