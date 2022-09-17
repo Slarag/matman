@@ -3,3 +3,35 @@
     max-height: 70vh;
     max-width: 100%;
 }
+
+body {
+/* background-color: rgb(53, 255, 60); */
+}
+
+.btn {
+    position: relative;
+}
+
+.btn .spinner-border {
+    visibility: hidden;
+    opacity: 0;
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right:0;
+    margin: auto;
+}
+
+.loading .spinner-border {
+    visibility: visible;
+    opacity: 100%;
+    content: "";
+    position: absolute;
+}
+
+.loading .button-text {
+    visibility: hidden;
+    opacity: 0;
+}

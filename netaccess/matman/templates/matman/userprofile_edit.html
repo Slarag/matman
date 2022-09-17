@@ -5,11 +5,5 @@
 
 {% block content %}
 <h1>Profile Settings</h1>
-<form method="post">
-    {% csrf_token %}
-    {% crispy form %}
-    <div>
-        <input type="submit" value="Update" class="btn btn-primary">
-    </div>
-</form>
+{% crispy form %}
 {% endblock %}

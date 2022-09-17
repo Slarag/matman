@@ -1,0 +1,39 @@
+{% load matman_tags %}
+<div class="toast show my-1 w-100" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="toast-header">
+    <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Info:"><use xlink:href="#box-filled-icon"/></svg>
+    <strong class="me-auto">Borrow by <a href="{% url "profile" borrow.borrowed_by %}">{{ borrow.borrowed_by.username }}</a></strong>
+    <small class="mx-2">
+      {{ borrow.borrowed_at|date:"D y-m-d H:m" }}
+      {% if borrow.history.first != borrow.history.last %}
+      (edited)
+      {% endif %}
+    </small>
+    <div class="dropdown">
+      <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Actions
+      </button>
+      <ul class="dropdown-menu">
+        {%if not borrow.returned_at %}
+        <li><a class="dropdown-item" href="{% url "return" borrow.pk %}">Return & Close</a></li>
+        <li><a class="dropdown-item" href="{{ borrow.get_absolute_url }}">Edit</a></li>
+        {% endif %}
+        <li><a class="dropdown-item disabled" href="">History</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="toast-body">
+    <p>Usage Location: {{ borrow.usage_location }}</p>
+    <p>
+      {% if borrow.returned_at %}
+      Returned at: {{ borrow.returned_at|date:"D y-m-d H:m" }}
+      {% else %}
+      Estimate return date: {{ borrow.estimated_returndate|date:"D y-m-d" }}
+      {% endif %}
+      {{ borrow.notes|markdown }}
+    </p>
+
+  </div>
+</div>
+
+

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Return {{ material }}{% endblock %}
+
+{% block content %}
+  <h1>Return {{ material }}?</h1>
+  <p>Do you want to return {{ material }}?</p>
+  <p>IMPORTANT: Only do this when you physically return the material! Not anytime before!</p>
+<!--  <form method="post">-->
+<!--    {% csrf_token %}-->
+<!--    <div>-->
+<!--      <button type="button" name="no" class="btn btn-secondary" onclick="history.back()">Cancel</button>-->
+<!--      <button type="submit" value="close" name="close" class="btn btn-primary">Return {{ material }}</button>-->
+<!--    </div>-->
+<!--  </form>-->
+  {% crispy form %}
+{% endblock %}

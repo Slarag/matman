@@ -8,7 +8,8 @@
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% crispy form %}
-    {% crispy formset %}
+    <h3>Pictures</h3>
+    {% crispy formset formset_helper %}
     <div>
         <input type="submit" value="Save" name="save" class="btn btn-primary">
     </div>

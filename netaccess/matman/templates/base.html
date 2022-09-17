@@ -9,6 +9,7 @@
     <link href="{% static "css/base.css" %}" rel="stylesheet">
 </head>
 <body class="d-flex flex-column h-100">
+    {% include "svg.html"  %}
     <header>
         {% include "header.html"  %}
     </header>
@@ -17,7 +18,7 @@
         {% block content %}
         {% endblock %}
     </main>
-    <footer class="footer mt-auto py-3 bg-light m-1">
+    <footer class="footer mt-auto py-3 bg-light p-3">
         {% include "footer.html"  %}
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>

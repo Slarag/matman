@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit Borrow for {{ borrow.item }}{% endblock %}
+
+{% block content %}
+  <h1>Edit Borrow for {{ material }}?</h1>
+    {% crispy form %}
+{% endblock %}

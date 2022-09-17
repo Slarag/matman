@@ -8,10 +8,19 @@
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% crispy form %}
-    {% crispy formset %}
-    <div>
-        <input type="submit" value="Save" name="save" class="btn btn-primary">
-        <input type="submit" value="Save and add another" name="add_other" class="btn btn-secondary">
+    <h3>Pictures</h3>
+    {{ formset.management_form }}
+    {% crispy formset formset_helper %}
+    <div class="form-buttons">
+        <button id="buttonSave" type="submit" value="Save" name="save" class="btn btn-primary" onclick="this.classList.add('loading')">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span class="button-text">Save</span>
+        </button>
+        <button id="buttonAddAnother" type="submit" value="Save and add another" name="add_other" class="btn btn-secondary" onclick="this.classList.add('loading')">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span class="button-text">Save and add another</span>
+        </button>
+
     </div>
 </form>
 {% endblock %}

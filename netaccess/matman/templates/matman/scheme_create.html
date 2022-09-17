@@ -5,11 +5,5 @@
 
 {% block content %}
 <h1>Create new Scheme</h1>
-<form method="post">
-    {% csrf_token %}
-    {% crispy form %}
-    <div>
-        <input type="submit" value="Save" class="btn btn-primary">
-    </div>
-</form>
+{% crispy form %}
 {% endblock %}

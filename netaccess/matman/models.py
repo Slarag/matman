@@ -7,6 +7,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
 from taggit.managers import TaggableManager
+from simple_history.models import HistoricalRecords, HistoricForeignKey
 
 
 class Scheme(models.Model):
@@ -27,7 +28,6 @@ class Scheme(models.Model):
         return f'{self.name}'
 
     def clean(self, *args, **kwargs):
-        cls = type(self)
         if not any((self.prefix, self.postfix)):
             raise ValidationError('At least either prefix or postfix must be specified')
         try:
@@ -37,7 +37,7 @@ class Scheme(models.Model):
             pass
         except Scheme.MultipleObjectsReturned as exc:
             raise ValidationError('Combination of prefix and postfix must be unique')
-        super().clean(*args, **kwargs)
+        return super().clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -59,9 +59,10 @@ class Material(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, related_name='owned_materials', null=True)
     tags = TaggableManager(blank=True)
     is_active = models.BooleanField(default=True)
-    contains = models.ManyToManyField('self', related_name='contained_in', symmetrical=False)
+    contains = models.ManyToManyField('self', related_name='contained_in', symmetrical=False, blank=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.identifier.upper()
@@ -82,10 +83,11 @@ class Material(models.Model):
 
 
 class MaterialPicture(models.Model):
-    material = models.ForeignKey(Material, related_name='pictures', on_delete=models.CASCADE, blank=True)
+    material = HistoricForeignKey(Material, related_name='pictures', on_delete=models.CASCADE, blank=True)
     title = models.CharField(max_length=30)
     description = models.CharField(max_length=100)
     file = models.ImageField(upload_to='pictures/')
+    history = HistoricalRecords()
 
     @property
     def absolute_image_url(self):
@@ -94,11 +96,19 @@ class MaterialPicture(models.Model):
 
 class Borrow(models.Model):
     item = models.ForeignKey(Material, on_delete=models.CASCADE, related_name='borrows')
-    borrowed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    borrowed_at = models.DateTimeField(auto_now_add=True)
+    borrowed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
+                                    related_name='borrows')
     notes = models.TextField(blank=True)
     usage_location = models.CharField(max_length=100, blank=False, null=False)
-    borrowed_at = models.DateTimeField(auto_now_add=True)
+    estimated_returndate = models.DateField(blank=True, null=True)
     returned_at = models.DateTimeField(blank=True, null=True)
+    returned_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
+                                    related_name='borrows_returned')
+    history = HistoricalRecords()
+
+    def get_absolute_url(self):
+        return reverse('borrow-edit', kwargs={'pk': self.pk})
 
 
 class UserProfile(models.Model):
@@ -106,25 +116,31 @@ class UserProfile(models.Model):
     default_scheme = models.ForeignKey(Scheme, blank=True, on_delete=models.SET_NULL, null=True)
     department = models.CharField(max_length=30, blank=True)
     location = models.CharField(max_length=100, blank=True)
+    initials = models.CharField(max_length=10, null=True, blank=True, unique=True)
     about = models.TextField(blank=True)
 
     def __str__(self):
         return f'Profile for user {self.user.username}'
 
+    def clean(self):
+        self.initials = self.initials.lower()
+
 
 class Comment(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
     creation_date = models.DateTimeField(auto_now_add=True)
+    # last_updated = models.DateTimeField(auto_now=True)
     text = models.TextField()
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
+    material = models.ForeignKey(Material, related_name='comments', on_delete=models.CASCADE)
+    history = HistoricalRecords()
 
     def __str__(self):
-        return f'Comment(pk={self.pk})'
+        return f'Comment by {self.author.username} on {self.material}'
 
-    class Meta:
-        indexes = [
-            models.Index(fields=["content_type", "object_id"]),
-        ]
+    def get_absolute_url(self):
+        return reverse('comment-edit', kwargs={'pk': self.pk})
 
+
+class MaterialBookmark(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='bookmarks')
+    material = models.ForeignKey(Material, on_delete=models.CASCADE, related_name='bookmarks')
