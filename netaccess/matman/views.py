@@ -1,5 +1,6 @@
 from collections import namedtuple
 import datetime
+import urllib
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponseRedirect
@@ -18,6 +19,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.postgres.search import SearchVector, TrigramSimilarity, SearchQuery, SearchRank
+from django.forms.models import model_to_dict
 
 from . import models
 from . import forms
@@ -38,10 +40,26 @@ class MaterialAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         context['formset_helper'] = self.formset_helper()
         return context
 
+    def get_reference(self):
+        try:
+            reference_id = self.request.GET.get('reference')
+            reference = models.Material.objects.get(identifier=reference_id)
+        except (ObjectDoesNotExist, KeyError):
+            return None
+        else:
+            return reference
+
     def get_initial(self):
         initial = super().get_initial().copy()
         initial['owner'] = self.request.user
         initial['scheme'] = self.request.user.profile.default_scheme
+
+        reference = self.get_reference()
+        if reference:
+            values = model_to_dict(reference, fields=self.get_form_class().Meta.fields)
+            initial.update(values)
+            initial['reference'] = reference.identifier
+
         return initial
 
     def get_success_message(self, cleaned_data):
@@ -50,7 +68,7 @@ class MaterialAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     def get_success_url(self):
         if 'add_other' in self.request.POST:
-            return reverse_lazy('add-material')
+            return reverse_lazy('add-material') + '?' + urllib.parse.urlencode({'reference': self.object.identifier})
         return super().get_success_url()
 
     def get(self, request, *args, **kwargs):
@@ -58,6 +76,11 @@ class MaterialAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         formset = self.formset_class(instance=form.instance)
+
+        reference = self.get_reference()
+        if reference:
+            formset = self.formset_class(instance=reference)
+            formset.instance = form.instance
 
         return self.render_to_response(
             self.get_context_data(form=form, formset=formset)
@@ -76,7 +99,7 @@ class MaterialAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     def form_valid(self, form, formset):
         self.object = form.save()
-        formset.instance=form.instance
+        formset.instance = form.instance
         formset.save()
 
         return super().form_valid(form)
@@ -339,6 +362,7 @@ class HomeView(LoginRequiredMixin, TemplateView):
             except EmptyPage:
                 page_content = paginator.page(paginator.num_pages)
             context[name] = page_content
+            context[f'{name}_total'] = len(query)
 
         return context
 

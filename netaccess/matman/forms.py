@@ -89,22 +89,28 @@ class SearchForm(forms.Form):
 
 
 class MaterialForm(forms.ModelForm):
+    reference = forms.CharField(widget=forms.HiddenInput(), required=False)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['scheme'].queryset = models.Scheme.objects.filter(is_active=True)
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
+            Field('reference'),
             Div(
                 Div(Field('serial_number', placeholder="Serial Number"), css_class='col'),
                 Div(Field('material_number', placeholder='Material Number'), css_class='col'),
+                Div(Field('revision', placeholder='Revision'), css_class='col'),
                 Div(Field('manufacturer', placeholder='Manufacturer'), css_class='col'),
                 css_class='row'),
             Div(
+                Div(Field('location', placeholder='Location'), css_class='col'),
                 Div(Field('scheme'), css_class='col'),
                 Div(Field('owner'), css_class='col'),
                 css_class='row g-3'),
             Div(
+                Field('short_text', placeholder='Short description'),
                 Field('tags', placeholder='tag1,tag2,tag3,...'),
                 Field('description', placeholder='Enter material description here (supports markdown syntax)...'),
                 'is_active'),
@@ -112,27 +118,30 @@ class MaterialForm(forms.ModelForm):
 
     class Meta:
         model = models.Material
-        fields = ['serial_number', 'material_number', 'manufacturer', 'description', 'scheme', 'owner', 'tags',
-                  'is_active']
+        fields = ['serial_number', 'material_number', 'revision', 'manufacturer', 'description', 'scheme', 'owner',
+                  'short_text', 'tags', 'is_active', 'location']
 
 
 PictureFormset = forms.inlineformset_factory(models.Material, models.MaterialPicture,
                                              fields=['file', 'title', 'description'],
                                              extra=1, can_order=True)
+PictureFormset.ordering_widget = forms.HiddenInput()
 
 
 class PictureFormSetHelper(FormHelper):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.form_tag = False
+        self.form_class = 'formset-container'
         self.layout = Layout(
             Div(
-                Field('title'),
+                Field('ORDER'),
+                Field('title', placeholder='Title'),
                 Field('description'),
                 Field('file'),
-                Field('ORDER'),
                 Field('DELETE'),
-                css_class='card p-2 m-1'
+                css_class='card p-2 m-1 draggable formset-form',
+                draggable="true",
             ),
         )
         self.render_required_fields = True

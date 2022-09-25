@@ -4,6 +4,10 @@
 
 {% block title %}Material Details{% endblock %}
 
+{% block scripts %}
+{% init_mde "id_text" %}
+{% endblock %}
+
 {% block content %}
 {% with borrow=object.get_active_borrow %}
 <h1>{{ object }}</h1>
@@ -18,6 +22,7 @@
         {% if object.get_active_borrow %}
         <a class="btn btn-primary m-1" href="{% url "return" object.get_active_borrow.pk %}">Return Item</a>
         {% endif %}
+        <a class="btn btn-outline-secondary m-1" href="{% url "add-material" %}?reference={{ object.identifier }}">Copy/Clone</a>
     </div>
 
     <!--    Details Table    -->
@@ -67,7 +72,7 @@
     <!--    Description    -->
     <h4>Description</h4>
     <div class="border border-dark rounded">
-        {% if object.description %}}
+        {% if object.description %}
         {{ object.description|markdown }}
         {% else %}
         No description available.

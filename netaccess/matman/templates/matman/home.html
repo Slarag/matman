@@ -9,7 +9,7 @@
   <div class="accordion-item">
     <h2 class="accordion-header" id="headingOne">
       <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-        Currently borrowed ({{ borrowed| length }})
+        Currently borrowed ({{ borrowed_total }})
       </button>
     </h2>
     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
@@ -47,7 +47,7 @@
   <div class="accordion-item">
     <h2 class="accordion-header" id="headingTwo">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-        Currently borrowed to others ({{ lent| length }})
+        Currently borrowed to others ({{ lent_total }})
       </button>
     </h2>
     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
@@ -80,14 +80,14 @@
             <tr><td>None</td></tr>
             {% endfor %}
          </table>
-         {% include "pagination.html" with page_obj=lent page_param="borrowed_page" %}
+         {% include "pagination.html" with page_obj=lent page_param="lent_page" %}
       </div>
     </div>
   </div>
   <div class="accordion-item">
     <h2 class="accordion-header" id="headingThree">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-        Owned Materials ({{ my_materials| length }})
+        Owned Materials ({{ my_materials_total }})
       </button>
     </h2>
     <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
@@ -118,7 +118,7 @@
             <tr><td>None</td></tr>
             {% endfor %}
         </table>
-        {% include "pagination.html" with page_obj=my_materials page_param="borrowed_page" %}
+        {% include "pagination.html" with page_obj=my_materials page_param="my_materials_page" %}
       </div>
     </div>
   </div>

@@ -44,3 +44,8 @@ def alert_icon(level_tag):
         'error':   '#exclamation-triangle-fill',
     }
     return mapping[level_tag]
+
+
+@register.inclusion_tag('mde_script.html')
+def init_mde(css_id):
+    return {'css_id': css_id}

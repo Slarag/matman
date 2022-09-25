@@ -1,5 +1,10 @@
 {% extends "base.html" %}
+{% load matman_tags %}
 {% load crispy_forms_tags %}
+
+{% block scripts %}
+{% init_mde "id_notes" %}
+{% endblock %}
 
 {% block title %}Edit Borrow for {{ borrow.item }}{% endblock %}
 

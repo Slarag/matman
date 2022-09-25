@@ -8,6 +8,8 @@ body {
 /* background-color: rgb(53, 255, 60); */
 }
 
+/* Style for the loading spinners */
+
 .btn {
     position: relative;
 }
@@ -34,4 +36,11 @@ body {
 .loading .button-text {
     visibility: hidden;
     opacity: 0;
+}
+
+
+/* Style for drag and drop */
+
+.dragging {
+    opacity: 50%;
 }

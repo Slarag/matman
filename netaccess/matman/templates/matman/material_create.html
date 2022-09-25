@@ -1,7 +1,15 @@
 {% extends "base.html" %}
+{% load static %}
+{% load matman_tags %}
 {% load crispy_forms_tags %}
 
 {% block title %}Add Material{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{% static "js/dynamic_formset.js" %}" defer></script>
+<script type="text/javascript" src="{% static "js/dragdrop.js" %}" defer></script>
+{% init_mde "id_description" %}
+{% endblock %}
 
 {% block content %}
 <h1>Add Material</h1>
@@ -9,9 +17,14 @@
     {% csrf_token %}
     {% crispy form %}
     <h3>Pictures</h3>
-    {{ formset.management_form }}
-    {% crispy formset formset_helper %}
-    <div class="form-buttons">
+    <div class="drag-container">
+        {% crispy formset formset_helper %}
+    </div>
+    <button type="button" name="add" class="btn btn-outline-primary m-1" id="add-more">
+        <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#plus"/></svg>
+        Add Picture
+    </button>
+    <div class="form-buttons m-1">
         <button id="buttonSave" type="submit" value="Save" name="save" class="btn btn-primary" onclick="this.classList.add('loading')">
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <span class="button-text">Save</span>
@@ -20,7 +33,6 @@
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <span class="button-text">Save and add another</span>
         </button>
-
     </div>
 </form>
 {% endblock %}

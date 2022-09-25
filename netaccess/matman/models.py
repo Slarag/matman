@@ -49,8 +49,9 @@ class Scheme(models.Model):
 
 class Material(models.Model):
     identifier = models.SlugField(unique=True, editable=False)
-    short_text = models.CharField(max_length=100)
+    short_text = models.CharField(max_length=100, blank=True)
     serial_number = models.CharField(max_length=30, blank=True)
+    revision = models.CharField(max_length=30, blank=True)
     material_number = models.CharField(max_length=30, blank=True)
     manufacturer = models.CharField(max_length=30, blank=True)
     description = models.TextField(blank=True)
@@ -84,8 +85,8 @@ class Material(models.Model):
 
 class MaterialPicture(models.Model):
     material = HistoricForeignKey(Material, related_name='pictures', on_delete=models.CASCADE, blank=True)
-    title = models.CharField(max_length=30)
-    description = models.CharField(max_length=100)
+    title = models.CharField(max_length=30, blank=True)
+    description = models.CharField(max_length=100, blank=True)
     file = models.ImageField(upload_to='pictures/')
     history = HistoricalRecords()
 
@@ -100,7 +101,7 @@ class Borrow(models.Model):
     borrowed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
                                     related_name='borrows')
     notes = models.TextField(blank=True)
-    usage_location = models.CharField(max_length=100, blank=False, null=False)
+    usage_location = models.CharField(max_length=100, blank=True, null=False)
     estimated_returndate = models.DateField(blank=True, null=True)
     returned_at = models.DateTimeField(blank=True, null=True)
     returned_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
