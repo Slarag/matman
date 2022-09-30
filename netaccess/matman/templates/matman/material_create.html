@@ -7,7 +7,6 @@
 
 {% block scripts %}
 <script type="text/javascript" src="{% static "js/dynamic_formset.js" %}" defer></script>
-<script type="text/javascript" src="{% static "js/dragdrop.js" %}" defer></script>
 {% init_mde "id_description" %}
 {% endblock %}
 
@@ -25,11 +24,11 @@
         Add Picture
     </button>
     <div class="form-buttons m-1">
-        <button id="buttonSave" type="submit" value="Save" name="save" class="btn btn-primary" onclick="this.classList.add('loading')">
+        <button id="buttonSave" type="submit" value="Save" name="save" class="btn btn-primary">
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <span class="button-text">Save</span>
         </button>
-        <button id="buttonAddAnother" type="submit" value="Save and add another" name="add_other" class="btn btn-secondary" onclick="this.classList.add('loading')">
+        <button id="buttonAddAnother" type="submit" value="Save and add another" name="add_other" class="btn btn-secondary" >
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <span class="button-text">Save and add another</span>
         </button>

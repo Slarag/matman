@@ -6,7 +6,7 @@
 {% block title %}Edit Material{% endblock %}
 
 {% block scripts %}
-    <script type="text/javascript" src="{% static "js/dynamic_formset.js" %}" defer></script>
+<script type="text/javascript" src="{% static "js/dynamic_formset.js" %}" defer></script>
 {% init_mde "id_description" %}
 {% endblock %}
 
@@ -16,12 +16,8 @@
     {% csrf_token %}
     {% crispy form %}
     <h3>Pictures</h3>
-    {% crispy formset.management_form %}
     <div class="drag-container">
-        {% for form in formset %}
-        {% crispy form formset_helper %}
-        {% endfor %}
-<!--        {% crispy formset formset_helper %}-->
+        {% crispy formset formset_helper %}
     </div>
     <button type="button" name="add" class="btn btn-outline-primary m-1" id="add-more">
         <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#plus"/></svg>

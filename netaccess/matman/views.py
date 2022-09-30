@@ -90,7 +90,13 @@ class MaterialAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        formset = self.formset_class(self.request.POST, self.request.FILES)
+
+        # Get reference directly from POST data as I need this info even if the form might be invalid
+        refid = self.request.POST.get('reference', None)
+        reference = None
+        if refid:
+            reference = self.model.objects.get(identifier=refid)
+        formset = self.formset_class(self.request.POST, self.request.FILES, instance=reference)
 
         if form.is_valid() and formset.is_valid():
             return self.form_valid(form, formset)
@@ -99,8 +105,18 @@ class MaterialAddView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     def form_valid(self, form, formset):
         self.object = form.save()
-        formset.instance = form.instance
-        formset.save()
+
+        if formset.instance:
+            # reference was used
+            for ff in formset:
+                if ff.empty_permitted and not ff.has_changed():
+                    continue
+                ff.instance.material = self.object
+                ff.instance.pk = None
+                ff.instance.save()
+        else:
+            formset.instance = form.instance
+            formset.save()
 
         return super().form_valid(form)
 

@@ -140,6 +140,9 @@ class PictureFormSetHelper(FormHelper):
                 Field('description'),
                 Field('file'),
                 Field('DELETE'),
+                # id and material are automatically added when form is initialized with instance keyword
+                Field('id'),
+                Field('material'),
                 css_class='card p-2 m-1 draggable formset-form',
                 draggable="true",
             ),
