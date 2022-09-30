@@ -6,7 +6,10 @@
 {% block content %}
 <h1>Schemes</h1>
 <p>
-    <a href="{% url "add-scheme" %}" class="btn btn-outline-success" aria-current="page">Add Scheme</a>
+    <a href="{% url "add-scheme" %}" class="btn btn-outline-primary" aria-current="page">
+        <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#plus"/></svg>
+        Add Scheme
+    </a>
 </p>
 <table class="table table-striped table-hover">
     <tr>
