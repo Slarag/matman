@@ -3,7 +3,7 @@ import datetime
 import urllib
 
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponseRedirect
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib import messages
@@ -20,6 +20,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.postgres.search import SearchVector, TrigramSimilarity, SearchQuery, SearchRank
 from django.forms.models import model_to_dict
+from django.views.decorators.http import require_GET, require_POST
+from taggit.models import Tag
 
 from . import models
 from . import forms
@@ -456,3 +458,10 @@ class SettingsView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user.profile
+
+
+@require_GET
+def tag_suggestions(request):
+    value = request.GET.get('value', '')
+    tags = Tag.objects.filter(name__startswith=value).order_by('name')[:100]
+    return JsonResponse({'suggestions': [tag.name for tag in tags]})

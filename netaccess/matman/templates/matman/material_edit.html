@@ -6,7 +6,9 @@
 {% block title %}Edit Material{% endblock %}
 
 {% block scripts %}
+<script type="text/javascript" src="{% static "js/autocomplete.js" %}" defer></script>
 <script type="text/javascript" src="{% static "js/dynamic_formset.js" %}" defer></script>
+<link href="{% static "css/autocomplete.css" %}" rel="stylesheet">
 {% init_mde "id_description" %}
 {% endblock %}
 

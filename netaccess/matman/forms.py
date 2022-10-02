@@ -111,9 +111,10 @@ class MaterialForm(forms.ModelForm):
                 css_class='row g-3'),
             Div(
                 Field('short_text', placeholder='Short description'),
-                Field('tags', placeholder='tag1,tag2,tag3,...'),
+                Field('tags', placeholder='tag1,tag2,tag3,...', autocomplete='off'),
+                Field('is_active'),
                 Field('description', placeholder='Enter material description here (supports markdown syntax)...'),
-                'is_active'),
+            ),
         )
 
     class Meta:

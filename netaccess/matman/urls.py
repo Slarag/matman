@@ -18,6 +18,8 @@ urlpatterns = [
     path('home', views.HomeView.as_view(), name='home'),
     path('profile/<slug:user>', views.ProfileView.as_view(), name='profile'),
 
+    path('utils/tags/', views.tag_suggestions, name='tag-suggestions'),
+
     path('schemes/list', views.SchemeListView.as_view(), name='list-schemes'),
     path('schemes/add', views.SchemeCreateView.as_view(), name='add-scheme'),
     path('schemes/<int:pk>/edit', views.SchemeEditView.as_view(), name='edit-scheme'),

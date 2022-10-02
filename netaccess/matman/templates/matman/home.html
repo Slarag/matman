@@ -1,7 +1,11 @@
 {% extends "base.html" %}
+{% load static %}
 {% load matman_tags %}
 
 {% block title %}My Materials{% endblock %}
+{% block scripts %}
+<script type="text/javascript" src="{% static "js/tables.js" %}" defer></script>
+{% endblock %}
 
 {% block content %}
 <h1>My Materials</h1>
@@ -14,10 +18,10 @@
     </h2>
     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
       <div class="accordion-body">
-         <table class="table table-striped table-hover">
+         <table class="table table-striped table-hover sortable-table" id="material-table-borrowed">
             <tr>
-                <th>ID</th>
-                <th>Owner</th>
+                <th class="column-header-id">ID</th>
+                <th class="column-header-owner">Owner</th>
                 <th>Serial Number</th>
                 <th>Material Number</th>
                 <th>Manufacturer</th>

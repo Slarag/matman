@@ -33,9 +33,9 @@
         <td>{{ object.location }}</td>
         <td><a href="{% url "profile" object.owner %}">{{ object.owner }}</a></td>
         <td>{{ object.tags.all|join:", " }}</td>
-        <td>
-            <div class="dropdown">
-                <button class="btn btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <td class="d-flex flex-row">
+            <div class="dropdown p-1">
+                <button class="btn btn-outline-secondary p-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                   <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#three-dots"/></svg>
                 </button>
                 <ul class="dropdown-menu">
@@ -43,6 +43,9 @@
                   <li><a class="dropdown-item" href="{% url "add-material" %}?reference={{ object.identifier }}">Copy/Clone</a></li>
                 </ul>
             </div>
+            <button class="btn btn-outline-secondary p-1" type="button">
+                <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#bookmark"/></svg>
+            </button>
         </td>
     </tr>
     {% endfor %}
