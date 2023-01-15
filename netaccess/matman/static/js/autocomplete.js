@@ -1,4 +1,4 @@
-function autocomplete(inp) {
+function autocomplete(inp, url, param) {
 
   var currentFocus, arr = []
 
@@ -10,7 +10,7 @@ function autocomplete(inp) {
         redraw_suggestions();
       }
     }
-    ajaxRequest.open("GET", "/utils/tags?value=" + encodeURIComponent(value), true);
+    ajaxRequest.open("GET", url + "?" + param"=" + encodeURIComponent(value), true);
     ajaxRequest.send();
   }
 
@@ -99,5 +99,5 @@ function autocomplete(inp) {
   });
 }
 
-autocomplete(document.getElementById("id_tags"));
+autocomplete(document.getElementById("id_tags"), "/utils/tags", "value");
 

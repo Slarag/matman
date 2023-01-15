@@ -30,7 +30,7 @@ class Scheme(models.Model):
 
     # Model managers
     active = ActiveManager()
-    all = models.Manager()
+    objects = models.Manager()
 
     def get_next_id(self) -> str:
         """
@@ -89,7 +89,7 @@ class Material(models.Model):
 
     # Model managers
     active = ActiveManager()
-    all = models.Manager()
+    objects = models.Manager()
 
     def __str__(self):
         return self.identifier.upper()
@@ -160,14 +160,14 @@ class UserProfile(models.Model):
     def clean(self):
         self.initials = self.initials.lower()
 
-    def has_bookmarked(self, material:Material):
-        return self.bookmarks.filter(pk=self.pk).exists()
+    def has_bookmarked(self, material: Material):
+        return self.bookmarks.filter(pk=material.pk).exists()
 
     def bookmark(self, material: Material):
-        self.bookmarks.add(Material)
+        self.bookmarks.add(material)
 
     def unbookmark(self, material: Material):
-        self.bookmarks.remove(Material)
+        self.bookmarks.remove(material)
 
 
 class Comment(models.Model):
