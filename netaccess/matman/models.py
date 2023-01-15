@@ -5,23 +5,44 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.db import transaction
 
 from taggit.managers import TaggableManager
 from simple_history.models import HistoricalRecords, HistoricForeignKey
 
 
+class ActiveManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=True)
+
+
 class Scheme(models.Model):
+    # Model fields
     name = models.CharField(max_length=30, unique=True)
     description = models.CharField(max_length=100)
     prefix = models.CharField(max_length=10, blank=True, default='')
     numlen = models.PositiveIntegerField(default=6)
     postfix = models.CharField(max_length=10, blank=True, default='')
     is_active = models.BooleanField(default=True)
+
+    # Internal fields
     _id_counter = models.PositiveBigIntegerField(default=0)
 
-    def get_next_id(self):
-        self._id_counter += 1
-        self.save()
+    # Model managers
+    active = ActiveManager()
+    all = models.Manager()
+
+    def get_next_id(self) -> str:
+        """
+        Get the next valid ID from the scheme.
+
+        Internal ID counter of the scheme will be incremented in an atomic operation to avoid possible duplicates.
+        :return: New, unused ID from scheme.
+        """
+
+        with transaction.atomic():
+            self._id_counter += 1
+            self.save()
         return f'{self.prefix}{self._id_counter:0{self.numlen}}{self.postfix}'
 
     def __str__(self):
@@ -48,6 +69,7 @@ class Scheme(models.Model):
 
 
 class Material(models.Model):
+    # Model fields
     identifier = models.SlugField(unique=True, editable=False)
     short_text = models.CharField(max_length=100, blank=True)
     serial_number = models.CharField(max_length=30, blank=True)
@@ -64,6 +86,10 @@ class Material(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
     history = HistoricalRecords()
+
+    # Model managers
+    active = ActiveManager()
+    all = models.Manager()
 
     def __str__(self):
         return self.identifier.upper()
@@ -84,6 +110,7 @@ class Material(models.Model):
 
 
 class MaterialPicture(models.Model):
+    # Model fields
     material = HistoricForeignKey(Material, related_name='pictures', on_delete=models.CASCADE, blank=True)
     title = models.CharField(max_length=30, blank=True)
     description = models.CharField(max_length=100, blank=True)
@@ -96,6 +123,7 @@ class MaterialPicture(models.Model):
 
 
 class Borrow(models.Model):
+    # Model fields
     item = models.ForeignKey(Material, on_delete=models.CASCADE, related_name='borrows')
     borrowed_at = models.DateTimeField(auto_now_add=True)
     borrowed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
@@ -113,6 +141,7 @@ class Borrow(models.Model):
 
 
 class UserProfile(models.Model):
+    # Model fields
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
     default_scheme = models.ForeignKey(Scheme, blank=True, on_delete=models.SET_NULL, null=True)
     department = models.CharField(max_length=30, blank=True)
@@ -128,6 +157,7 @@ class UserProfile(models.Model):
 
 
 class Comment(models.Model):
+    # Model fields
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
     creation_date = models.DateTimeField(auto_now_add=True)
     # last_updated = models.DateTimeField(auto_now=True)
@@ -143,5 +173,6 @@ class Comment(models.Model):
 
 
 class MaterialBookmark(models.Model):
+    # Model fields
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='bookmarks')
     material = models.ForeignKey(Material, on_delete=models.CASCADE, related_name='bookmarks')
