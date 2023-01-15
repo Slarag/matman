@@ -108,6 +108,9 @@ class Material(models.Model):
         except ObjectDoesNotExist:
             return None
 
+    def is_bookmarked_by_user(self, user) -> bool:
+        return user.profile.bookmarks.filter(pk=self.pk).exists()
+
 
 class MaterialPicture(models.Model):
     # Model fields
@@ -149,11 +152,22 @@ class UserProfile(models.Model):
     initials = models.CharField(max_length=10, null=True, blank=True, unique=True)
     about = models.TextField(blank=True)
 
+    bookmarks = models.ManyToManyField(Material, related_name='bookmarked_by')
+
     def __str__(self):
         return f'Profile for user {self.user.username}'
 
     def clean(self):
         self.initials = self.initials.lower()
+
+    def has_bookmarked(self, material:Material):
+        return self.bookmarks.filter(pk=self.pk).exists()
+
+    def bookmark(self, material: Material):
+        self.bookmarks.add(Material)
+
+    def unbookmark(self, material: Material):
+        self.bookmarks.remove(Material)
 
 
 class Comment(models.Model):
@@ -172,7 +186,8 @@ class Comment(models.Model):
         return reverse('comment-edit', kwargs={'pk': self.pk})
 
 
-class MaterialBookmark(models.Model):
-    # Model fields
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='bookmarks')
-    material = models.ForeignKey(Material, on_delete=models.CASCADE, related_name='bookmarks')
+# # ToDo:
+# class MaterialBookmark(models.Model):
+#     # Model fields
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='bookmarks')
+#     material = models.ForeignKey(Material, on_delete=models.CASCADE, related_name='bookmarks')

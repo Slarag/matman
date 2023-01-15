@@ -9,7 +9,7 @@ admin.site.register(models.Borrow, SimpleHistoryAdmin)
 admin.site.register(models.UserProfile)
 admin.site.register(models.MaterialPicture, SimpleHistoryAdmin)
 admin.site.register(models.Comment, SimpleHistoryAdmin)
-admin.site.register(models.MaterialBookmark)
+# admin.site.register(models.MaterialBookmark)
 
 
 @admin.register(models.Material)
