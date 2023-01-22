@@ -5,12 +5,13 @@
 
 {% block content %}
 <h1>Search Material</h1>
-<p>Enter an identifier, one or more tags or any other criteria to search for:</p>
-{% crispy form %}
-{% if query %}
-<section>
-  <h2>Results ({{ results.count }})</h2>
-  {% if results %}
+<form method="get">
+        {{ filter.form|crispy }}
+        <input type="submit" value="Search" class="btn btn-primary">
+    </form>
+    <section>
+  <h2>Results ({{ filter.qs.count }})</h2>
+  {% if filter.qs.count %}
   <table class="table table-striped table-hover">
       <tr>
           <th>Rank</th>
@@ -23,7 +24,7 @@
           <th>Owner</th>
           <th>Tags</th>
       </tr>
-  {% for object in results %}
+  {% for object in filter.qs %}
       <tr>
           <th>{{ object.rank }}</th>
           <th><a href="{% url "material-detail" object.identifier %}">{{ object.identifier }}</a></th>
@@ -39,5 +40,13 @@
   </table>
   {% endif %}
 </section>
-{% endif %}
 {% endblock %}
+{% comment %}
+
+<!--<p>Enter an identifier, one or more tags or any other criteria to search for:</p>-->
+<!--{% crispy form %}-->
+<!--{% if query %}-->
+
+<!--{% endif %}-->
+{% endcomment %}
+

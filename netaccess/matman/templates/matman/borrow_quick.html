@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load matman_tags %}
+{% load crispy_forms_tags %}
+
+{% block scripts %}
+{% init_mde "id_notes" %}
+{% endblock %}
+
+{% block title %}Quick borrow/return{% endblock %}
+
+{% block content %}
+  <h1>Quick borrow/return</h1>
+<!--  <p>Do you want to borrow {{ material }}?</p>-->
+    {% crispy form %}
+{% endblock %}

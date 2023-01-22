@@ -6,6 +6,8 @@ from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
+from django.utils.timezone import now
+
 
 from taggit.managers import TaggableManager
 from simple_history.models import HistoricalRecords, HistoricForeignKey
@@ -138,6 +140,13 @@ class Borrow(models.Model):
     returned_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
                                     related_name='borrows_returned')
     history = HistoricalRecords()
+
+    def close(self, returned_by, returned_at=None):
+        if returned_at is None:
+            returned_at = now()
+        self.returned_by = returned_by
+        self.returned_at = returned_at
+        self.save()
 
     def get_absolute_url(self):
         return reverse('borrow-edit', kwargs={'pk': self.pk})

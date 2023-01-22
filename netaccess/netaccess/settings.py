@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'simple_history',
+    'django_filters',
     # 'django.contrib.sites',
     # 'django_registration',
 ]

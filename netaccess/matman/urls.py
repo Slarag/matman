@@ -5,6 +5,8 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [
+    path('', views.borrow.QuickBorrowView.as_view(), name='quick-borrow'),
+
     path('comment/<int:pk>/edit', views.comment.CommentEditView.as_view(), name='comment-edit'),
 
     path('material', views.material.MaterialListView.as_view(), name='list-material'),

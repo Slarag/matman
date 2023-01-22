@@ -2,6 +2,7 @@ import datetime
 
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
+from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeletionMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
@@ -9,6 +10,48 @@ from django.utils.timezone import now
 
 from .. import models
 from .. import forms
+
+
+class QuickBorrowView(SuccessMessageMixin, CreateView):
+    model = models.Borrow
+    form_class = forms.borrow.QuickBorrowForm
+    template_name_suffix = '_quick'
+
+    def get_initial(self):
+        initial = super().get_initial().copy()
+        initial['estimated_returndate'] = (now() + datetime.timedelta(days=7)).date()
+        if self.request.user.is_authenticated:
+            initial['borrowed_by'] = self.request.user
+        return initial
+
+    def get_success_message(self, cleaned_data):
+        item = self.object.item
+        url = item.get_absolute_url()
+        return f'Borrowed material <a href="{url}" class="alert-link">{item}</a>'
+
+    def get_success_url(self):
+        return self.request.path_info
+
+    def form_valid(self, form):
+        borrowed_by = form.cleaned_data['borrowed_by']
+        item = form.cleaned_data['item']
+        active_borrow = item.get_active_borrow()
+        if 'return' in self.request.POST:
+            if active_borrow is None:
+                messages.error(self.request, 'Can\'t return item that was not borrowed!')
+                return redirect(self.request.path_info)
+            elif active_borrow.borrowed_by != form.cleaned_data['borrowed_by']:
+                messages.error(self.request, f'Item is currently borrowed by {form.cleaned_data["borrowed_by"]}, not by {self.object.borrowed_by}')
+                return redirect(self.request.path_info)
+            active_borrow.close(borrowed_by)
+            url = item.get_absolute_url()
+            messages.success(self.request, f'Successfully returned <a href="{url}" class="alert-link">{item}</a>')
+            return redirect(self.request.path_info)
+        if active_borrow is not None:
+            url = item.get_absolute_url()
+            messages.error(self.request, f'<a href="{url}" class="alert-link">{item}</a> is already borrowed by {active_borrow.borrowed_by}')
+            return redirect(self.request.path_info)
+        return super().form_valid(form)
 
 
 class BorrowCreateView(SuccessMessageMixin, CreateView):
@@ -25,19 +68,19 @@ class BorrowCreateView(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['material'] = get_object_or_404(models.Material, identifier=self.kwargs['identifier'])
+        context['item'] = get_object_or_404(models.Material, identifier=self.kwargs['identifier'])
         return context
 
     def get_success_message(self, cleaned_data):
-        material = self.get_context_data()['material']
-        url = material.get_absolute_url()
-        return f'Borrowed material <a href="{url}" class="alert-link">{material}</a>'
+        item = self.get_context_data()['item']
+        url = item.get_absolute_url()
+        return f'Borrowed material <a href="{url}" class="alert-link">{item}</a>'
 
     def get_success_url(self):
         return reverse_lazy('material-detail', kwargs={'identifier': self.object.item.identifier})
 
     def form_valid(self, form):
-        form.instance.item = self.get_context_data()['material']
+        form.instance.item = self.get_context_data()['item']
         return super().form_valid(form)
 
 

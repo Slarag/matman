@@ -20,7 +20,7 @@ from django.forms.models import model_to_dict
 
 from .. import models
 from .. import forms
-
+from .. import filters
 
 CronObject = namedtuple('CronObject', ['timestamp', 'type', 'object'])
 
@@ -234,25 +234,33 @@ class MaterialEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
 
 def search(request):
-    form = forms.material.SearchForm()
-    query = None
-    results = []
-    if 'query' in request.GET:
-        form = forms.material.SearchForm(request.GET)
-        if form.is_valid():
-            query = form.cleaned_data['query']
-            try:
-                material = models.Material.objects.get(identifier=query)
-                return redirect(reverse_lazy('material-detail', kwargs={'identifier': material.identifier}))
-            except ObjectDoesNotExist:
-                pass
-            search_vector = SearchVector('identifier', 'short_text', 'serial_number', 'material_number',
-                                         'manufacturer', 'description', 'location', 'tags__name')
-            search_query = SearchQuery(query, search_type='websearch')
-            search_rank = SearchRank(search_vector, search_query)
-            results = models.Material.objects.annotate(rank=search_rank).order_by('-rank').distinct()
+    # form = forms.material.SearchForm()
+    # query = None
+    # results = []
+    #if 'query' in request.GET:
+        # form = forms.material.SearchForm(request.GET)
+        # if form.is_valid():
+        #     try:
+        #         material = models.Material.active.get(identifier=query)
+        #         return redirect(reverse_lazy('material-detail', kwargs={'identifier': material.identifier}))
+        #     except ObjectDoesNotExist:
+        #         pass
+        #     vector = \
+        #         SearchVector('identifier', weight='A') + \
+        #         SearchVector('short_text', weight='D') + \
+        #         SearchVector('serial_number', weight='A') + \
+        #         SearchVector('material_number', weight='A') + \
+        #         SearchVector('manufacturer', weight='A') + \
+        #         SearchVector('description', weight='D') + \
+        #         SearchVector('location', weight='B') + \
+        #         SearchVector('tags__name', weight='A')
+        #     query = SearchQuery(form.cleaned_data['query'], search_type='websearch')
+        #     rank = SearchRank(vector, query)
+        #     results = models.Material.active.annotate(rank=rank).order_by('-rank').distinct()
+    f = filters.ItemFilter(request.GET, queryset=models.Material.active.all())
     return render(request,
                   'matman/search.html',
-                  {'form': form,
-                   'query': query,
-                   'results': results})
+                  {'filter': f})
+                  # {'form': form,
+                  #  'query': query,
+                  #  'results': results})
