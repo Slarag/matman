@@ -9,6 +9,11 @@
 <script type="text/javascript" src="{% static "js/dynamic_formset.js" %}" defer></script>
 <script type="text/javascript" src="{% static "js/autocomplete.js" %}" defer></script>
 <link href="{% static "css/autocomplete.css" %}" rel="stylesheet">
+<script defer>
+    window.onload = function() {
+        suggest_tags(document.getElementById("id_tags"));
+    };
+</script>
 {% init_mde "id_description" %}
 {% endblock %}
 

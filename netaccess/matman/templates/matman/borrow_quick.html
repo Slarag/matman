@@ -1,9 +1,16 @@
 {% extends "base.html" %}
+{% load static %}
 {% load matman_tags %}
 {% load crispy_forms_tags %}
 
 {% block scripts %}
-{% init_mde "id_notes" %}
+<script type="text/javascript" src="{% static "js/autocomplete.js" %}"></script>
+<link href="{% static "css/autocomplete.css" %}" rel="stylesheet">
+<script defer>
+    window.onload = function() {
+        suggest_user(document.getElementById("id_borrowed_by"));
+    };
+</script>
 {% endblock %}
 
 {% block title %}Quick borrow/return{% endblock %}

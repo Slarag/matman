@@ -44,7 +44,7 @@ class BorrowForm(forms.ModelForm):
 
 
 class QuickBorrowForm(forms.ModelForm):
-    item = ItemField(widget=forms.TextInput())
+    item = ItemField(widget=forms.TextInput(attrs={'autofocus': True}))
     borrowed_by = UserField(widget=forms.TextInput())
 
     def __init__(self, *args, **kwargs):

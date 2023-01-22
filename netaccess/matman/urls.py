@@ -14,7 +14,6 @@ urlpatterns = [
     path('material/<slug:identifier>/detail', views.material.MaterialDetailView.as_view(), name='material-detail'),
     path('material/<slug:identifier>/edit', views.material.MaterialEditView.as_view(), name='material-edit'),
     path('material/<slug:identifier>/borrow', views.borrow.BorrowCreateView.as_view(), name='borrow'),
-    # path('material/search', views.material.search, name='search'),
 
     path('borrow/<int:pk>/edit', views.borrow.BorrowEditView.as_view(), name='borrow-edit'),
     path('borrow/<int:pk>/close', views.borrow.BorrowCloseView.as_view(), name='return'),
@@ -23,6 +22,7 @@ urlpatterns = [
     path('profile/<slug:user>', views.profile.ProfileView.as_view(), name='profile'),
 
     path('utils/tags/', views.ajax.tag_suggestions, name='tag-suggestions'),
+    path('utils/users/', views.ajax.user_suggestions, name='user-suggestions'),
 
     path('schemes/list', views.scheme.SchemeListView.as_view(), name='list-schemes'),
     path('schemes/add', views.scheme.SchemeCreateView.as_view(), name='add-scheme'),
