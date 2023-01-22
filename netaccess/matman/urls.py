@@ -14,7 +14,7 @@ urlpatterns = [
     path('material/<slug:identifier>/detail', views.material.MaterialDetailView.as_view(), name='material-detail'),
     path('material/<slug:identifier>/edit', views.material.MaterialEditView.as_view(), name='material-edit'),
     path('material/<slug:identifier>/borrow', views.borrow.BorrowCreateView.as_view(), name='borrow'),
-    path('material/search', views.material.search, name='search'),
+    # path('material/search', views.material.search, name='search'),
 
     path('borrow/<int:pk>/edit', views.borrow.BorrowEditView.as_view(), name='borrow-edit'),
     path('borrow/<int:pk>/close', views.borrow.BorrowCloseView.as_view(), name='return'),

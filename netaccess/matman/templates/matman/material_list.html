@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load matman_tags %}
+{% load crispy_forms_tags %}
 
 {% block title %}Material{% endblock %}
 
@@ -11,6 +12,10 @@
         Add Material
     </a>
 </p>
+<form method="get">
+    {{ filterset.form|crispy }}
+    <input type="submit" value="Search" class="btn btn-primary">
+</form>
 <table class="table table-striped table-hover">
     <tr>
         <th>ID</th>

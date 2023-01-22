@@ -35,5 +35,3 @@ class ItemFilter(django_filters.FilterSet):
     class Meta:
         model = Material
         fields = ['identifier', 'serial_number', 'material_number', 'manufacturer', 'location', 'tags__name']
-
-class MaterialListView(django_filters.views.Fi)

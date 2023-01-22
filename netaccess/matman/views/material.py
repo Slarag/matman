@@ -25,23 +25,6 @@ from .. import filters
 CronObject = namedtuple('CronObject', ['timestamp', 'type', 'object'])
 
 
-class MaterialListView(ListView):
-    model = models.Material
-    fields = ['serial_number', 'material_number', 'manufacturer', 'scheme', 'owner', 'tags', 'is_active']
-    paginate_by = 20
-
-    def get_ordering(self):
-        ordering = self.request.GET.get('orderby', '-identifier')
-        return ordering
-
-    def get_template_names(self):
-        if self.request.GET.get('view', 'list') == 'cards':
-            self.template_name_suffix = '_list_cards'
-        else:
-            self.template_name_suffix = '_list'
-        return super().get_template_names()
-
-
 class MaterialCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = models.Material
     template_name_suffix = '_create'
@@ -234,33 +217,46 @@ class MaterialEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
 
 def search(request):
-    # form = forms.material.SearchForm()
-    # query = None
-    # results = []
-    #if 'query' in request.GET:
-        # form = forms.material.SearchForm(request.GET)
-        # if form.is_valid():
-        #     try:
-        #         material = models.Material.active.get(identifier=query)
-        #         return redirect(reverse_lazy('material-detail', kwargs={'identifier': material.identifier}))
-        #     except ObjectDoesNotExist:
-        #         pass
-        #     vector = \
-        #         SearchVector('identifier', weight='A') + \
-        #         SearchVector('short_text', weight='D') + \
-        #         SearchVector('serial_number', weight='A') + \
-        #         SearchVector('material_number', weight='A') + \
-        #         SearchVector('manufacturer', weight='A') + \
-        #         SearchVector('description', weight='D') + \
-        #         SearchVector('location', weight='B') + \
-        #         SearchVector('tags__name', weight='A')
-        #     query = SearchQuery(form.cleaned_data['query'], search_type='websearch')
-        #     rank = SearchRank(vector, query)
-        #     results = models.Material.active.annotate(rank=rank).order_by('-rank').distinct()
     f = filters.ItemFilter(request.GET, queryset=models.Material.active.all())
     return render(request,
                   'matman/search.html',
                   {'filter': f})
-                  # {'form': form,
-                  #  'query': query,
-                  #  'results': results})
+
+
+# https://gist.github.com/MikaelSantilio/3e761b325c7fd7588207cec06fdcbefb
+class FilteredListView(ListView):
+    filterset_class = None
+
+    def get_queryset(self):
+        # Get the queryset however you usually would.  For example:
+        queryset = super().get_queryset()
+        # Then use the query parameters and the queryset to
+        # instantiate a filterset and save it as an attribute
+        # on the view instance for later.
+        self.filterset = self.filterset_class(self.request.GET, queryset=queryset)
+        # Return the filtered queryset
+        return self.filterset.qs.distinct()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Pass the filterset to the template - it provides the form.
+        context['filterset'] = self.filterset
+        return context
+
+
+class MaterialListView(FilteredListView):
+    model = models.Material
+    fields = ['serial_number', 'material_number', 'manufacturer', 'scheme', 'owner', 'tags', 'is_active']
+    paginate_by = 20
+    filterset_class = filters.ItemFilter
+
+    def get_ordering(self):
+        ordering = self.request.GET.get('orderby', '-identifier')
+        return ordering
+
+    def get_template_names(self):
+        if self.request.GET.get('view', 'list') == 'cards':
+            self.template_name_suffix = '_list_cards'
+        else:
+            self.template_name_suffix = '_list'
+        return super().get_template_names()
