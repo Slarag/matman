@@ -1,17 +1,39 @@
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
+
 function suggest_tags(inp) {
 
   var currentFocus, arr = []
 
   function get_suggestions(value) {
-    const ajaxRequest = new XMLHttpRequest();
-    ajaxRequest.onreadystatechange = function(){
-      if(ajaxRequest.readyState == 4 && ajaxRequest.status == 200) {
-        arr = JSON.parse(ajaxRequest.responseText)['suggestions'];
+    fetch("/utils/tags?value=" + encodeURIComponent(value), {
+        headers:{
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+    })
+    .then(response => {
+        return response.json()
+    })
+    .then(data => {
+        arr = data['suggestions']
         redraw_suggestions();
-      }
-    }
-    ajaxRequest.open("GET", "/utils/tags?value=" + encodeURIComponent(value), true);
-    ajaxRequest.send();
+    })
   }
 
   inp.addEventListener("input", e => {
@@ -105,15 +127,19 @@ function suggest_user(inp) {
   var currentFocus, arr = []
 
   function get_suggestions(value) {
-    const ajaxRequest = new XMLHttpRequest();
-    ajaxRequest.onreadystatechange = function(){
-      if(ajaxRequest.readyState == 4 && ajaxRequest.status == 200) {
-        arr = JSON.parse(ajaxRequest.responseText)['suggestions'];
+    fetch("/utils/users?value=" + encodeURIComponent(value), {
+        headers:{
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+    })
+    .then(response => {
+        return response.json()
+    })
+    .then(data => {
+        arr = data['suggestions']
         redraw_suggestions();
-      }
-    }
-    ajaxRequest.open("GET", "/utils/users?value=" + encodeURIComponent(value), true);
-    ajaxRequest.send();
+    })
   }
 
   inp.addEventListener("input", e => {
@@ -197,3 +223,40 @@ function suggest_user(inp) {
     closeAllLists(e.target);
   });
 }
+
+
+//###############################
+function toggle_bookmark(button) {
+    fetch('/utils/bookmark/',
+      {
+        method: 'post',
+        credentials: "same-origin",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken,
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        mode: 'same-origin',
+        body: JSON.stringify({
+          identifier: button.value,
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        is_bookmarked = data['bookmarked'];
+        if (is_bookmarked){
+            button.title = "Unbookmark";
+            button.querySelector("use").setAttribute('href', '#bookmark-check-fill');
+        }
+        else {
+            button.title = "Bookmark";
+            button.querySelector("use").setAttribute('href', '#bookmark');
+        }
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+}
+
+

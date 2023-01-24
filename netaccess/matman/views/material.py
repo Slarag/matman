@@ -241,6 +241,9 @@ class FilteredListView(ListView):
         context = super().get_context_data(**kwargs)
         # Pass the filterset to the template - it provides the form.
         context['filterset'] = self.filterset
+        context['bookmarked'] = []
+        if self.request.user.is_authenticated:
+            context['bookmarked'] = self.request.user.profile.bookmarks.all()
         return context
 
 

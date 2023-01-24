@@ -33,6 +33,7 @@
     <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
       <div class="accordion-body">
         <form method="get">
+          {% csrf_token %}
           {{ filterset.form|crispy }}
           <input type="submit" value="Search" class="btn btn-primary">
         </form>
@@ -74,9 +75,15 @@
                 </ul>
             </div>
             {% if user.is_authenticated %}
-            <button class="btn btn-outline-secondary p-1" type="button" title="Bookmark">
+            {% if object in bookmarked %}
+            <button class="btn btn-outline-secondary p-1" type="button" title="Unbookmark" value="{{ object.identifier }}" id="id_button_bookmark_{{ object.identifier }}" onclick="toggle_bookmark(this)">
+                <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#bookmark-check-fill"/></svg>
+            </button>
+            {% else %}
+            <button class="btn btn-outline-secondary p-1" type="button" title="Bookmark" value="{{ object.identifier }}" id="id_button_bookmark_{{ object.identifier }}" onclick="toggle_bookmark(this)">
                 <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#bookmark"/></svg>
             </button>
+            {% endif %}
             {% endif %}
         </td>
     </tr>

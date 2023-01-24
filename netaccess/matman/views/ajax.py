@@ -1,3 +1,5 @@
+import json
+
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET, require_POST
 from django.contrib.auth.decorators import login_required
@@ -25,7 +27,8 @@ def user_suggestions(request):
 @login_required
 @require_POST
 def toggle_bookmark(request):
-    material = get_object_or_404(Material, identifier=request.POST.get('identifier', ''))
+    identifier = json.loads(request.body).get('identifier', '')
+    material = get_object_or_404(Material, identifier=identifier)
     profile = request.user.profile
     if profile.has_bookmarked(material):
         profile.unbookmark(material)

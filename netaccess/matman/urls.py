@@ -23,6 +23,7 @@ urlpatterns = [
 
     path('utils/tags/', views.ajax.tag_suggestions, name='tag-suggestions'),
     path('utils/users/', views.ajax.user_suggestions, name='user-suggestions'),
+    path('utils/bookmark/', views.ajax.toggle_bookmark, name='toggle-bookmark'),
 
     path('schemes/list', views.scheme.SchemeListView.as_view(), name='list-schemes'),
     path('schemes/add', views.scheme.SchemeCreateView.as_view(), name='add-scheme'),
