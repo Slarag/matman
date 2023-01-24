@@ -1,7 +1,7 @@
 {% load matman_tags %}
 <div class="toast show my-1 w-100" role="alert" aria-live="assertive" aria-atomic="true">
   <div class="toast-header">
-    <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Info:"><use xlink:href="#comment-icon"/></svg>
+    <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Info:"><use xlink:href="#symbol-comment"/></svg>
     <strong class="me-auto">Comment by <a href="{% url "profile" comment.author %}">{{ user.username }}</a></strong>
     <small class="mx-2">
       {{ comment.creation_date|date:"D y-m-d H:m" }}

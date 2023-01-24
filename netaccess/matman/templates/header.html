@@ -7,24 +7,34 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a href="{% url "quick-borrow" %}" class="nav-link" aria-current="page">Quick Borrow</a>
+                    <a href="{% url "quick-borrow" %}" class="nav-link" aria-current="page">
+                    <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-borrow"/></svg>
+                    <span>Borrow/Return</span>
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url "home" %}" class="nav-link" aria-current="page">Home</a>
+                    <a href="{% url "home" %}" class="nav-link" aria-current="page">
+                        <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-home"/></svg>
+                        <span>My Page</span>
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url "list-material" %}" class="nav-link" aria-current="page">Search</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url "list-schemes" %}" class="nav-link" aria-current="page">Schemes</a>
+                    <a href="{% url "list-material" %}" class="nav-link" aria-current="page">
+                        <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-lens"/></svg>
+                        <spa>Search</spa>
+                    </a>
                 </li>
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Profile
+                    <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-profile"/></svg>
+                    <spa>Profile</spa>
                   </a>
                   <ul class="dropdown-menu">
                       <li>
                         <a href="{% url "profile-settings" %}" class="dropdown-item" aria-current="page">Settings</a>
+                      </li>
+                      <li>
+                          <a href="{% url "list-schemes" %}" class="dropdown-item" aria-current="page">Schemes</a>
                       </li>
                       <li><hr class="dropdown-divider"></li>
                     {% if request.user.is_authenticated %}

@@ -245,13 +245,20 @@ function toggle_bookmark(button) {
       .then(response => response.json())
       .then(data => {
         is_bookmarked = data['bookmarked'];
+        text_element = button.querySelector('.text');
         if (is_bookmarked){
-            button.title = "Unbookmark";
+            button.title = "Bookmarked";
             button.querySelector("use").setAttribute('href', '#bookmark-check-fill');
+            if(text_element){
+                text_element.textContent = "Bookmarked";
+            }
         }
         else {
             button.title = "Bookmark";
             button.querySelector("use").setAttribute('href', '#bookmark');
+            if(text_element){
+                text_element.textContent = "Bookmark";
+            }
         }
       })
       .catch(function (error) {

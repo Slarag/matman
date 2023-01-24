@@ -37,11 +37,11 @@ def alert_class(level_tag):
 @register.filter()
 def alert_icon(level_tag):
     mapping = {
-        'debug':   '#info-fill',
-        'info':    '#info-fill',
-        'success': '#check-circle-fill',
-        'warning': '#exclamation-triangle-fill',
-        'error':   '#exclamation-triangle-fill',
+        'debug':   '#symbol-info-fill',
+        'info':    '#symbol-info-fill',
+        'success': '#symbol-check-circle-fill',
+        'warning': '#symbol-exclamation-triangle-fill',
+        'error':   '#symbol-exclamation-triangle-fill',
     }
     return mapping[level_tag]
 

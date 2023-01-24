@@ -135,10 +135,14 @@ class MaterialDetailView(DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         cb = [CronObject(x.creation_date, 'comment', x) for x in self.object.comments.all().order_by('-creation_date')]
-        cb += [CronObject(x.borrowed_at, 'borrow', x) for x in self.object.borrows.all().order_by('-borrowed_at')]
+        # Last 5 borrows
+        cb += [CronObject(x.borrowed_at, 'borrow', x) for x in self.object.borrows.all().order_by('-borrowed_at')[:5]]
         cb.sort(key=lambda x: x.timestamp)
         context['comments_borrows'] = cb
         context['comment_form'] = self.kwargs.get('comment_form', forms.comment.CommentForm())
+        context['is_bookmarked'] = False
+        if self.request.user.is_authenticated:
+            context['is_bookmarked'] = self.object.is_bookmarked_by_user(self.request.user)
         return context
 
     def post(self, request, *args, **kwargs):
@@ -153,7 +157,7 @@ class MaterialDetailView(DetailView):
             url = self.object.get_absolute_url()
             messages.success(
                 self.request,
-                f'Successfully created commend on material <a href="{url}" class="alert-link">{self.object}</a>'
+                f'Successfully created comment on material <a href="{url}" class="alert-link">{self.object}</a>'
             )
             return self.render_to_response(self.get_context_data())
 
@@ -241,9 +245,6 @@ class FilteredListView(ListView):
         context = super().get_context_data(**kwargs)
         # Pass the filterset to the template - it provides the form.
         context['filterset'] = self.filterset
-        context['bookmarked'] = []
-        if self.request.user.is_authenticated:
-            context['bookmarked'] = self.request.user.profile.bookmarks.all()
         return context
 
 
@@ -263,3 +264,10 @@ class MaterialListView(FilteredListView):
         else:
             self.template_name_suffix = '_list'
         return super().get_template_names()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['bookmarked'] = []
+        if self.request.user.is_authenticated:
+            context['bookmarked'] = self.request.user.profile.bookmarks.all()
+        return context
