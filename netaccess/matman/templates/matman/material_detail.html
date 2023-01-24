@@ -19,7 +19,7 @@
         <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#edit"/></svg>
         <spa>Edit</spa>
     </a>
-    {% if not object.get_active_borrow %}
+    {% if not object.get_active_borrow and object.is_active %}
     <a class="btn btn-outline-secondary m-1" href="{% url "borrow" object.identifier %}">
         <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-borrow"/></svg>
         <span>Borrow</span>

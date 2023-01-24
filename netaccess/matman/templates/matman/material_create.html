@@ -3,7 +3,7 @@
 {% load matman_tags %}
 {% load crispy_forms_tags %}
 
-{% block title %}Add Material{% endblock %}
+{% block title %}New Material{% endblock %}
 
 {% block scripts %}
 <script type="text/javascript" src="{% static "js/dynamic_formset.js" %}" defer></script>
@@ -18,7 +18,7 @@
 {% endblock %}
 
 {% block content %}
-<h1>Add Material</h1>
+<h1>New Material</h1>
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% crispy form %}
@@ -27,16 +27,18 @@
         {% crispy formset formset_helper %}
     </div>
     <button type="button" name="add" class="btn btn-outline-primary m-1" id="add-more">
-        <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#plus"/></svg>
+        <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-plus"/></svg>
         Add Picture
     </button>
     <div class="form-buttons m-1">
         <button id="buttonSave" type="submit" value="Save" name="save" class="btn btn-primary">
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-save"/></svg>
             <span class="button-text">Save</span>
         </button>
         <button id="buttonAddAnother" type="submit" value="Save and add another" name="add_other" class="btn btn-secondary" >
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-save"/></svg>
             <span class="button-text">Save and add another</span>
         </button>
     </div>

@@ -33,9 +33,10 @@
     <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
       <div class="accordion-body">
         <form method="get">
-          {% csrf_token %}
           {{ filterset.form|crispy }}
           <input type="submit" value="Search" class="btn btn-primary">
+          <a href="{% url "list-material" %}" class="btn btn-secondary">Reset</a>
+<!--          <input type="reset" value="Clear Filters" class="btn btn-primary">-->
         </form>
       </div>
     </div>
@@ -63,7 +64,11 @@
         <td>{{ object.department }}</td>
         <td>{{ object.location }}</td>
         <td><a href="{% url "profile" object.owner %}">{{ object.owner }}</a></td>
-        <td>{{ object.tags.all|join:", " }}</td>
+        <td>
+            {% for tag in object.tags.all %}
+            <a href="{% url "list-material" %}?tags__name={{ tag }}" class="badge text-bg-light">{{ tag }}</a>
+            {% endfor %}
+        </td>
         <td class="d-flex flex-row">
             <div class="dropdown p-1">
                 <button class="btn btn-outline-secondary m-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -90,4 +95,5 @@
     {% endfor %}
 </table>
 {% include "pagination.html" with page_param="page" %}
+{% csrf_token %}
 {% endblock %}

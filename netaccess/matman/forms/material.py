@@ -5,18 +5,18 @@ from crispy_forms.layout import Layout, Field, Fieldset, Submit, Div, Button
 from .. import models
 
 
-class SearchForm(forms.Form):
-    query = forms.CharField(
-        widget=forms.TextInput(attrs={'autofocus': True})
-    )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, *kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = 'get'
-        self.helper.form_tag = True
-        self.helper.disable_csrf = True
-        self.helper.add_input(Submit('submit', 'Search', css_class='btn btn-primary'))
+# class SearchForm(forms.Form):
+#     query = forms.CharField(
+#         widget=forms.TextInput(attrs={'autofocus': True})
+#     )
+#
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, *kwargs)
+#         self.helper = FormHelper()
+#         self.helper.form_method = 'get'
+#         self.helper.form_tag = True
+#         self.helper.disable_csrf = True
+#         self.helper.add_input(Submit('submit', 'Search', css_class='btn btn-primary'))
 
 
 class MaterialForm(forms.ModelForm):

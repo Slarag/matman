@@ -18,5 +18,14 @@
     </tr>
 </table>
 
+<form method="post">
 {% crispy form %}
+<div class="form-buttons m-1">
+    <button id="buttonSave" type="submit" value="Save" name="save" class="btn btn-primary" onclick="this.classList.add('loading')">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-save"/></svg>
+        <span class="button-text">Save</span>
+    </button>
+</div>
+</form>
 {% endblock %}

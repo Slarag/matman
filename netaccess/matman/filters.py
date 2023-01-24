@@ -30,7 +30,9 @@ class ItemFilter(django_filters.FilterSet):
         to_field_name='name',
         queryset=Tag.objects.all(),
         widget=TagWidget,
+        label='tags'
     )
+    is_active = django_filters.BooleanFilter()
 
     class Meta:
         model = Material

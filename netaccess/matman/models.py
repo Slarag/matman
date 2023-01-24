@@ -30,9 +30,9 @@ class Scheme(models.Model):
     # Internal fields
     _id_counter = models.PositiveBigIntegerField(default=0)
 
-    # Model managers
-    active = ActiveManager()
-    objects = models.Manager()
+    # # Model managers
+    # active = ActiveManager()
+    # objects = models.Manager()
 
     def get_next_id(self) -> str:
         """
@@ -89,9 +89,9 @@ class Material(models.Model):
     last_updated = models.DateTimeField(auto_now=True)
     history = HistoricalRecords()
 
-    # Model managers
-    active = ActiveManager()
-    objects = models.Manager()
+    # # Model managers
+    # active = ActiveManager()
+    # objects = models.Manager()
 
     def __str__(self):
         return self.identifier.upper()
