@@ -34,9 +34,14 @@
       <div class="accordion-body">
         <form method="get">
           {{ filterset.form|crispy }}
-          <input type="submit" value="Search" class="btn btn-primary">
-          <a href="{% url "list-material" %}" class="btn btn-secondary">Reset</a>
-<!--          <input type="reset" value="Clear Filters" class="btn btn-primary">-->
+          <button type="submit" class="btn btn-primary">
+              <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-lens"/></svg>
+              <span>Search</span>
+          </button>
+          <button href="{% url "list-material" %}" class="btn btn-secondary">
+              <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-undo"/></svg>
+              <span>Reset</span>
+          </button>
         </form>
       </div>
     </div>

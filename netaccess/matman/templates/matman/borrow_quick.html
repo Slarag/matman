@@ -18,5 +18,17 @@
 {% block content %}
   <h1>Quick borrow/return</h1>
 <!--  <p>Do you want to borrow {{ material }}?</p>-->
+<form method="post">
+    {% csrf_token %}
     {% crispy form %}
+    <button type="submit" name="borrow" class="btn btn-primary">
+      <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-borrow"/></svg>
+      <span>Borrow</span>
+    </button>
+    <button type="submit" name="return" class="btn btn-secondary">
+      <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-undo"/></svg>
+      <span>Return</span>
+    </button>
+</form>
+
 {% endblock %}

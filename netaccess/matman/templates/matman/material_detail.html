@@ -13,75 +13,45 @@
 
 {% block content %}
 {% with borrow=object.get_active_borrow %}
+<h1>{{ object }}</h1>
 <!--    Buttons    -->
-<section class="d-flex">
-    <a class="btn btn-outline-secondary m-1" href="{% url "material-edit" object.identifier %}">
+<section class="btn-group" role="group" aria-label="Basic example"">
+    <a class="btn btn-outline-secondary" href="{% url "material-edit" object.identifier %}">
         <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#edit"/></svg>
         <spa>Edit</spa>
     </a>
     {% if not object.get_active_borrow and object.is_active %}
-    <a class="btn btn-outline-secondary m-1" href="{% url "borrow" object.identifier %}">
+    <a class="btn btn-outline-secondary" href="{% url "borrow" object.identifier %}">
         <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-borrow"/></svg>
         <span>Borrow</span>
     </a>
     {% endif %}
     {% if object.get_active_borrow %}
-    <a class="btn btn-primary m-1" href="{% url "return" object.get_active_borrow.pk %}">
+    <a class="btn btn-secondary" href="{% url "return" object.get_active_borrow.pk %}">
         <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-borrow"/></svg>
         <spa>Return Item</spa>
     </a>
     {% endif %}
-    <a class="btn btn-outline-secondary m-1" href="{% url "add-material" %}?reference={{ object.identifier }}">
+    <a class="btn btn-outline-secondary" href="{% url "add-material" %}?reference={{ object.identifier }}">
         <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#clone"/></svg>
         <spa>Copy/Clone</spa>
     </a>
     {% if user.is_authenticated %}
     {% if is_bookmarked %}
-    <button class="btn btn-outline-secondary m-1" type="button" title="Bookmarked" value="{{ object.identifier }}" id="id_button_bookmark_{{ object.identifier }}" onclick="toggle_bookmark(this)">
+    <button class="btn btn-outline-secondary" type="button" title="Bookmarked" value="{{ object.identifier }}" id="id_button_bookmark_{{ object.identifier }}" onclick="toggle_bookmark(this)">
         <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#bookmark-check-fill"/></svg>
         <span class="text">Bookmarked</span>
     </button>
     {% else %}
-    <button class="btn btn-outline-secondary m-1" type="button" title="Bookmark" value="{{ object.identifier }}" id="id_button_bookmark_{{ object.identifier }}" onclick="toggle_bookmark(this)">
+    <button class="btn btn-outline-secondary" type="button" title="Bookmark" value="{{ object.identifier }}" id="id_button_bookmark_{{ object.identifier }}" onclick="toggle_bookmark(this)">
         <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#bookmark"/></svg>
         <span class="text">Bookmark</span>
     </button>
     {% endif %}
     {% endif %}
 </section>
-<h1>{{ object }}</h1>
 <section>
     <!--    Details Table    -->
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <p>Serial Number:</p>
-                <p>{{ object.serial_number }}</p>
-            </div>
-            <div class="col">
-                <p>Material Number:</p>
-                <p>{{ object.material_number }}</p>
-            </div>
-            <div class="col">
-                <p>Revision:</p>
-                <p>{{ object.revision }}</p>
-            </div>
-            <div class="col">
-                <p>Manufacturer:</p>
-                <p>{{ object.manufacturer }}</p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <p>Location:</p>
-                <p>{{ object.location }}</p>
-            </div>
-            <div class="col">
-                <p>Owner:</p>
-                <p>{{ object.Owner }}</p>
-            </div>
-        </div>
-    </div>
     <table class="table table-striped table-hover d-inline-flex my-3">
         <tr>
             <th>Serial Number:</th>
@@ -105,7 +75,11 @@
         </tr>
         <tr>
             <th>Tags:</th>
-            <td>{{ object.tags.all|join:", " }}</td>
+            <td>
+                {% for tag in object.tags.all %}
+                <a href="{% url "list-material" %}?tags__name={{ tag }}" class="badge text-bg-light">{{ tag }}</a>
+                {% endfor %}
+            </td>
         </tr>
         <tr>
             <th>Active:</th>
@@ -120,7 +94,7 @@
             {% endif %}
         </tr>
         <tr>
-            <th>Borrowed at:</th>
+            <th>Borrowed since:</th>
             <td>{{ object.get_active_borrow.borrowed_at|date }}</td>
         </tr>
     </table>

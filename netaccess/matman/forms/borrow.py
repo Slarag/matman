@@ -17,9 +17,13 @@ class UserField(forms.CharField):
 class ItemField(forms.CharField):
     def clean(self, value):
         try:
-            return models.Material.active.get(identifier=value)
+            item = models.Material.objects.get(identifier=value)
         except models.Material.DoesNotExist:
-            raise forms.ValidationError("Item does not exist or is no longer active.")
+            raise forms.ValidationError('Item does not exist')
+        if not item.is_active:
+            raise forms.ValidationError('Item was marked as not active')
+        return item
+
 
 
 class BorrowForm(forms.ModelForm):
@@ -50,8 +54,9 @@ class QuickBorrowForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.add_input(Submit('borrow', 'Borrow', css_class='btn btn-primary'))
-        self.helper.add_input(Submit('return', 'Return', css_class='btn btn-secondary'))
+        self.helper.form_tag = False
+        # self.helper.add_input(Submit('borrow', 'Borrow', css_class='btn btn-primary'))
+        # self.helper.add_input(Submit('return', 'Return', css_class='btn btn-secondary'))
 
     class Meta:
         model = models.Borrow
