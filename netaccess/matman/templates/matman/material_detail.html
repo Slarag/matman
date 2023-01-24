@@ -27,8 +27,8 @@
     </a>
     {% endif %}
     {% if object.get_active_borrow %}
-    <a class="btn btn-secondary" href="{% url "return" object.get_active_borrow.pk %}">
-        <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-borrow"/></svg>
+    <a class="btn btn-outline-secondary" href="{% url "return" object.get_active_borrow.pk %}">
+        <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-undo"/></svg>
         <spa>Return Item</spa>
     </a>
     {% endif %}
