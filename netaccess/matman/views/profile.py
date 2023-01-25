@@ -7,7 +7,8 @@ from .. import models
 
 
 class HomeView(LoginRequiredMixin, TemplateView):
-    template_name = "matman/home.html"
+    template_name = "matman/profile.html"
+    is_home = True
 
     def get_user(self):
         return self.request.user
@@ -15,6 +16,11 @@ class HomeView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.get_user()
+
+        context['bookmarked'] = []
+        if self.request.user.is_authenticated:
+            context['bookmarked'] = self.request.user.profile.bookmarks.all()
+
         context['user'] = user
         context['rubrics'] = {
             'borrowed': {
@@ -58,11 +64,13 @@ class HomeView(LoginRequiredMixin, TemplateView):
             except EmptyPage:
                 data['page'] = paginator.page(paginator.num_pages)
 
+        context['is_home'] = self.is_home
+
         return context
 
 
 class ProfileView(HomeView):
-    template_name = "matman/profile.html"
+    is_home = False
 
     def get_user(self):
         return User.objects.get(username=self.kwargs['user'])

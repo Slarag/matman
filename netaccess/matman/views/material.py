@@ -251,8 +251,10 @@ class FilteredListView(ListView):
 class MaterialListView(FilteredListView):
     model = models.Material
     fields = ['serial_number', 'material_number', 'manufacturer', 'scheme', 'owner', 'tags', 'is_active']
-    paginate_by = 20
     filterset_class = filters.ItemFilter
+
+    def get_paginate_by(self, queryset):
+        return self.request.GET.get('items', 10)
 
     def get_ordering(self):
         ordering = self.request.GET.get('orderby', '-identifier')
