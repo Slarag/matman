@@ -8,7 +8,6 @@ from .. import models
 
 class HomeView(LoginRequiredMixin, TemplateView):
     template_name = "matman/home.html"
-    paginate_by = 5
 
     def get_user(self):
         return self.request.user
@@ -17,28 +16,55 @@ class HomeView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.get_user()
         context['user'] = user
-
-        queries = {
-            'my_materials': models.Material.objects.filter(owner=user),
-            'borrowed': models.Material.objects.filter(borrows__borrowed_by=user,
-                                                       borrows__returned_at__isnull=True),
-            'lent': models.Material.objects.exclude(borrows=None).filter(owner=user,
-                                                                         borrows__returned_at__isnull=True),
+        context['rubrics'] = {
+            'borrowed': {
+                'query': models.Material.objects.filter(borrows__borrowed_by=user,
+                                                        borrows__returned_at__isnull=True),
+                'total': 0,
+                'page_items': 10,
+                'is_open': False,
+                'title': 'Borrowed Items',
+            },
+            'lent': {
+                'query': models.Material.objects.exclude(borrows=None).filter(owner=user,
+                                                                              borrows__returned_at__isnull=True),
+                'total': 0,
+                'page_items': 0,
+                'is_open': False,
+                'title': 'Items borrowed to/by others',
+            },
+            'bookmarked': {
+                'query': user.profile.bookmarks.all(),
+                'total': 0,
+                'page_items': 0,
+                'is_open': False,
+                'title': 'Bookmarked Items',
+            },
+            'owned': {
+                'query': models.Material.objects.filter(owner=user),
+                'total': 0,
+                'page_items': 0,
+                'is_open': False,
+                'title': 'Owned Items',
+            },
         }
 
-        for name, query in queries.items():
-            ordering = self.request.GET.get(f'{name}_orderby', 'identifier')
-            query = query.order_by(ordering)
-            paginator = Paginator(query, self.paginate_by)
-            materials_page = self.request.GET.get(f'{name}_page')
+        for name, data in context['rubrics'].items():
+            data['page_items'] = int(self.request.GET.get(f'{name}_items', '10'))
+            data['is_open'] = True if self.request.GET.get(f'{name}_open', 'false') == 'true' else False
+            orderby = self.request.GET.get(f'{name}_orderby', 'identifier')
+            order = '-' if self.request.GET.get(f'{name}_order', 'ascending') == 'descending' else ''
+            data['orderby'] = orderby
+            data['order'] = order
+            data['query'] = data['query'].order_by(order + orderby)
+            data['total'] = data['query'].count()
+            paginator = Paginator(data['query'], data['page_items'])
             try:
-                page_content = paginator.page(materials_page)
+                data['page'] = paginator.page(self.request.GET.get(f'{name}_page', 1))
             except PageNotAnInteger:
-                page_content = paginator.page(1)
+                data['page'] = paginator.page(1)
             except EmptyPage:
-                page_content = paginator.page(paginator.num_pages)
-            context[name] = page_content
-            context[f'{name}_total'] = len(query)
+                data['page'] = paginator.page(paginator.num_pages)
 
         return context
 

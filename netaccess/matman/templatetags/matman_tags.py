@@ -1,9 +1,10 @@
+from typing import Any
+from urllib.parse import urlencode
+
 from django import template
 from django.utils.safestring import mark_safe
 from django.template.defaultfilters import stringfilter
 import markdown
-
-from ..models import Material, Borrow
 
 register = template.Library()
 
@@ -15,11 +16,10 @@ def markdown_format(text):
 
 
 @register.simple_tag(takes_context=True)
-def get_params(context):
-    get = context['request'].GET
-    if not get:
-        return ''
-    return get.urlencode() + '&'
+def update_params(context, parameter: str, value: Any):
+    query = context['request'].GET.copy()
+    query[parameter] = str(value)
+    return mark_safe(urlencode(list(query.items())))
 
 
 @register.filter()
