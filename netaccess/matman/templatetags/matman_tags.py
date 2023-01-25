@@ -1,5 +1,6 @@
 from typing import Any
 from urllib.parse import urlencode
+from itertools import pairwise
 
 from django import template
 from django.utils.safestring import mark_safe
@@ -16,10 +17,12 @@ def markdown_format(text):
 
 
 @register.simple_tag(takes_context=True)
-def update_params(context, parameter: str, value: Any):
+def update_params(context, parameter: str, value: Any, *args):
     query = context['request'].GET.copy()
     query[parameter] = str(value)
-    return mark_safe(urlencode(list(query.items())))
+    for parameter, value in pairwise(args):
+        query[parameter] = str(value)
+    return mark_safe('?' + urlencode(list(query.items())))
 
 
 @register.filter()
@@ -49,3 +52,17 @@ def alert_icon(level_tag):
 @register.inclusion_tag('mde_script.html')
 def init_mde(css_id):
     return {'css_id': css_id}
+
+
+@register.simple_tag()
+def sortable_fields():
+    return [
+        ('identifier', 'ID'),
+        ('serial_number', 'Serial Number'),
+        ('material_number', 'Part Number'),
+        ('manufacturer', 'Manufacturer'),
+        # ('department', 'Department'),
+        ('location', 'Location'),
+        ('owner', 'Owner'),
+    ]
+

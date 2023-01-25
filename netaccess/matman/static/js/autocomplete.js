@@ -267,3 +267,18 @@ function toggle_bookmark(button) {
 }
 
 
+function checkCollapsables(element){
+    event.preventDefault();
+    // var baseUrl = window.location.href.split('?')[0];
+    var url = new URL(element.href);
+    var urlParams = new URLSearchParams(url.search);
+
+    document.querySelectorAll('[id^=id_collapse_]').forEach(element => {
+        var parameter = element.id.split('_')[2] + '_open';
+        var value = String(element.classList.contains('show'));
+        urlParams.set(parameter, value);
+    });
+    console.log(urlParams.toString());
+    window.location = '?' + urlParams.toString();
+    return false;
+}

@@ -4,7 +4,9 @@
 
 {% block title %}My Materials{% endblock %}
 {% block scripts %}
-<script type="text/javascript" src="{% static "js/tables.js" %}" defer></script>
+<!--<script type="text/javascript" src="{% static "js/tables.js" %}" defer></script>-->
+<script type="text/javascript" src="{% static "js/autocomplete.js" %}"></script>
+<link href="{% static "css/autocomplete.css" %}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -17,17 +19,32 @@
                 {{ rubric.title }} ({{ rubric.total }})
             </button>
         </h2>
-        <div id="id_collapse_{{ name }}" class="accordion-collapse collapse {% if rubric.is_open %}show{% endif %}" aria-labelledby="collapse_{{ name }}" data-bs-parent="#id_item_accordion">
+        <div id="id_collapse_{{ name }}" class="accordion-collapse collapse {% if rubric.is_open %}show{% endif %}" aria-labelledby="collapse_{{ name }}">
             <div class="accordion-body">
                 <table class="table table-striped table-hover sortable-table" id="material_table_{{ name }}">
                     <tr>
-                        <th class="column-header-id">ID</th>
-                        <th class="column-header-owner">Owner</th>
-                        <th>Serial Number</th>
-                        <th>Material Number</th>
-                        <th>Manufacturer</th>
-                        <th>Department</th>
-                        <th>Location</th>
+                        {% sortable_fields as fs %}
+                        {% for slug,title in fs %}
+                        <th>
+
+                            <a id="id_{{ name }}_orderby_{{ slug }}"
+                               {% if rubric.orderby == slug and rubric.direction == 'asc' %}
+                               href="{% update_params name|add:"_orderby" slug name|add:"_direction" "desc"  %}"
+                               {% else %}
+                               href="{% update_params name|add:"_orderby" slug name|add:"_direction" "asc"  %}"
+                               {% endif %}
+                            onclick="checkCollapsables(this)" >
+                                <span>{{ title }}</span>
+                                {% if rubric.orderby == slug %}
+                                {% if rubric.direction == 'desc' %}
+                                <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-decending"/></svg>
+                                {% else %}
+                                <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-ascending"/></svg>
+                                {% endif %}
+                                {% endif %}
+                            </a>
+                        </th>
+                        {% endfor %}
                         <th>Tags</th>
                     </tr>
                     {% for object in rubric.page %}
@@ -37,9 +54,12 @@
                         <td>{{ object.serial_number }}</td>
                         <td>{{ object.material_number }}</td>
                         <td>{{ object.manufacturer }}</td>
-                        <td>{{ object.department }}</td>
                         <td>{{ object.location }}</td>
-                        <td>{{ object.tags.all|join:", " }}</td>
+                        <td>
+                            {% for tag in object.tags.all %}
+                            <a href="{% url "list-material" %}?tags__name={{ tag }}" class="badge text-bg-light">{{ tag }}</a>
+                            {% endfor %}
+                        </td>
                     </tr>
                     {% empty %}
                     <tr><td>None</td></tr>
