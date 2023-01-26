@@ -111,16 +111,16 @@
 
     <!--    Pictures    -->
     {% if object.pictures.all %}
-    {% include "matman/slideshow.html" with pictures=object.pictures %}
+    {% include "items/slideshow.html" with pictures=object.pictures %}
     {% endif %}
 
     <!--    Comments and Borrows in chronological order    -->
     <h4>Comments & Borrows</h4>
     {% for cb in comments_borrows %}
     {% if cb.type == "comment" %}
-    {% include "matman/comment.html" with comment=cb.object %}
+    {% include "items/comment.html" with comment=cb.object %}
     {% else %}
-    {% include "matman/borrow_toast.html" with borrow=cb.object %}
+    {% include "items/borrow_toast.html" with borrow=cb.object %}
     {% endif %}
     {% endfor %}
 

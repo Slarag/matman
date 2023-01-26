@@ -42,6 +42,6 @@
   </div>
 </div>
 
-{% include "matman/material_table.html" with prefix="" orderby=orderby direction=direction page=page object_list=object_list %}
+{% include "items/material_table.html" with prefix="" orderby=orderby direction=direction page=page object_list=object_list %}
 {% csrf_token %}
 {% endblock %}
