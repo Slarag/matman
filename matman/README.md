@@ -7,3 +7,9 @@ Or do you want to keep track of your test equipment and refer to it in reports/d
 **Matman is the solution for you!** It's a lightweight django-based webapp.
 
 You can even tie it to your AD through LDAP to allow your employees/colleagues to login with their AD credentials without having to register separately. 
+
+
+- `export DJANGO_SECRET_KEY="..."`
+- `manage.py makemigrations`
+- `manage.py migrate`
+- `manage.py migrate`
