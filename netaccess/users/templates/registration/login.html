@@ -13,5 +13,17 @@
   {% else %}
 <!--    <p>Please, use the following form to log-in. If you don't have an account <a href="% url "register" %">register here</a></p>-->
   {% endif %}
-{% crispy form %}
+<form method="post">
+  {% csrf_token %}
+  {{ form|crispy }}
+  <button class="btn btn-primary" type="submit">
+      Login
+  </button>
+</form>
+{% if registration_allowed %}
+<p>Don't have an account yet? Register <a href="{% url "register" %}">here.</a></p>
+{% endif %}
+{% if reset_allowed %}
+<p>Forgot your password? Reset <a href="{% url "password_reset" %}">here.</a></p>
+{% endif %}
 {% endblock %}

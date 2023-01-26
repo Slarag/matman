@@ -4,20 +4,35 @@
 {% block title %}Schemes{% endblock %}
 
 {% block content %}
-<h1>Schemes</h1>
-<p>
+<h1>
+    <span>Schemes ({{ total }})</span>
     <a href="{% url "add-scheme" %}" class="btn btn-outline-primary" aria-current="page">
         <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-plus"/></svg>
-        Add Scheme
+        <span>Add</span>
     </a>
-</p>
+</h1>
 <table class="table table-striped table-hover">
     <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Prefix</th>
-        <th>Numlen</th>
-        <th>Potfix</th>
+        {% for name in fields %}
+        <th>
+            <a id="id_orderby_{{ name }}"
+               {% if orderby == name and rubric.direction == 'asc' %}
+               href="{% update_params "orderby" name "direction" "desc"  %}"
+               {% else %}
+               href="{% update_params "orderby" name "direction" "asc"  %}"
+               {% endif %}
+            onclick="checkCollapsables(this)" >
+                <span>{{ name|title }}</span>
+                {% if orderby == name %}
+                {% if direction == 'desc' %}
+                <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-descending"/></svg>
+                {% else %}
+                <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-ascending"/></svg>
+                {% endif %}
+                {% endif %}
+            </a>
+        </th>
+        {% endfor %}
     </tr>
     {% for object in object_list %}
     <tr>

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Fieldset, Submit, Div, Button
+from crispy_forms.layout import Layout, Field
 
 from .. import models
 
@@ -25,13 +25,11 @@ class ItemField(forms.CharField):
         return item
 
 
-
 class BorrowForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.add_input(Button('cancel', 'No, go back', css_class='btn btn-secondary', onclick="history.back()"))
-        self.helper.add_input(Submit('submit', 'Yes, borrow', css_class='btn btn-primary'))
+        self.helper.form_tag = False
 
     class Meta:
         model = models.Borrow
@@ -55,16 +53,10 @@ class QuickBorrowForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
-        # self.helper.add_input(Submit('borrow', 'Borrow', css_class='btn btn-primary'))
-        # self.helper.add_input(Submit('return', 'Return', css_class='btn btn-secondary'))
 
     class Meta:
         model = models.Borrow
         fields = ['item', 'borrowed_by', 'usage_location', 'estimated_returndate']
-        # field_classes = {
-        #     'item': forms.CharField,
-        #     'borrowed_by': forms.CharField,
-        # }
         widgets = {
             'estimated_returndate': forms.DateInput(
                 format='%Y-%m-%d',
@@ -72,8 +64,6 @@ class QuickBorrowForm(forms.ModelForm):
                        'placeholder': 'Select a date',
                        'type': 'date'
                        }),
-            # 'item': forms.TextInput(),
-            # 'borrowed_by': forms.TextInput(),
         }
 
 
@@ -81,8 +71,7 @@ class BorrowEditForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.add_input(Button('cancel', 'Cancel', css_class='btn btn-secondary', onclick="history.back()"))
-        self.helper.add_input(Submit('submit', 'Update', css_class='btn btn-primary'))
+        self.helper.form_tag = False
 
     class Meta:
         model = models.Borrow
@@ -101,12 +90,11 @@ class BorrowCloseForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_tag = False
         self.helper.layout = Layout(
             Field('returned_by'),
             Field('notes'),
         )
-        self.helper.add_input(Button('cancel', 'Cancel', css_class='btn btn-secondary', onclick="history.back()"))
-        self.helper.add_input(Submit('close', 'Return & Close', css_class='btn btn-primary'))
 
     class Meta:
         model = models.Borrow

@@ -14,9 +14,9 @@ admin.site.register(models.Comment, SimpleHistoryAdmin)
 
 @admin.register(models.Material)
 class MaterialAdmin(SimpleHistoryAdmin):
-    list_display = ['identifier', 'serial_number', 'material_number', 'manufacturer', 'scheme',
+    list_display = ['identifier', 'serial_number', 'part_number', 'manufacturer', 'scheme',
                     'owner', 'is_active', 'creation_date', 'last_updated']
     list_filter = ['is_active', 'creation_date', 'last_updated']
-    search_fields = ['owner__username', 'serial_number', 'material_number', 'manufacturer', 'scheme', 'tags__all']
+    search_fields = ['owner__username', 'serial_number', 'part_number', 'manufacturer', 'scheme', 'tags__all']
     # fields = ['short_text']
     ordering = ('last_updated', 'owner')

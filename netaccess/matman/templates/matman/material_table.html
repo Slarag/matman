@@ -1,21 +1,20 @@
 {% load matman_tags %}
- <table class="table table-striped table-hover sortable-table" id="material_table_{{ name }}">
+ <table class="table table-striped table-hover sortable-table" id="material_table_{{ prefix }}">
     <tr>
         {% sortable_fields as fs %}
         {% for slug,title in fs %}
         <th>
-
-            <a id="id_{{ name }}_orderby_{{ slug }}"
-               {% if rubric.orderby == slug and rubric.direction == 'asc' %}
-               href="{% update_params name|add:"_orderby" slug name|add:"_direction" "desc"  %}"
+            <a id="id_{{ prefix }}orderby_{{ slug }}"
+               {% if orderby == slug and direction == 'asc' %}
+               href="{% update_params prefix|add:"orderby" slug prefix|add:"direction" "desc"  %}"
                {% else %}
-               href="{% update_params name|add:"_orderby" slug name|add:"_direction" "asc"  %}"
+               href="{% update_params prefix|add:"orderby" slug prefix|add:"direction" "asc"  %}"
                {% endif %}
             onclick="checkCollapsables(this)" >
                 <span>{{ title }}</span>
-                {% if rubric.orderby == slug %}
-                {% if rubric.direction == 'desc' %}
-                <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-decending"/></svg>
+                {% if orderby == slug %}
+                {% if direction == 'desc' %}
+                <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-descending"/></svg>
                 {% else %}
                 <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-ascending"/></svg>
                 {% endif %}
@@ -26,14 +25,14 @@
         <th>Tags</th>
         <th></th>
     </tr>
-    {% for object in rubric.page %}
+    {% for object in object_list %}
     <tr>
         <th><a href="{% url "material-detail" object.identifier %}">{{ object.identifier }}</a></th>
-        <td><a href="{% url "profile" object.owner %}">{{ object.owner }}</a></td>
         <td>{{ object.serial_number }}</td>
-        <td>{{ object.material_number }}</td>
+        <td>{{ object.part_number }}</td>
         <td>{{ object.manufacturer }}</td>
         <td>{{ object.location }}</td>
+        <td><a href="{% url "profile" object.owner %}">{{ object.owner }}</a></td>
         <td>
             {% for tag in object.tags.all %}
             <a href="{% url "list-material" %}?tags__name={{ tag }}" class="badge text-bg-light">{{ tag }}</a>
@@ -45,8 +44,9 @@
                   <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#three-dots"/></svg>
                 </button>
                 <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="{% url "material-edit" object.identifier %}">Edit</a></li>
-                  <li><a class="dropdown-item" href="{% url "add-material" %}?reference={{ object.identifier }}">Copy/Clone</a></li>
+                    <li><a class="dropdown-item" href="{% url "borrow" object.identifier %}">Borrow</a></li>
+                    <li><a class="dropdown-item" href="{% url "material-edit" object.identifier %}">Edit</a></li>
+                    <li><a class="dropdown-item" href="{% url "add-material" %}?reference={{ object.identifier }}">Copy/Clone</a></li>
                 </ul>
             </div>
             {% if user.is_authenticated %}
@@ -66,4 +66,4 @@
     <tr><td>None</td></tr>
     {% endfor %}
 </table>
-{% include "pagination.html" with page_obj=rubric.page prefix=name|add:"_" %}
+{% include "pagination.html" with page_obj=page prefix=prefix %}

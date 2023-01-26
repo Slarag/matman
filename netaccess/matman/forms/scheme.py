@@ -1,6 +1,6 @@
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Fieldset, Submit, Div, Button
+from crispy_forms.layout import Layout, Field, Div
 
 from .. import models
 
@@ -9,6 +9,7 @@ class SchemeCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_tag = False
         # self.helper.add_input(Submit('submit', 'Create', css_class='btn btn-primary'))
         self.helper.layout = Layout(
             Field('name', placeholder='Name'),
@@ -30,6 +31,7 @@ class SchemeEditForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_tag = False
         # self.helper.add_input(Submit('submit', 'Save', css_class='btn btn-primary'))
         self.helper.layout = Layout(
             Field('name', placeholder='Name'),

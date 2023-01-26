@@ -22,7 +22,7 @@ class TagWidget(django_filters.widgets.CSVWidget):
 class ItemFilter(django_filters.FilterSet):
     identifier = django_filters.CharFilter(lookup_expr='iexact')
     serial_number = django_filters.CharFilter(lookup_expr='iexact')
-    #material_number = django_filters.CharFilter(lookup_expr='iexact')
+    #part_number = django_filters.CharFilter(lookup_expr='iexact')
     # manufacturer = django_filters.CharFilter(lookup_expr='iexact')
     # location = django_filters.CharFilter(lookup_expr='iexact')
     tags__name = django_filters.ModelMultipleChoiceFilter(
@@ -36,4 +36,4 @@ class ItemFilter(django_filters.FilterSet):
 
     class Meta:
         model = Material
-        fields = ['identifier', 'serial_number', 'material_number', 'manufacturer', 'location', 'tags__name']
+        fields = ['identifier', 'serial_number', 'part_number', 'manufacturer', 'location', 'tags__name']

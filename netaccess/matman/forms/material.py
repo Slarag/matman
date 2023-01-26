@@ -1,22 +1,8 @@
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Fieldset, Submit, Div, Button
+from crispy_forms.layout import Layout, Field, Div
 
 from .. import models
-
-
-# class SearchForm(forms.Form):
-#     query = forms.CharField(
-#         widget=forms.TextInput(attrs={'autofocus': True})
-#     )
-#
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, *kwargs)
-#         self.helper = FormHelper()
-#         self.helper.form_method = 'get'
-#         self.helper.form_tag = True
-#         self.helper.disable_csrf = True
-#         self.helper.add_input(Submit('submit', 'Search', css_class='btn btn-primary'))
 
 
 class MaterialForm(forms.ModelForm):
@@ -31,7 +17,7 @@ class MaterialForm(forms.ModelForm):
             Field('reference'),
             Div(
                 Div(Field('serial_number', placeholder="Serial Number"), css_class='col'),
-                Div(Field('material_number', placeholder='Material Number'), css_class='col'),
+                Div(Field('part_number', placeholder='Material Number'), css_class='col'),
                 Div(Field('revision', placeholder='Revision'), css_class='col'),
                 Div(Field('manufacturer', placeholder='Manufacturer'), css_class='col'),
                 css_class='row'),
@@ -50,7 +36,7 @@ class MaterialForm(forms.ModelForm):
 
     class Meta:
         model = models.Material
-        fields = ['serial_number', 'material_number', 'revision', 'manufacturer', 'description', 'scheme', 'owner',
+        fields = ['serial_number', 'part_number', 'revision', 'manufacturer', 'description', 'scheme', 'owner',
                   'short_text', 'tags', 'is_active', 'location']
 
 
@@ -63,7 +49,7 @@ class MaterialEditForm(forms.ModelForm):
             Field('reference'),
             Div(
                 Div(Field('serial_number', placeholder="Serial Number"), css_class='col'),
-                Div(Field('material_number', placeholder='Material Number'), css_class='col'),
+                Div(Field('part_number', placeholder='Material Number'), css_class='col'),
                 Div(Field('revision', placeholder='Revision'), css_class='col'),
                 Div(Field('manufacturer', placeholder='Manufacturer'), css_class='col'),
                 css_class='row'),
@@ -81,6 +67,6 @@ class MaterialEditForm(forms.ModelForm):
 
     class Meta:
         model = models.Material
-        fields = ['serial_number', 'material_number', 'revision', 'manufacturer', 'description', 'owner',
+        fields = ['serial_number', 'part_number', 'revision', 'manufacturer', 'description', 'owner',
                   'short_text', 'tags', 'is_active', 'location']
 

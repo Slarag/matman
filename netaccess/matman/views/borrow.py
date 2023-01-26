@@ -53,6 +53,11 @@ class QuickBorrowView(SuccessMessageMixin, CreateView):
             return redirect(self.request.path_info)
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['active'] = 'quick'
+        return context
+
 
 class BorrowCreateView(SuccessMessageMixin, CreateView):
     model = models.Borrow
@@ -129,10 +134,9 @@ class BorrowCloseView(SuccessMessageMixin, UpdateView):
         return reverse_lazy('material-detail', kwargs={'identifier': self.object.item.identifier})
 
     def form_valid(self, form):
-        if 'close' in self.request.POST:
-            self.object.returned_at = now()
-            self.object.save()
-            material = self.object.item
-            messages.success(self.request, f'You have returned {material}')
+        self.object.returned_at = now()
+        self.object.save()
+        material = self.object.item
+        messages.success(self.request, f'You have returned {material}')
         return redirect(reverse_lazy('material-detail',
                                      kwargs={'identifier': self.get_context_data()['material'].identifier}))

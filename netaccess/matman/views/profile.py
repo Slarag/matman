@@ -22,6 +22,7 @@ class HomeView(LoginRequiredMixin, TemplateView):
             context['bookmarked'] = self.request.user.profile.bookmarks.all()
 
         context['user'] = user
+        context['active'] = 'home' if self.is_home else ''
         context['rubrics'] = {
             'borrowed': {
                 'query': models.Material.objects.filter(borrows__borrowed_by=user,
@@ -44,7 +45,7 @@ class HomeView(LoginRequiredMixin, TemplateView):
         }
 
         for name, data in context['rubrics'].items():
-            data['page_items'] = int(self.request.GET.get(f'{name}_items', '10'))
+            data['items'] = self.request.GET.get(f'{name}_items', '10')
             data['is_open'] = True if self.request.GET.get(f'{name}_open', 'false') == 'true' else False
             orderby = self.request.GET.get(f'{name}_orderby', 'identifier')
             data['orderby'] = orderby
@@ -56,13 +57,14 @@ class HomeView(LoginRequiredMixin, TemplateView):
             data['direction'] = direction
             data['query'] = data['query'].order_by(orderby)
             data['total'] = data['query'].count()
-            paginator = Paginator(data['query'], data['page_items'])
+            paginator = Paginator(data['query'], data['items'])
             try:
-                data['page'] = paginator.page(self.request.GET.get(f'{name}_page', 1))
+                page = paginator.page(self.request.GET.get(f'{name}_page', 1))
             except PageNotAnInteger:
-                data['page'] = paginator.page(1)
+                page = paginator.page(1)
             except EmptyPage:
-                data['page'] = paginator.page(paginator.num_pages)
+                page = paginator.page(paginator.num_pages)
+            data['object_list'] = page
 
         context['is_home'] = self.is_home
 

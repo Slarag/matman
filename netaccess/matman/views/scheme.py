@@ -13,7 +13,27 @@ class SchemeListView(ListView):
     model = models.Scheme
     template_name_suffix = '_list'
     fields = ['name', 'prefix', 'numlen', 'postfix', 'is_active']
-    paginate_by = 50
+
+    def get_paginate_by(self, queryset):
+        return self.request.GET.get('items', 10)
+
+    def get_ordering(self):
+        orderby = self.request.GET.get('orderby', 'name')
+        direction = self.request.GET.get('direction', 'asc')
+        if direction not in ['asc', 'desc']:
+            direction = 'asc'
+        if direction == 'desc':
+            orderby = f'-{orderby}'
+        return orderby
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total'] = self.get_queryset().count()
+        context['fields'] = self.fields
+        context['orderby'] = self.request.GET.get('orderby', 'name')
+        context['direction'] = self.request.GET.get('direction', 'asc')
+        context['active'] = 'schemes'
+        return context
 
 
 class SchemeCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
@@ -26,6 +46,11 @@ class SchemeCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
         url = self.object.get_absolute_url()
         return f'Successfully created scheme <a href="{url}" class="alert-link">{self.object}</a>'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['active'] = 'schemes'
+        return context
+
 
 class SchemeEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = models.Scheme
@@ -36,3 +61,8 @@ class SchemeEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     def get_success_message(self, cleaned_data):
         url = self.object.get_absolute_url()
         return f'Successfully updated scheme <a href="{url}" class="alert-link">{self.object}</a>'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['active'] = 'schemes'
+        return context

@@ -27,7 +27,7 @@
   fields:
     identifier: ID-000001
     serial_number: ''
-    material_number: ''
+    part_number: ''
     manufacturer: ''
     description: ''
     scheme: 1

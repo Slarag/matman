@@ -11,5 +11,16 @@
 {% block content %}
   <h1>Borrow {{ material }}?</h1>
   <p>Do you want to borrow {{ material }}?</p>
-    {% crispy form %}
+<form method="post">
+  {% csrf_token %}
+  {% crispy form %}
+  <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
+    <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-back"/></svg>
+    <span>Go back</span>
+  </button>
+  <button type=submit" class="btn btn-primary">
+    <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-borrow"/></svg>
+    <span>Borrow</span>
+  </button>
+</form>
 {% endblock %}

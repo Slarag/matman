@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
@@ -11,11 +13,6 @@ from django.utils.timezone import now
 
 from taggit.managers import TaggableManager
 from simple_history.models import HistoricalRecords, HistoricForeignKey
-
-
-class ActiveManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().filter(is_active=True)
 
 
 class Scheme(models.Model):
@@ -76,12 +73,12 @@ class Material(models.Model):
     short_text = models.CharField(max_length=100, blank=True)
     serial_number = models.CharField(max_length=30, blank=True)
     revision = models.CharField(max_length=30, blank=True)
-    material_number = models.CharField(max_length=30, blank=True)
+    part_number = models.CharField(max_length=30, blank=True)
     manufacturer = models.CharField(max_length=30, blank=True)
     description = models.TextField(blank=True)
     scheme = models.ForeignKey(Scheme, on_delete=models.SET_NULL, null=True)
     location = models.CharField(max_length=100, blank=True)
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, related_name='owned_materials', null=True)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, related_name='owned_materials', null=True, blank=True)
     tags = TaggableManager(blank=True)
     is_active = models.BooleanField(default=True)
     contains = models.ManyToManyField('self', related_name='contained_in', symmetrical=False, blank=True)
@@ -127,6 +124,25 @@ class MaterialPicture(models.Model):
         return f'{settings.MEDIA_URL}{self.file.url}'
 
 
+class ActiveBorrowsManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(returned_at__isnull=True)
+
+
+class OverdueManager(models.Manager):
+    def get_queryset(self):
+        today = now().date
+        tomorrow = today + timedelta(days=1)
+        return super().get_queryset().filter(returned_at__isnull=True, estimated_returndate__lte=tomorrow)
+
+
+class DueSoonManager(models.Manager):
+    def get_queryset(self):
+        today = now().date
+        tomorrow = today + timedelta(days=1)
+        return super().get_queryset().filter(returned_at__isnull=True, estimated_returndate__lte=tomorrow)
+
+
 class Borrow(models.Model):
     # Model fields
     item = models.ForeignKey(Material, on_delete=models.CASCADE, related_name='borrows')
@@ -141,6 +157,11 @@ class Borrow(models.Model):
                                     related_name='borrows_returned')
     history = HistoricalRecords()
 
+    objects = models.Manager()
+    active = ActiveBorrowsManager()
+    due = OverdueManager()
+    due_soon = DueSoonManager()
+
     def close(self, returned_by, returned_at=None):
         if returned_at is None:
             returned_at = now()
@@ -151,23 +172,28 @@ class Borrow(models.Model):
     def get_absolute_url(self):
         return reverse('borrow-edit', kwargs={'pk': self.pk})
 
+    @property
+    def due_since(self) -> int:
+        """
+        Number of day since the estimated_returndate.
+        If the return date is in the future, a negative number will be returned.
+        """
+        today = now().date
+        days = (self.estimated_returndate - today).days
+        return days
+
 
 class UserProfile(models.Model):
     # Model fields
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
     default_scheme = models.ForeignKey(Scheme, blank=True, on_delete=models.SET_NULL, null=True)
     department = models.CharField(max_length=30, blank=True)
-    location = models.CharField(max_length=100, blank=True)
-    initials = models.CharField(max_length=10, null=True, blank=True, unique=True)
     about = models.TextField(blank=True)
 
     bookmarks = models.ManyToManyField(Material, related_name='bookmarked_by')
 
     def __str__(self):
         return f'Profile for user {self.user.username}'
-
-    def clean(self):
-        self.initials = self.initials.lower()
 
     def has_bookmarked(self, material: Material):
         return self.bookmarks.filter(pk=material.pk).exists()

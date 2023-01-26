@@ -24,7 +24,7 @@
         </h2>
         <div id="id_collapse_{{ name }}" class="accordion-collapse collapse {% if rubric.is_open %}show{% endif %}" aria-labelledby="collapse_{{ name }}">
             <div class="accordion-body">
-                {% include "matman/material_table.html" with name=name %}
+                {% include "matman/material_table.html" with prefix=name|add:"_" orderby=rubric.orderby direction=rubric.direction page=rubric.page object_list=rubric.object_list %}
             </div>
         </div>
     </div>

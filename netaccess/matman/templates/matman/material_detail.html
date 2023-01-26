@@ -16,16 +16,16 @@
 <h1>{{ object }}</h1>
 <!--    Buttons    -->
 <section class="btn-group" role="group" aria-label="Basic example"">
-    <a class="btn btn-outline-primary" href="{% url "material-edit" object.identifier %}">
-        <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#edit"/></svg>
-        <spa>Edit</spa>
-    </a>
     {% if not object.get_active_borrow and object.is_active %}
     <a class="btn btn-outline-primary" href="{% url "borrow" object.identifier %}">
         <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-borrow"/></svg>
         <span>Borrow</span>
     </a>
     {% endif %}
+    <a class="btn btn-outline-primary" href="{% url "material-edit" object.identifier %}">
+        <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#edit"/></svg>
+        <spa>Edit</spa>
+    </a>
     {% if object.get_active_borrow %}
     <a class="btn btn-outline-primary" href="{% url "return" object.get_active_borrow.pk %}">
         <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-undo"/></svg>
@@ -59,7 +59,7 @@
         </tr>
         <tr>
             <th>Material Number:</th>
-            <td>{{ object.material_number }}</td>
+            <td>{{ object.part_number }}</td>
         </tr>
         <tr>
             <th>Manufacturer:</th>

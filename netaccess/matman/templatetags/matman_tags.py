@@ -25,6 +25,11 @@ def update_params(context, parameter: str, value: Any, *args):
     return mark_safe('?' + urlencode(list(query.items())))
 
 
+# @register.simple_tag(takes_context=True)
+# def root_namespace(context):
+#     return context
+
+
 @register.filter()
 def alert_class(level_tag):
     mapping = {
@@ -59,7 +64,7 @@ def sortable_fields():
     return [
         ('identifier', 'ID'),
         ('serial_number', 'Serial Number'),
-        ('material_number', 'Part Number'),
+        ('part_number', 'Part Number'),
         ('manufacturer', 'Manufacturer'),
         # ('department', 'Department'),
         ('location', 'Location'),

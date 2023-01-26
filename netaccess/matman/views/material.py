@@ -35,6 +35,7 @@ class MaterialCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['formset_helper'] = self.formset_helper()
+        context['active'] = 'add'
         return context
 
     def get_reference(self):
@@ -220,13 +221,6 @@ class MaterialEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         )
 
 
-def search(request):
-    f = filters.ItemFilter(request.GET, queryset=models.Material.active.all())
-    return render(request,
-                  'matman/search.html',
-                  {'filter': f})
-
-
 # https://gist.github.com/MikaelSantilio/3e761b325c7fd7588207cec06fdcbefb
 class FilteredListView(ListView):
     filterset_class = None
@@ -250,26 +244,45 @@ class FilteredListView(ListView):
 
 class MaterialListView(FilteredListView):
     model = models.Material
-    fields = ['serial_number', 'material_number', 'manufacturer', 'scheme', 'owner', 'tags', 'is_active']
+    fields = ['serial_number', 'part_number', 'manufacturer', 'scheme', 'owner', 'tags', 'is_active']
     filterset_class = filters.ItemFilter
+    template_name_suffix = '_list'
 
     def get_paginate_by(self, queryset):
         return self.request.GET.get('items', 10)
 
     def get_ordering(self):
-        ordering = self.request.GET.get('orderby', '-identifier')
-        return ordering
+        direction = self.request.GET.get('direction', 'asc')
+        if direction not in ['asc', 'desc']:
+            direction = 'asc'
 
-    def get_template_names(self):
-        if self.request.GET.get('view', 'list') == 'cards':
-            self.template_name_suffix = '_list_cards'
-        else:
-            self.template_name_suffix = '_list'
-        return super().get_template_names()
+        orderby = self.request.GET.get(f'orderby', 'identifier')
+        if direction == 'desc':
+            orderby = f'-{orderby}'
+        return orderby
+
+    # def get_template_names(self):
+    #     if self.request.GET.get('view', 'list') == 'cards':
+    #         self.template_name_suffix = '_list_cards'
+    #     else:
+    #         self.template_name_suffix = '_list'
+    #     return super().get_template_names()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['active'] = 'search'
         context['bookmarked'] = []
         if self.request.user.is_authenticated:
             context['bookmarked'] = self.request.user.profile.bookmarks.all()
+
+        direction = self.request.GET.get('direction', 'asc')
+        if direction not in ['asc', 'desc']:
+            direction = 'asc'
+
+        orderby = self.request.GET.get(f'orderby', 'identifier')
+
+        context['items'] = self.get_paginate_by(self.queryset)
+        context['direction'] = direction,
+        context['orderby'] = orderby
+            # 'total': self.get_queryset().count(),
         return context

@@ -9,6 +9,17 @@
 {% block title %}Edit Borrow for {{ borrow.item }}{% endblock %}
 
 {% block content %}
-  <h1>Edit Borrow for {{ material }}?</h1>
-    {% crispy form %}
+<h1>Edit Borrow for {{ material }}?</h1>
+<form method="post">
+  {% csrf_token %}
+  {% crispy form %}
+  <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
+    <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-back"/></svg>
+    <span>Go back</span>
+  </button>
+  <button type=submit" class="btn btn-primary">
+    <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-save"/></svg>
+    <span>Save</span>
+  </button>
+</form>
 {% endblock %}

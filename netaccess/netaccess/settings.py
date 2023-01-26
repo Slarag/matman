@@ -32,13 +32,13 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = [
+    'matman.apps.MatmanConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #'netaccess_users.apps.NetaccessUsersConfig',
-    'matman.apps.MatmanConfig',
     'users.apps.UsersConfig',
     'django.contrib.admin',
     'taggit',
@@ -87,18 +87,18 @@ WSGI_APPLICATION = 'netaccess.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'matman',
-        'USER': 'matman',
-        'PASSWORD': '14Me14You',
-        'HOST': 'localhost',
-        'PORT': 5432,
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'matman',
+    #     'USER': 'matman',
+    #     'PASSWORD': '14Me14You',
+    #     'HOST': 'localhost',
+    #     'PORT': 5432,
+    # }
 }
 
 
@@ -151,3 +151,11 @@ TAGGIT_CASE_INSENSITIVE = True
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+# Celery Configuration Options
+CELERY_TIMEZONE = "Australia/Tasmania"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+ALLOW_REGISTRATION = True
+ALLOW_CHANGE_PASSWORD = True

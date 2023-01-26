@@ -5,5 +5,12 @@
 
 {% block content %}
 <h1>Profile Settings</h1>
-{% crispy form %}
+<form method="post">
+  {% csrf_token %}
+  {% crispy form %}
+  <button type=submit" class="btn btn-primary">
+    <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-save"/></svg>
+    <span>Save</span>
+  </button>
+</form>
 {% endblock %}
