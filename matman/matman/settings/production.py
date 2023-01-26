@@ -1,6 +1,6 @@
 from .base import *
 
-DEBUG = True
+DEBUG = False
 
 ADMINS = (
     ('Slarag', 'slarag@somemial.slarag'),
@@ -14,3 +14,10 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
+# SECURE_HSTS_SECONDS = 3600
+
+SECRET_KEY = 'django-insecure-REPLACEME'
