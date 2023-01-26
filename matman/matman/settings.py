@@ -132,7 +132,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # Celery Configuration Options
-CELERY_TIMEZONE = "Australia/Tasmania"
+CELERY_TIMEZONE = "Europe/Berlin"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
@@ -143,10 +143,12 @@ ADMINS = (
     ('CHANGEME', 'CHANGEME@CHANGEME.com'),
 )
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
-# SECURE_HSTS_SECONDS = 3600
+DISABLE_SEC = os.environ.get('DJANGO_DISABLE_SEC', '').lower() == 'true'
+if not DISABLE_SEC:
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True
+    # SECURE_HSTS_SECONDS = 3600
 
 # Read SECRET_KEY from an environment variable
 SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
