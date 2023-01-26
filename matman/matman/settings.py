@@ -148,7 +148,7 @@ SECURE_SSL_REDIRECT = True
 # SECURE_HSTS_SECONDS = 3600
 
 # Read SECRET_KEY from an environment variable
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '').lower() == 'true'
