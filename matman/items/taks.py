@@ -46,7 +46,7 @@ def notify_borrow_closed(borrow):
 def send_reminders():
     for borrow in Borrow.due_soon.all():
         subject = 'MatMan - Borrow expiration reminder'
-        html_message = strip_tags(render_to_string('matman/mail/borrow_reminder.html', {'borrow': borrow}))
+        html_message = strip_tags(render_to_string('items/mail/borrow_reminder.html', {'borrow': borrow}))
         plain_message = strip_tags(html_message)
         from_email = 'From <from@example.com>'
         to = 'to@example.com'

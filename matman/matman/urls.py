@@ -1,4 +1,4 @@
-"""netaccess URL Configuration
+"""matman URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.0/topics/http/urls/
@@ -23,7 +23,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('users.urls')),
-    path('', include('matman.urls')),
+    path('', include('items.urls')),
     path('', RedirectView.as_view(pattern_name='home')), #, permanent=True)),
 ]
 

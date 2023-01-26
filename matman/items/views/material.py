@@ -1,13 +1,7 @@
 from collections import namedtuple
-import datetime
 import urllib
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST
 from django.contrib import messages
-from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
@@ -15,7 +9,6 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.postgres.search import SearchVector, TrigramSimilarity, SearchQuery, SearchRank
 from django.forms.models import model_to_dict
 
 from .. import models

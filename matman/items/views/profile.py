@@ -7,7 +7,7 @@ from .. import models
 
 
 class HomeView(LoginRequiredMixin, TemplateView):
-    template_name = "matman/profile.html"
+    template_name = "items/profile.html"
     is_home = True
 
     def get_user(self):
