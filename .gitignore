@@ -130,6 +130,9 @@ dmypy.json
 
 .idea/
 
-postgres_docker/
-media/
-migrations/
+files/media/
+files/static/
+
+*/*/migrations/*
+!*/*/migrations/__init__.py
+db.sqlite3*
