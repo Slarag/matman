@@ -38,9 +38,20 @@ body {
     opacity: 0;
 }
 
-
-/* Style for drag and drop */
-
-.dragging {
+dragging {
     opacity: 50%;
+}
+
+/*the container must be positioned relative:*/
+.autocomplete {
+    position: relative;
+    display: inline-block;
+}
+
+.autocomplete-items {
+    position: absolute;
+    z-index: 99;
+    /*position the autocomplete items to be the same width as the container:*/
+    left: 0;
+    right: 0;
 }
