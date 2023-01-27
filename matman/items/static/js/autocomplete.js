@@ -248,14 +248,16 @@ function toggle_bookmark(button) {
         text_element = button.querySelector('.text');
         if (is_bookmarked){
             button.title = "Bookmarked";
-            button.querySelector("use").setAttribute('href', '#bookmark-check-fill');
+            button.querySelector("i").classList.remove('bi-bookmark');
+            button.querySelector("i").classList.add('bi-bookmark-check-fill');
             if(text_element){
                 text_element.textContent = "Bookmarked";
             }
         }
         else {
             button.title = "Bookmark";
-            button.querySelector("use").setAttribute('href', '#bookmark');
+            button.querySelector("i").classList.remove('bi-bookmark-check-fill');
+            button.querySelector("i").classList.add('bi-bookmark');
             if(text_element){
                 text_element.textContent = "Bookmark";
             }

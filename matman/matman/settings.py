@@ -67,6 +67,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'users.context_processors.user_settings_context',
+                'items.context_processors.external_resources',
             ],
         },
     },
@@ -138,6 +140,7 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 
 ALLOW_REGISTRATION = True
 ALLOW_CHANGE_PASSWORD = True
+ALLOW_RESET_PASSWORD = True
 
 ADMINS = (
     ('CHANGEME', 'CHANGEME@CHANGEME.com'),
@@ -162,4 +165,36 @@ SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 DEBUG = os.environ.get('DJANGO_DEBUG', '').lower() == 'true'
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+EXTERNAL_RESOURCES = {
+    'bootstrap': {
+        'js': [
+            {
+                'href': 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js',
+                'integrity': 'sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4',
+            },
+        ],
+        'css': [
+            {
+                'href': 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css',
+                'integrity': 'sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65',
+            },
+            {
+                'href': 'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css',
+            }
+        ]
+    },
+    'easy_mde': {
+        'js': [
+            {
+                'href': 'https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js',
+            },
+        ],
+        'css': [
+            {
+                'href': 'https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css',
+            },
+        ]
+    }
+}
 

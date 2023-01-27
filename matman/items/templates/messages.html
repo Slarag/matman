@@ -3,7 +3,7 @@
     <div class="p-2">
         {% for message in messages %}
         <div class="alert {{ message.level_tag|alert_class }} alert-dismissible fade show d-flex align-items-center" role="alert">
-            <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Info:"><use xlink:href="{{ message.level_tag|alert_icon }}"/></svg>
+            <i class="bi {{ message.level_tag|alert_icon }}"></i>
             <div>
                 {{ message|safe }}
             </div>

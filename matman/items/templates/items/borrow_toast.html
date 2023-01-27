@@ -1,7 +1,7 @@
 {% load matman_tags %}
 <div class="toast show my-1 w-100" role="alert" aria-live="assertive" aria-atomic="true">
   <div class="toast-header">
-    <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Info:"><use xlink:href="#symbol-borrow"/></svg>
+    <i class="bi bi-cart2"></i>
     <strong class="me-auto">Borrow by <a href="{% url "profile" borrow.borrowed_by %}">{{ borrow.borrowed_by.username }}</a></strong>
     <small class="mx-2">
       {{ borrow.borrowed_at|date:"D y-m-d H:m" }}
@@ -11,7 +11,7 @@
     </small>
     <div class="dropdown">
       <button class="btn btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#three-dots"/></svg>
+        <i class="bi bi-three-dots"></i>
       </button>
       <ul class="dropdown-menu">
         {%if not borrow.returned_at %}

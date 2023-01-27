@@ -11,11 +11,11 @@
   {% csrf_token %}
   {% crispy form %}
   <button type="button" class="btn btn-outline-secondary" onclick="history.back()">
-    <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-back"/></svg>
+    <i class="bi bi-arrow-left-square"></i>
     <span>Go back</span>
   </button>
   <button type=submit" class="btn btn-primary">
-    <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-undo"/></svg>
+    <i class="bi bi-arrow-counterclockwise"></i>
     <span>Return & Close</span>
   </button>
 </form>

@@ -27,13 +27,13 @@
         {% crispy formset formset_helper %}
     </div>
     <button type="button" name="add" class="btn btn-outline-primary m-1" id="add-more">
-        <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-plus"/></svg>
+        <i class="bi bi-plus-square"></i>
         <span>Add Picture</span>
     </button>
     <div class="form-buttons m-1">
         <button id="buttonSave" type="submit" value="Save" name="save" class="btn btn-primary" onclick="this.classList.add('loading')">
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-save"/></svg>
+            <i class="bi bi-save2"></i>
             <span class="button-text">Save</span>
         </button>
     </div>

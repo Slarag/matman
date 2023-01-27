@@ -7,7 +7,7 @@
 <h1>
     <span>Schemes ({{ total }})</span>
     <a href="{% url "add-scheme" %}" class="btn btn-outline-primary" aria-current="page">
-        <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-plus"/></svg>
+        <i class="bi bi-plus-square"></i>
         <span>Add</span>
     </a>
 </h1>
@@ -25,9 +25,9 @@
                 <span>{{ name|title }}</span>
                 {% if orderby == name %}
                 {% if direction == 'desc' %}
-                <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-descending"/></svg>
+                <i class="bi bi-caret-down-fill"></i>
                 {% else %}
-                <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-ascending"/></svg>
+                <i class="bi bi-caret-up-fill"></i>
                 {% endif %}
                 {% endif %}
             </a>

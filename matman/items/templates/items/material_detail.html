@@ -18,33 +18,33 @@
 <section class="btn-group" role="group" aria-label="Basic example"">
     {% if not object.get_active_borrow and object.is_active %}
     <a class="btn btn-outline-primary" href="{% url "borrow" object.identifier %}">
-        <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-borrow"/></svg>
+        <i class="bi bi-cart2"></i>
         <span>Borrow</span>
     </a>
     {% endif %}
     <a class="btn btn-outline-primary" href="{% url "material-edit" object.identifier %}">
-        <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#edit"/></svg>
+        <i class="bi bi-pencil-square"></i>
         <spa>Edit</spa>
     </a>
     {% if object.get_active_borrow %}
     <a class="btn btn-outline-primary" href="{% url "return" object.get_active_borrow.pk %}">
-        <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-undo"/></svg>
+        <i class="bi bi-arrow-counterclockwise"></i>
         <spa>Return Item</spa>
     </a>
     {% endif %}
     <a class="btn btn-outline-primary" href="{% url "add-material" %}?reference={{ object.identifier }}">
-        <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#clone"/></svg>
+        <i class="bi bi-intersect"></i>
         <spa>Copy/Clone</spa>
     </a>
     {% if user.is_authenticated %}
     {% if is_bookmarked %}
     <button class="btn btn-outline-primary" type="button" title="Bookmarked" value="{{ object.identifier }}" id="id_button_bookmark_{{ object.identifier }}" onclick="toggle_bookmark(this)">
-        <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#bookmark-check-fill"/></svg>
+        <i class="bi bi-bookmark-check-fill"></i>
         <span class="text">Bookmarked</span>
     </button>
     {% else %}
     <button class="btn btn-outline-primary" type="button" title="Bookmark" value="{{ object.identifier }}" id="id_button_bookmark_{{ object.identifier }}" onclick="toggle_bookmark(this)">
-        <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#bookmark"/></svg>
+        <i class="bi bi-bookmark"></i>
         <span class="text">Bookmark</span>
     </button>
     {% endif %}

@@ -14,9 +14,9 @@
                 <span>{{ title }}</span>
                 {% if orderby == slug %}
                 {% if direction == 'desc' %}
-                <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-descending"/></svg>
+                <i class="bi bi-caret-down-fill"></i>
                 {% else %}
-                <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-ascending"/></svg>
+                <i class="bi bi-caret-up-fill"></i>
                 {% endif %}
                 {% endif %}
             </a>
@@ -41,7 +41,7 @@
         <td class="d-flex flex-row">
             <div class="dropdown p-1">
                 <button class="btn btn-outline-secondary m-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#three-dots"/></svg>
+                  <i class="bi bi-three-dots"></i>
                 </button>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="{% url "borrow" object.identifier %}">Borrow</a></li>
@@ -52,11 +52,11 @@
             {% if user.is_authenticated %}
             {% if object in bookmarked %}
             <button class="btn btn-outline-secondary m-1" type="button" title="Bookmarked" value="{{ object.identifier }}" id="id_button_bookmark_{{ object.identifier }}" onclick="toggle_bookmark(this)">
-                <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#bookmark-check-fill"/></svg>
+                <i class="bi bi-bookmark-check-fill"></i>
             </button>
             {% else %}
             <button class="btn btn-outline-secondary m-1" type="button" title="Bookmark" value="{{ object.identifier }}" id="id_button_bookmark_{{ object.identifier }}" onclick="toggle_bookmark(this)">
-                <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#bookmark"/></svg>
+                <i class="bi bi-bookmark"></i>
             </button>
             {% endif %}
             {% endif %}

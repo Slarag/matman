@@ -1,4 +1,3 @@
-{% load usertags %}
         <nav class="navbar navbar-expand-lg bg-light">
           <div class="container-fluid">
             <a class="navbar-brand" href="{% url "quick-borrow" %}">MatMan</a>
@@ -9,39 +8,39 @@
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a href="{% url "quick-borrow" %}" class="nav-link{% if active == 'quick' %} active{% endif %}" aria-current="page">
-                    <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-borrow"/></svg>
+                    <i class="bi bi-cart2"></i>
                     <span>Borrow/Return</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{% url "list-material" %}" class="nav-link{% if active == 'search' %} active{% endif %}" aria-current="page">
-                        <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-lens"/></svg>
+                        <i class="bi bi-search"></i>
                         <spa>Search</spa>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{% url "add-material" %}" class="nav-link{% if active == 'add' %} active{% endif %}" aria-current="page">
-                        <svg class="bi flex-1" role="img" aria-label="Info:"><use xlink:href="#symbol-plus"/></svg>
+                        <i class="bi bi-plus-square"></i>
                         <span>Add Material</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{% url "home" %}" class="nav-link{% if active == 'home' %} active{% endif %}" aria-current="page">
-                        <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-home"/></svg>
+                        <i class="bi bi-house-door"></i>
                         <span>My Page</span>
                     </a>
                 </li>
                 {% if request.user.is_authenticated %}
                 <li class="nav-item">
                     <a href="{% url "admin:index" %}" class="nav-link{% if active == 'admin' %} active{% endif %}" aria-current="page">
-                    <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-admin"/></svg>
+                    <i class="bi bi-tools"></i>
                     <span>Admin</span>
                     </a>
                 </li>
                 {% endif %}
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-profile"/></svg>
+                    <i class="bi bi-person"></i>
                     <spa>Profile</spa>
                   </a>
                   <ul class="dropdown-menu">
@@ -55,8 +54,7 @@
                             Schemes
                           </a>
                       </li>
-                      {% get_pw_change_allowed  as pw_change_allowed %}
-                      {% if request.user.is_authenticated and pw_change_allowed %}
+                      {% if request.user.is_authenticated and allow_change_pw %}
                       <li>
                           <a href="{% url "password-change" %}" class="dropdown-item{% if active == 'changepw' %} active{% endif %}" aria-current="page">
                             Change Password

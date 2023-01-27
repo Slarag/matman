@@ -22,11 +22,11 @@
     {% csrf_token %}
     {% crispy form %}
     <button type="submit" name="borrow" class="btn btn-primary">
-      <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-borrow"/></svg>
+      <i class="bi bi-cart2"></i>
       <span>Borrow</span>
     </button>
     <button type="submit" name="return" class="btn btn-secondary">
-      <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-undo"/></svg>
+      <i class="bi bi-arrow-counterclockwise"></i>
       <span>Return</span>
     </button>
 </form>

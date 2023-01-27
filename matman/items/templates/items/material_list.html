@@ -29,11 +29,11 @@
         <form method="get">
           {{ filterset.form|crispy }}
           <button type="submit" class="btn btn-primary">
-              <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-lens"/></svg>
+              <i class="bi bi-search"></i>
               <span>Search</span>
           </button>
           <button href="{% url "list-material" %}" class="btn btn-secondary">
-              <svg class="bi flex-shrink-0" role="img" aria-label="Info:"><use xlink:href="#symbol-undo"/></svg>
+              <i class="bi bi-arrow-counterclockwise"></i>
               <span>Reset</span>
           </button>
         </form>
