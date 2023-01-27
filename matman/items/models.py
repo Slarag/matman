@@ -23,6 +23,7 @@ class Scheme(models.Model):
     numlen = models.PositiveIntegerField(default=6)
     postfix = models.CharField(max_length=10, blank=True, default='')
     is_active = models.BooleanField(default=True)
+    history = HistoricalRecords()
 
     # Internal fields
     _id_counter = models.PositiveBigIntegerField(default=0)
