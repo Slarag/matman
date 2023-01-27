@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.conf import settings
 
 from . import forms
 
@@ -17,7 +16,6 @@ def register(request):
             new_user = user_form.save(commit=False)
             new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
-            # Profile.object.create(user=new_user, department=user_form.cleaned_data['department'])
             return render(request, 'registration/register_done.html', {'new_user': new_user})
     else:
         user_form = forms.UserRegistrationForm()

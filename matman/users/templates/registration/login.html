@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load usertags %}
 
 {% block title %}Log-in{% endblock %}
 
@@ -20,10 +21,12 @@
       Login
   </button>
 </form>
+{% get_registration_allowed  as registration_allowed %}
+{% get_pw_reset_allowed  as pw_reset_allowed %}
 {% if registration_allowed %}
 <p>Don't have an account yet? Register <a href="{% url "register" %}">here.</a></p>
 {% endif %}
-{% if reset_allowed %}
+{% if pw_reset_allowed %}
 <p>Forgot your password? Reset <a href="{% url "password_reset" %}">here.</a></p>
 {% endif %}
 {% endblock %}
