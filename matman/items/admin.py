@@ -6,7 +6,7 @@ from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
 from . import models
 
 
-admin.site.register(models.Scheme)
+admin.site.register(models.Scheme, SimpleHistoryAdmin)
 admin.site.register(models.Borrow, SimpleHistoryAdmin)
 # admin.site.register(models.UserProfile)
 admin.site.register(models.MaterialPicture, SimpleHistoryAdmin)
