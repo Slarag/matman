@@ -30,4 +30,5 @@ urlpatterns = [
     path('schemes/<int:pk>/edit', views.scheme.SchemeEditView.as_view(), name='edit-scheme'),
 
     path('settings', views.settings.SettingsView.as_view(), name='profile-settings'),
+    path('about', views.settings.AboutView.as_view(), name='about'),
     ]

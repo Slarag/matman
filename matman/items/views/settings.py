@@ -1,17 +1,20 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.edit import CreateView, UpdateView, DeletionMixin
+from django.views.generic.edit import UpdateView
+from django.views.generic import TemplateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 
 from .. import models
 from .. import forms
+from .mixins import ActiveMixin
 
 
-class SettingsView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class SettingsView(ActiveMixin, LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = models.UserProfile
     form_class = forms.settings.SettingsForm
     template_name_suffix = '_edit'
     success_message = 'Profile settings updated successfully'
+    active_context = 'settings'
 
     def get_success_url(self):
         return reverse_lazy('profile-settings')
@@ -19,7 +22,7 @@ class SettingsView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     def get_object(self, queryset=None):
         return self.request.user.profile
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['active'] = 'settings'
-        return context
+
+class AboutView(ActiveMixin, TemplateView):
+    template_name = "about.html"
+    active_context = 'about'

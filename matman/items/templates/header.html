@@ -30,7 +30,7 @@
                         <span>My Page</span>
                     </a>
                 </li>
-                {% if request.user.is_authenticated %}
+                {% if request.user.is_superuser %}
                 <li class="nav-item">
                     <a href="{% url "admin:index" %}" class="nav-link{% if active == 'admin' %} active{% endif %}" aria-current="page">
                     <i class="bi bi-tools"></i>
@@ -61,6 +61,12 @@
                           </a>
                       </li>
                       {% endif %}
+                      <li><hr class="dropdown-divider"></li>
+                      <li>
+                          <a href="{% url "about" %}" class="dropdown-item{% if active == 'about' %} active{% endif %}" aria-current="page">
+                            About
+                          </a>
+                      </li>
                       <li><hr class="dropdown-divider"></li>
                     {% if request.user.is_authenticated %}
                       <li><a class="dropdown-item" href="{% url "logout" %}" class="dropdown-item">Logout</a></li>

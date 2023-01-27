@@ -26,7 +26,7 @@ This project is still a WIP (Work In Progress).
 - Clone repository
 - Generate a new secret key and set it as environment variable: `export DJANGO_SECRET_KEY="..."`, see [Django documentation](https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-SECRET_KEY) for details
 - Setup database: `python ./manage.py makemigrations && python ./manage.py migrate`
-- Create superuser: `python ./manage.py createsuperuser && python ./manage.py loaddata fixture_initial.yaml`
+- Create superuser: `python ./manage.py createsuperuser`
 
 ## Serve app with Caddy and Daphne (Example)
 

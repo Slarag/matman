@@ -14,22 +14,18 @@ from django.forms.models import model_to_dict
 from .. import models
 from .. import forms
 from .. import filters
+from .mixins import ActiveMixin, ViewFormsetHelperMixin
 
 CronObject = namedtuple('CronObject', ['timestamp', 'type', 'object'])
 
 
-class MaterialCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+class MaterialCreateView(ActiveMixin, ViewFormsetHelperMixin, LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = models.Material
     template_name_suffix = '_create'
     form_class = forms.material.MaterialForm
     formset_class = forms.pictures.PictureFormset
     formset_helper = forms.pictures.PictureFormSetHelper
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['formset_helper'] = self.formset_helper()
-        context['active'] = 'add'
-        return context
+    active_context = 'add'
 
     def get_reference(self):
         try:
@@ -119,7 +115,7 @@ class MaterialCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
 
 # Important: No login required for details
-class MaterialDetailView(DetailView):
+class MaterialDetailView(ActiveMixin, DetailView):
     model = models.Material
     template_name_suffix = '_detail'
     slug_field = 'identifier'
@@ -161,7 +157,7 @@ class MaterialDetailView(DetailView):
         )
 
 
-class MaterialEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class MaterialEditView(ActiveMixin, ViewFormsetHelperMixin, LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = models.Material
     template_name_suffix = '_edit'
     form_class = forms.material.MaterialEditForm
@@ -174,11 +170,6 @@ class MaterialEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     def get_success_message(self, cleaned_data):
         url = self.object.get_absolute_url()
         return f'Successfully updated material <a href="{url}" class="alert-link">{self.object}</a>'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['formset_helper'] = self.formset_helper()
-        return context
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object(self.queryset)
@@ -235,11 +226,12 @@ class FilteredListView(ListView):
         return context
 
 
-class MaterialListView(FilteredListView):
+class MaterialListView(ActiveMixin, FilteredListView):
     model = models.Material
     fields = ['serial_number', 'part_number', 'manufacturer', 'scheme', 'owner', 'tags', 'is_active']
     filterset_class = filters.ItemFilter
     template_name_suffix = '_list'
+    active_context = 'search'
 
     def get_paginate_by(self, queryset):
         return self.request.GET.get('items', 10)
@@ -254,16 +246,8 @@ class MaterialListView(FilteredListView):
             orderby = f'-{orderby}'
         return orderby
 
-    # def get_template_names(self):
-    #     if self.request.GET.get('view', 'list') == 'cards':
-    #         self.template_name_suffix = '_list_cards'
-    #     else:
-    #         self.template_name_suffix = '_list'
-    #     return super().get_template_names()
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['active'] = 'search'
         context['bookmarked'] = []
         if self.request.user.is_authenticated:
             context['bookmarked'] = self.request.user.profile.bookmarks.all()
@@ -271,11 +255,8 @@ class MaterialListView(FilteredListView):
         direction = self.request.GET.get('direction', 'asc')
         if direction not in ['asc', 'desc']:
             direction = 'asc'
-
         orderby = self.request.GET.get(f'orderby', 'identifier')
-
         context['items'] = self.get_paginate_by(self.queryset)
         context['direction'] = direction,
         context['orderby'] = orderby
-            # 'total': self.get_queryset().count(),
         return context

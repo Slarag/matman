@@ -19,12 +19,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
-
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 INSTALLED_APPS = [
@@ -76,7 +71,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'matman.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 DATABASES = {
@@ -85,7 +79,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -104,7 +97,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 LANGUAGE_CODE = 'de-de'
@@ -121,15 +113,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'files', 'static/')
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = 'home'
-LOGIN_URL = 'login'
-
+# CRISPY
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # TAGGIT
 TAGGIT_CASE_INSENSITIVE = True
 
+# (User uploaded) media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'files', 'media/')
 
@@ -138,19 +129,18 @@ CELERY_TIMEZONE = "Europe/Berlin"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
+# login and registration config
+LOGIN_REDIRECT_URL = 'home'
+LOGIN_URL = 'login'
 ALLOW_REGISTRATION = True
 ALLOW_CHANGE_PASSWORD = True
 ALLOW_RESET_PASSWORD = True
 
-ADMINS = (
-    ('CHANGEME', 'CHANGEME@CHANGEME.com'),
-)
-
+# Security
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = True
 # SECURE_HSTS_SECONDS = 3600
-
 DISABLE_SEC = os.environ.get('DJANGO_DISABLE_SEC', '').lower() == 'true'
 if DISABLE_SEC:
     CSRF_COOKIE_SECURE = False
@@ -167,7 +157,7 @@ if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 EXTERNAL_RESOURCES = {
-    'bootstrap': {
+    'Bootstrap5': {
         'js': [
             {
                 'href': 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js',
@@ -184,7 +174,7 @@ EXTERNAL_RESOURCES = {
             }
         ]
     },
-    'easy_mde': {
+    'EasyMDE': {
         'js': [
             {
                 'href': 'https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js',

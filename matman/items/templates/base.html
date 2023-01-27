@@ -4,17 +4,13 @@
 <head>
     <title>{% block title %}{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    {% for resource_name, resource in resources.items %}
-    {% for css_sheet in resource.css %}
+    {% for resource_name, resource in resources.items %} {% for css_sheet in resource.css %}
     <!--  css for {{ resource_name }}  -->
     <link href="{{ css_sheet.href }}" rel="stylesheet" crossorigin="anonymous"{% if css_sheet.integrity %} integrity="{{ css_sheet.integrity }}"{% endif %}>
-    {% endfor %}
-    {% endfor %}
-
+    {% endfor %} {% endfor %}
+    <!-- Local css style -->
     <link href="{% static "css/base.css" %}" rel="stylesheet">
-    {% block stylesheets %}
-    {% endblock %}
+    {% block stylesheets %} {% endblock %}
 </head>
 <body class="d-flex flex-column h-100">
     <header>
@@ -25,16 +21,10 @@
         {% block content %}
         {% endblock %}
     </main>
-    <footer class="footer mt-auto py-3 bg-light p-3">
-        {% include "footer.html"  %}
-    </footer>
-    {% for resource_name, resource in resources.items %}
-    {% for js in resource.js %}
+    {% for resource_name, resource in resources.items %}{% for js in resource.js %}
     <!--  js for {{ resource_name }}  -->
     <script src="{{ js.href }}" crossorigin="anonymous"{% if js.integrity %} integrity="{{ js.integrity }}"{% endif %}></script>
-    {% endfor %}
-    {% endfor %}
-    {% block scripts %}
-    {% endblock %}
+    {% endfor %}{% endfor %}
+    {% block scripts %} {% endblock %}
 </body>
 </html>

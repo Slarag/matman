@@ -4,11 +4,13 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from .. import models
+from .mixins import ActiveMixin
 
 
-class HomeView(LoginRequiredMixin, TemplateView):
+class HomeView(ActiveMixin, LoginRequiredMixin, TemplateView):
     template_name = "items/profile.html"
     is_home = True
+    active_context = 'home'
 
     def get_user(self):
         return self.request.user
@@ -22,7 +24,6 @@ class HomeView(LoginRequiredMixin, TemplateView):
             context['bookmarked'] = self.request.user.profile.bookmarks.all()
 
         context['user'] = user
-        context['active'] = 'home' if self.is_home else ''
         context['rubrics'] = {
             'borrowed': {
                 'query': models.Material.objects.filter(borrows__borrowed_by=user,
@@ -73,6 +74,7 @@ class HomeView(LoginRequiredMixin, TemplateView):
 
 class ProfileView(HomeView):
     is_home = False
+    active_context = ''
 
     def get_user(self):
         return User.objects.get(username=self.kwargs['user'])
