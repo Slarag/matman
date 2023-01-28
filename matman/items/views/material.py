@@ -22,7 +22,7 @@ CronObject = namedtuple('CronObject', ['timestamp', 'type', 'object'])
 class MaterialCreateView(ActiveMixin, ViewFormsetHelperMixin, LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = models.Material
     template_name_suffix = '_create'
-    form_class = forms.material.MaterialForm
+    form_class = forms.material.MaterialCreateForm
     formset_class = forms.pictures.PictureFormset
     formset_helper = forms.pictures.PictureFormSetHelper
     active_context = 'add'

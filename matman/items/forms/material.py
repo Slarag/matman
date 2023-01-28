@@ -5,7 +5,7 @@ from crispy_forms.layout import Layout, Field, Div
 from .. import models
 
 
-class MaterialForm(forms.ModelForm):
+class MaterialCreateForm(forms.ModelForm):
     reference = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     def __init__(self, *args, **kwargs):
@@ -46,7 +46,6 @@ class MaterialEditForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(
-            Field('reference'),
             Div(
                 Div(Field('serial_number', placeholder="Serial Number"), css_class='col'),
                 Div(Field('part_number', placeholder='Material Number'), css_class='col'),

@@ -8,7 +8,7 @@ from .. import models
 PictureFormset = forms.inlineformset_factory(models.Material, models.MaterialPicture,
                                              fields=['file', 'title', 'description'],
                                              extra=1, can_order=True)
-PictureFormset.ordering_widget = forms.HiddenInput()
+# PictureFormset.ordering_widget = forms.HiddenInput()
 
 
 class PictureFormSetHelper(FormHelper):
@@ -18,9 +18,9 @@ class PictureFormSetHelper(FormHelper):
         self.form_class = 'formset-container'
         self.layout = Layout(
             Div(
-                Field('ORDER'),
                 Field('title', placeholder='Title'),
                 Field('description'),
+                Field('ORDER'),
                 Field('file'),
                 Field('DELETE'),
                 # id and material are automatically added when form is initialized with instance keyword
