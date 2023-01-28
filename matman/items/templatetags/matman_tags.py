@@ -71,3 +71,8 @@ def sortable_fields():
         ('owner', 'Owner'),
     ]
 
+
+@register.inclusion_tag('bool_icon.html')
+def bool_icon(value):
+    return {'value': bool(value)}
+

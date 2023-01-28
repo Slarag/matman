@@ -49,6 +49,7 @@
         <td>{{ object.prefix }}</td>
         <td>{{ object.numlen }}</td>
         <td>{{ object.postfix }}</td>
+        <td>{% bool_icon object.is_active %}</td>
     </tr>
     {% endfor %}
 </table>

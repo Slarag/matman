@@ -12,7 +12,7 @@ from .mixins import ActiveMixin
 class SchemeListView(ActiveMixin, ListView):
     model = models.Scheme
     template_name_suffix = '_list'
-    fields = ['name', 'prefix', 'numlen', 'postfix', 'is_active']
+    fields = ['name', 'description', 'prefix', 'numlen', 'postfix', 'is_active']
     active_context = 'schemes'
 
     def get_paginate_by(self, queryset):

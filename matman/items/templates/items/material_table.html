@@ -23,6 +23,7 @@
         </th>
         {% endfor %}
         <th>Tags</th>
+        <th>Active</th>
         <th></th>
     </tr>
     {% for object in object_list %}
@@ -38,6 +39,7 @@
             <a href="{% url "list-material" %}?tags__name={{ tag }}" class="badge text-bg-light">{{ tag }}</a>
             {% endfor %}
         </td>
+        <td>{% bool_icon object.is_active %}</td>
         <td class="d-flex flex-row">
             <div class="dropdown p-1">
                 <button class="btn btn-outline-secondary m-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
