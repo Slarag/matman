@@ -68,4 +68,4 @@
     <tr><td>None</td></tr>
     {% endfor %}
 </table>
-{% include "pagination.html" with page_obj=page prefix=prefix %}
+{% include "pagination.html" with page_obj=page prefix=prefix onclick="checkCollapsables(this)" %}

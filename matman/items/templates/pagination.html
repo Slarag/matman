@@ -3,8 +3,8 @@
 <nav aria-label="Page navigation example">
     <ul class="pagination">
         {% if page_obj.has_previous %}
-        <li class="page-item"><a class="page-link" href="{% update_params prefix|add:"page" "1" %}">First</a></li>
-        <li class="page-item"><a class="page-link" href="{% update_params prefix|add:"page" page_obj.previous_page_number %}">Previous</a></li>
+        <li class="page-item"><a class="page-link" href="{% update_params prefix|add:"page" "1" %}"{% if onclick %} onclick="{{ onclick }}"{% endif %}>First</a></li>
+        <li class="page-item"><a class="page-link" href="{% update_params prefix|add:"page" page_obj.previous_page_number %}"{% if onclick %} onclick="{{ onclick }}"{% endif %}>Previous</a></li>
         {% else %}
         <li class="page-item disabled"><a class="page-link" href="#">First</a></li>
         <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
@@ -14,24 +14,24 @@
           {% if page_obj.number == i %}
             <li class="page-item active"><a class="page-link" href="#">{{ i }}</a></li>
           {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
-            <li class="page-item"><a class="page-link" href="{% update_params prefix|add:"page" i %}">{{ i }}</a></li>
+            <li class="page-item"><a class="page-link" href="{% update_params prefix|add:"page" i %}"{% if onclick %} onclick="{{ onclick }}"{% endif %}>{{ i }}</a></li>
           {% endif %}
         {% endfor %}
 
         {% if page_obj.has_next %}
-        <li class="page-item"><a class="page-link" href="{% update_params prefix|add:"page" page_obj.next_page_number %}">Next</a></li>
-        <li class="page-item"><a class="page-link" href="{% update_params prefix|add:"page" page_obj.paginator.num_pages %}">Last</a></li>
+        <li class="page-item" ><a class="page-link" href="{% update_params prefix|add:"page" page_obj.next_page_number %}"{% if onclick %} onclick="{{ onclick }}"{% endif %}>Next</a></li>
+        <li class="page-item"><a class="page-link" href="{% update_params prefix|add:"page" page_obj.paginator.num_pages %}{% if onclick %} onclick="{{ onclick }}"{% endif %}">Last</a></li>
         {% else %}
-        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
-        <li class="page-item disabled"><a class="page-link" href="#">Last</a></li>
+        <li class="page-item disabled"><a class="page-link" href="#"{% if onclick %} onclick="{{ onclick }}"{% endif %}>Next</a></li>
+        <li class="page-item disabled"><a class="page-link" href="#"{% if onclick %} onclick="{{ onclick }}"{% endif %}>Last</a></li>
         {% endif %}
     </ul>
 </nav>
 {% endif %}
 <span>
     Items per page:
-    <a class="" href="{% update_params prefix|add:"items" 10 %}">10</a>,
-    <a class="" href="{% update_params prefix|add:"items" 20 %}">20</a>,
-    <a class="" href="{% update_params prefix|add:"items" 50 %}">50</a>,
-    <a class="" href="{% update_params prefix|add:"items" 100 %}">100</a>
+    <a class="link-primary" href="{% update_params prefix|add:"items" 10 %}"{% if onclick %} onclick="{{ onclick }}"{% endif %}>10</a>,
+    <a class="link-primary" href="{% update_params prefix|add:"items" 20 %}"{% if onclick %} onclick="{{ onclick }}"{% endif %}>20</a>,
+    <a class="link-primary" href="{% update_params prefix|add:"items" 50 %}"{% if onclick %} onclick="{{ onclick }}"{% endif %}>50</a>,
+    <a class="link-primary" href="{% update_params prefix|add:"items" 100 %}"{% if onclick %} onclick="{{ onclick }}"{% endif %}>100</a>
 </span>

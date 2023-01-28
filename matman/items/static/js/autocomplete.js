@@ -277,8 +277,15 @@ function checkCollapsables(element){
 
     document.querySelectorAll('[id^=id_collapse_]').forEach(element => {
         var parameter = element.id.split('_')[2] + '_open';
-        var value = String(element.classList.contains('show'));
-        urlParams.set(parameter, value);
+//        var value = String(element.classList.contains('show'));
+//        urlParams.set(parameter, value);
+
+        if (element.classList.contains('show')){
+            urlParams.set(parameter, 'true');
+        }
+        else if (urlParams.has(parameter)){
+            urlParams.delete(parameter);
+        }
     });
     console.log(urlParams.toString());
     window.location = '?' + urlParams.toString();
