@@ -70,7 +70,7 @@
         </tr>
         <tr>
             <th>Owner:</th>
-            <td><a href="{% url "profile" object.owner %}">{{ object.owner }}</a></td>
+            <td><a href="{% url "profile" object.owner %}">{{ object.owner }}  class="link-primary"</a></td>
         </tr>
         <tr>
             <th>Tags:</th>
@@ -87,7 +87,7 @@
         <tr>
             <th>Borrowed by:</th>
             {% if borrow %}
-            <td><a href="{% url "profile" borrow.borrowed_by %}">{{ borrow.borrowed_by }}</a></td>
+            <td><a href="{% url "profile" borrow.borrowed_by %}" class="link-primary">{{ borrow.borrowed_by }}</a></td>
             {% else %}
             <td></td>
             {% endif %}

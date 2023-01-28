@@ -4,7 +4,7 @@
         {% sortable_fields as fs %}
         {% for slug,title in fs %}
         <th>
-            <a id="id_{{ prefix }}orderby_{{ slug }}"
+            <a id="id_{{ prefix }}orderby_{{ slug }}"  class="link-secondary"
                {% if orderby == slug and direction == 'asc' %}
                href="{% update_params prefix|add:"orderby" slug prefix|add:"direction" "desc"  %}"
                {% else %}
@@ -27,12 +27,12 @@
     </tr>
     {% for object in object_list %}
     <tr>
-        <th><a href="{% url "material-detail" object.identifier %}">{{ object.identifier }}</a></th>
+        <th><a href="{% url "material-detail" object.identifier %}" class="link-primary">{{ object.identifier }}</a></th>
         <td>{{ object.serial_number }}</td>
         <td>{{ object.part_number }}</td>
         <td>{{ object.manufacturer }}</td>
         <td>{{ object.location }}</td>
-        <td><a href="{% url "profile" object.owner %}">{{ object.owner }}</a></td>
+        <td><a href="{% url "profile" object.owner %}" class="link-primary">{{ object.owner }}</a></td>
         <td>
             {% for tag in object.tags.all %}
             <a href="{% url "list-material" %}?tags__name={{ tag }}" class="badge text-bg-light">{{ tag }}</a>

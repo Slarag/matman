@@ -220,10 +220,3 @@ class Comment(models.Model):
 
     def get_absolute_url(self):
         return reverse('comment-edit', kwargs={'pk': self.pk})
-
-
-# # ToDo:
-# class MaterialBookmark(models.Model):
-#     # Model fields
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='bookmarks')
-#     material = models.ForeignKey(Material, on_delete=models.CASCADE, related_name='bookmarks')

@@ -2,7 +2,7 @@
 <div class="toast show my-1 w-100" role="alert" aria-live="assertive" aria-atomic="true">
   <div class="toast-header">
     <i class="bi bi-cart2"></i>
-    <strong class="me-auto">Borrow by <a href="{% url "profile" borrow.borrowed_by %}">{{ borrow.borrowed_by.username }}</a></strong>
+    <strong class="me-auto">Borrow by <a href="{% url "profile" borrow.borrowed_by %}" class="link-primary">{{ borrow.borrowed_by.username }}</a></strong>
     <small class="mx-2">
       {{ borrow.borrowed_at|date:"D y-m-d H:m" }}
       {% if borrow.history.first != borrow.history.last %}

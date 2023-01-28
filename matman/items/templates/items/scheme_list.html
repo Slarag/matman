@@ -17,7 +17,7 @@
     <tr>
         {% for name in fields %}
         <th>
-            <a id="id_orderby_{{ name }}"
+            <a id="id_orderby_{{ name }}" class="link-secondary"
                {% if orderby == name and rubric.direction == 'asc' %}
                href="{% update_params "orderby" name "direction" "desc"  %}"
                {% else %}
@@ -40,7 +40,7 @@
     <tr>
         <th>
             {% if perms.items.schemes_change %}
-            <a href="{% url "edit-scheme" object.id %}">{{ object.name }}</a>
+            <a href="{% url "edit-scheme" object.id %}" class="link-primary">{{ object.name }}</a>
             {% else %}
             {{ object.name }}
             {% endif %}

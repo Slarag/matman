@@ -2,7 +2,7 @@
 <div class="toast show my-1 w-100" role="alert" aria-live="assertive" aria-atomic="true">
   <div class="toast-header">
     <i class="bi bi-pencil-square"></i>
-    <strong class="me-auto">Comment by <a href="{% url "profile" comment.author %}">{{ user.username }}</a></strong>
+    <strong class="me-auto">Comment by <a href="{% url "profile" comment.author %}"  class="link-primary">{{ user.username }}</a></strong>
     <small class="mx-2">
       {{ comment.creation_date|date:"D y-m-d H:m" }}
       {% if comment.history.first != comment.history.last %}
