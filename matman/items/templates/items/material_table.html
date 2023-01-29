@@ -29,6 +29,7 @@
     {% for object in object_list %}
     <tr>
         <th><a href="{% url "material-detail" object.identifier %}" class="link-primary">{{ object.identifier }}</a></th>
+        <td>{{ object.short_text }}</td>
         <td>{{ object.serial_number }}</td>
         <td>{{ object.part_number }}</td>
         <td>{{ object.manufacturer }}</td>

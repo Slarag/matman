@@ -63,6 +63,7 @@ def init_mde(css_id):
 def sortable_fields():
     return [
         ('identifier', 'ID'),
+        ('short_text', 'Short Text'),
         ('serial_number', 'Serial Number'),
         ('part_number', 'Part Number'),
         ('manufacturer', 'Manufacturer'),
