@@ -18,7 +18,7 @@
         {% for name in fields %}
         <th>
             <a id="id_orderby_{{ name }}" class="link-secondary"
-               {% if orderby == name and rubric.direction == 'asc' %}
+               {% if orderby == name and direction == 'asc' %}
                href="{% update_params "orderby" name "direction" "desc"  %}"
                {% else %}
                href="{% update_params "orderby" name "direction" "asc"  %}"
