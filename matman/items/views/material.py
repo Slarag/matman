@@ -256,7 +256,7 @@ class MaterialListView(ActiveMixin, FilteredListView):
         if direction not in ['asc', 'desc']:
             direction = 'asc'
         orderby = self.request.GET.get(f'orderby', 'identifier')
-        context['items'] = self.get_paginate_by(self.queryset)
+        # context['items'] = self.get_paginate_by(self.queryset)
         context['direction'] = direction,
         context['orderby'] = orderby
         return context

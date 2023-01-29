@@ -59,12 +59,17 @@ class HomeView(ActiveMixin, LoginRequiredMixin, TemplateView):
             data['query'] = data['query'].order_by(orderby)
             data['total'] = data['query'].count()
             paginator = Paginator(data['query'], data['items'])
+            page_number = self.request.GET.get(f'{name}_page', 1)
             try:
-                page = paginator.page(self.request.GET.get(f'{name}_page', 1))
+                page = paginator.page(page_number)
+                page_obj = paginator.get_page(page_number)
             except PageNotAnInteger:
                 page = paginator.page(1)
+                page_obj = paginator.get_page(1)
             except EmptyPage:
                 page = paginator.page(paginator.num_pages)
+                page_obj = paginator.get_page(paginator.num_pages)
+            data['page_obj'] = page_obj
             data['object_list'] = page
 
         context['is_home'] = self.is_home
