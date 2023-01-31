@@ -30,7 +30,8 @@ class ItemFilter(django_filters.FilterSet):
         to_field_name='name',
         queryset=Tag.objects.all(),
         widget=TagWidget,
-        label='tags'
+        label='tags',
+        conjoined=True,
     )
     is_active = django_filters.BooleanFilter()
 
