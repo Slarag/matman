@@ -20,11 +20,11 @@ class TagWidget(django_filters.widgets.CSVWidget):
 
 
 class ItemFilter(django_filters.FilterSet):
-    identifier = django_filters.CharFilter(lookup_expr='iexact')
-    serial_number = django_filters.CharFilter(lookup_expr='iexact')
-    #part_number = django_filters.CharFilter(lookup_expr='iexact')
-    # manufacturer = django_filters.CharFilter(lookup_expr='iexact')
-    # location = django_filters.CharFilter(lookup_expr='iexact')
+    identifier = django_filters.CharFilter(lookup_expr='icontains')
+    serial_number = django_filters.CharFilter(lookup_expr='icontains')
+    part_number = django_filters.CharFilter(lookup_expr='icontains')
+    manufacturer = django_filters.CharFilter(lookup_expr='icontains')
+    location = django_filters.CharFilter(lookup_expr='icontains')
     tags__name = django_filters.ModelMultipleChoiceFilter(
         field_name='tags__name',
         to_field_name='name',
