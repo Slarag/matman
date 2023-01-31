@@ -20,17 +20,17 @@ class TagWidget(django_filters.widgets.CSVWidget):
 
 
 class ItemFilter(django_filters.FilterSet):
-    identifier = django_filters.CharFilter(lookup_expr='icontains')
-    serial_number = django_filters.CharFilter(lookup_expr='icontains')
-    part_number = django_filters.CharFilter(lookup_expr='icontains')
-    manufacturer = django_filters.CharFilter(lookup_expr='icontains')
-    location = django_filters.CharFilter(lookup_expr='icontains')
+    identifier = django_filters.CharFilter(lookup_expr='icontains', label='Identifier')
+    serial_number = django_filters.CharFilter(lookup_expr='icontains', label='Serial Number')
+    part_number = django_filters.CharFilter(lookup_expr='icontains', label='part_number')
+    manufacturer = django_filters.CharFilter(lookup_expr='icontains', label='Manufacturer')
+    location = django_filters.CharFilter(lookup_expr='icontains', label='Location')
     tags__name = django_filters.ModelMultipleChoiceFilter(
         field_name='tags__name',
         to_field_name='name',
         queryset=Tag.objects.all(),
         widget=TagWidget,
-        label='tags',
+        label='Tags',
         conjoined=True,
     )
     is_active = django_filters.BooleanFilter()
