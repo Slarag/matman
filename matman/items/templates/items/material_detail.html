@@ -132,10 +132,11 @@
         {% endif %}
         {% endfor %}
     </section>
-
+    {% if user.is_authenticated %}
     <section>
         <h2 class="mt-4">Add Comment</h2>
         {% crispy comment_form %}
     </section>
+    {% endif %}
 {% endwith %}
 {% endblock %}
