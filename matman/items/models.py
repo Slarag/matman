@@ -70,21 +70,22 @@ class Scheme(models.Model):
 
 class Material(models.Model):
     # Model fields
-    identifier = models.SlugField(unique=True, editable=False)
-    short_text = models.CharField(max_length=100, blank=True)
-    serial_number = models.CharField(max_length=30, blank=True)
-    revision = models.CharField(max_length=30, blank=True)
-    part_number = models.CharField(max_length=30, blank=True)
-    manufacturer = models.CharField(max_length=30, blank=True)
-    description = models.TextField(blank=True)
+    identifier = models.SlugField('ID', unique=True, editable=False)
+    short_text = models.CharField('Short Text', max_length=100, blank=True)
+    serial_number = models.CharField('Serial Number', max_length=30, blank=True)
+    revision = models.CharField('Revision/Version', max_length=30, blank=True)
+    part_number = models.CharField('Part Number', max_length=30, blank=True)
+    manufacturer = models.CharField('Manufacturer', max_length=30, blank=True)
+    description = models.TextField('Description', blank=True)
     scheme = models.ForeignKey(Scheme, on_delete=models.SET_NULL, null=True)
-    location = models.CharField(max_length=100, blank=True)
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, related_name='owned_materials', null=True, blank=True)
-    tags = TaggableManager(blank=True)
-    is_active = models.BooleanField(default=True)
-    contains = models.ManyToManyField('self', related_name='contained_in', symmetrical=False, blank=True)
-    creation_date = models.DateTimeField(auto_now_add=True)
-    last_updated = models.DateTimeField(auto_now=True)
+    location = models.CharField('Location', max_length=100, blank=True)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Owner', on_delete=models.SET_NULL,
+                              related_name='owned_materials', null=True, blank=True)
+    tags = TaggableManager('Tags', blank=True)
+    is_active = models.BooleanField('Active', default=True)
+    # contains = models.ManyToManyField('self', related_name='contained_in', symmetrical=False, blank=True)
+    creation_date = models.DateTimeField('Creation Date', auto_now_add=True)
+    last_updated = models.DateTimeField('Last edited', auto_now=True)
     history = HistoricalRecords()
 
     # # Model managers
@@ -114,10 +115,11 @@ class Material(models.Model):
 
 class MaterialPicture(models.Model):
     # Model fields
-    material = HistoricForeignKey(Material, related_name='pictures', on_delete=models.CASCADE, blank=True)
-    title = models.CharField(max_length=30, blank=True)
-    description = models.CharField(max_length=100, blank=True)
-    file = models.ImageField(upload_to='pictures/')
+    material = HistoricForeignKey(Material, verbose_name='Item', related_name='pictures',
+                                  on_delete=models.CASCADE, blank=True)
+    title = models.CharField('Title', max_length=30, blank=True)
+    description = models.CharField('Description', max_length=100, blank=True)
+    file = models.ImageField(upload_to='pictures/', verbose_name='File')
     history = HistoricalRecords()
 
     @property
@@ -146,16 +148,16 @@ class DueSoonManager(models.Manager):
 
 class Borrow(models.Model):
     # Model fields
-    item = models.ForeignKey(Material, on_delete=models.CASCADE, related_name='borrows')
-    borrowed_at = models.DateTimeField(auto_now_add=True)
-    borrowed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
-                                    related_name='borrows')
-    notes = models.TextField(blank=True)
-    usage_location = models.CharField(max_length=100, blank=True, null=False)
-    estimated_returndate = models.DateField(blank=True, null=True)
-    returned_at = models.DateTimeField(blank=True, null=True)
-    returned_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True,
-                                    related_name='borrows_returned')
+    item = models.ForeignKey(Material, verbose_name='Item', on_delete=models.CASCADE, related_name='borrows')
+    borrowed_at = models.DateTimeField('Borrowed at', auto_now_add=True)
+    borrowed_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Borrowed by',
+                                    on_delete=models.SET_NULL, null=True, related_name='borrows')
+    notes = models.TextField('Notes', blank=True)
+    usage_location = models.CharField('Usage Location', max_length=100, blank=True, null=False)
+    estimated_returndate = models.DateField('Estimated return date', blank=True, null=True)
+    returned_at = models.DateTimeField('Returned at', blank=True, null=True)
+    returned_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Returned by', on_delete=models.SET_NULL,
+                                    null=True, related_name='borrows_returned')
     history = HistoricalRecords()
 
     objects = models.Manager()
