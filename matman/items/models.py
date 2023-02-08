@@ -193,7 +193,7 @@ class UserProfile(models.Model):
     department = models.CharField(max_length=30, blank=True)
     about = models.TextField(blank=True)
 
-    bookmarks = models.ManyToManyField(Item, related_name='bookmarked_by', blank=True, null=True)
+    bookmarks = models.ManyToManyField(Item, related_name='bookmarked_by', blank=True)
 
     def __str__(self):
         return f'Profile for user {self.user.username}'
