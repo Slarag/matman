@@ -9,11 +9,11 @@ urlpatterns = [
 
     path('comment/<int:pk>/edit', views.comment.CommentEditView.as_view(), name='comment-edit'),
 
-    path('material', views.material.MaterialListView.as_view(), name='list-material'),
-    path('material/add', views.material.MaterialCreateView.as_view(), name='add-material'),
-    path('material/<slug:identifier>/detail', views.material.MaterialDetailView.as_view(), name='material-detail'),
-    path('material/<slug:identifier>/edit', views.material.MaterialEditView.as_view(), name='material-edit'),
-    path('material/<slug:identifier>/borrow', views.borrow.BorrowCreateView.as_view(), name='borrow'),
+    path('item', views.item.ItemListView.as_view(), name='list-item'),
+    path('item/add', views.item.ItemCreateView.as_view(), name='add-item'),
+    path('item/<slug:identifier>/detail', views.item.ItemDetailView.as_view(), name='item-detail'),
+    path('item/<slug:identifier>/edit', views.item.ItemEditView.as_view(), name='item-edit'),
+    path('item/<slug:identifier>/borrow', views.borrow.BorrowCreateView.as_view(), name='borrow'),
 
     path('borrow/<int:pk>/edit', views.borrow.BorrowEditView.as_view(), name='borrow-edit'),
     path('borrow/<int:pk>/close', views.borrow.BorrowCloseView.as_view(), name='return'),

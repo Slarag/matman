@@ -68,7 +68,7 @@ class Scheme(models.Model):
         return reverse('edit-scheme', kwargs={'pk': self.id})
 
 
-class Material(models.Model):
+class Item(models.Model):
     # Model fields
     identifier = models.SlugField('ID', unique=True, editable=False)
     short_text = models.CharField('Short Text', max_length=100, blank=True)
@@ -80,7 +80,7 @@ class Material(models.Model):
     scheme = models.ForeignKey(Scheme, on_delete=models.SET_NULL, null=True)
     location = models.CharField('Location', max_length=100, blank=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Owner', on_delete=models.SET_NULL,
-                              related_name='owned_materials', null=True, blank=True)
+                              related_name='owned_items', null=True, blank=True)
     tags = TaggableManager('Tags', blank=True)
     is_active = models.BooleanField('Active', default=True)
     # contains = models.ManyToManyField('self', related_name='contained_in', symmetrical=False, blank=True)
@@ -101,7 +101,7 @@ class Material(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('material-detail', kwargs={'identifier': self.identifier})
+        return reverse('item-detail', kwargs={'identifier': self.identifier})
 
     def get_active_borrow(self):
         try:
@@ -113,9 +113,9 @@ class Material(models.Model):
         return user.profile.bookmarks.filter(pk=self.pk).exists()
 
 
-class MaterialPicture(models.Model):
+class ItemPicture(models.Model):
     # Model fields
-    material = HistoricForeignKey(Material, verbose_name='Item', related_name='pictures',
+    item = HistoricForeignKey(Item, verbose_name='Item', related_name='pictures',
                                   on_delete=models.CASCADE, blank=True)
     title = models.CharField('Title', max_length=30, blank=True)
     description = models.CharField('Description', max_length=100, blank=True)
@@ -148,7 +148,7 @@ class DueSoonManager(models.Manager):
 
 class Borrow(models.Model):
     # Model fields
-    item = models.ForeignKey(Material, verbose_name='Item', on_delete=models.CASCADE, related_name='borrows')
+    item = models.ForeignKey(Item, verbose_name='Item', on_delete=models.CASCADE, related_name='borrows')
     borrowed_at = models.DateTimeField('Borrowed at', auto_now_add=True)
     borrowed_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='Borrowed by',
                                     on_delete=models.SET_NULL, null=True, related_name='borrows')
@@ -193,19 +193,19 @@ class UserProfile(models.Model):
     department = models.CharField(max_length=30, blank=True)
     about = models.TextField(blank=True)
 
-    bookmarks = models.ManyToManyField(Material, related_name='bookmarked_by', blank=True, null=True)
+    bookmarks = models.ManyToManyField(Item, related_name='bookmarked_by', blank=True, null=True)
 
     def __str__(self):
         return f'Profile for user {self.user.username}'
 
-    def has_bookmarked(self, material: Material):
-        return self.bookmarks.filter(pk=material.pk).exists()
+    def has_bookmarked(self, item: Item):
+        return self.bookmarks.filter(pk=item.pk).exists()
 
-    def bookmark(self, material: Material):
-        self.bookmarks.add(material)
+    def bookmark(self, item: Item):
+        self.bookmarks.add(item)
 
-    def unbookmark(self, material: Material):
-        self.bookmarks.remove(material)
+    def unbookmark(self, item: Item):
+        self.bookmarks.remove(item)
 
 
 class Comment(models.Model):
@@ -214,11 +214,11 @@ class Comment(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     # last_updated = models.DateTimeField(auto_now=True)
     text = models.TextField()
-    material = models.ForeignKey(Material, related_name='comments', on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, related_name='comments', on_delete=models.CASCADE)
     history = HistoricalRecords()
 
     def __str__(self):
-        return f'Comment by {self.author.username} on {self.material}'
+        return f'Comment by {self.author.username} on {self.item}'
 
     def get_absolute_url(self):
         return reverse('comment-edit', kwargs={'pk': self.pk})

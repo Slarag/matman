@@ -19,10 +19,10 @@ from .mixins import ActiveMixin, ViewFormsetHelperMixin
 CronObject = namedtuple('CronObject', ['timestamp', 'type', 'object'])
 
 
-class MaterialCreateView(ActiveMixin, ViewFormsetHelperMixin, LoginRequiredMixin, SuccessMessageMixin, CreateView):
-    model = models.Material
+class ItemCreateView(ActiveMixin, ViewFormsetHelperMixin, LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = models.Item
     template_name_suffix = '_create'
-    form_class = forms.material.MaterialCreateForm
+    form_class = forms.item.ItemCreateForm
     formset_class = forms.pictures.PictureFormset
     formset_helper = forms.pictures.PictureFormSetHelper
     active_context = 'add'
@@ -30,7 +30,7 @@ class MaterialCreateView(ActiveMixin, ViewFormsetHelperMixin, LoginRequiredMixin
     def get_reference(self):
         try:
             reference_id = self.request.GET.get('reference')
-            reference = models.Material.objects.get(identifier=reference_id)
+            reference = models.Item.objects.get(identifier=reference_id)
         except (ObjectDoesNotExist, KeyError):
             return None
         else:
@@ -51,11 +51,11 @@ class MaterialCreateView(ActiveMixin, ViewFormsetHelperMixin, LoginRequiredMixin
 
     def get_success_message(self, cleaned_data):
         url = self.object.get_absolute_url()
-        return f'Successfully created material <a href="{url}" class="alert-link">{self.object}</a>'
+        return f'Successfully created item <a href="{url}" class="alert-link">{self.object}</a>'
 
     def get_success_url(self):
         if 'add_other' in self.request.POST:
-            return reverse_lazy('add-material') + '?' + urllib.parse.urlencode({'reference': self.object.identifier})
+            return reverse_lazy('add-item') + '?' + urllib.parse.urlencode({'reference': self.object.identifier})
         return super().get_success_url()
 
     def get(self, request, *args, **kwargs):
@@ -98,7 +98,7 @@ class MaterialCreateView(ActiveMixin, ViewFormsetHelperMixin, LoginRequiredMixin
             for ff in formset:
                 if ff.empty_permitted and not ff.has_changed():
                     continue
-                ff.instance.material = self.object
+                ff.instance.item = self.object
                 ff.instance.pk = None
                 ff.instance.save()
         else:
@@ -108,15 +108,15 @@ class MaterialCreateView(ActiveMixin, ViewFormsetHelperMixin, LoginRequiredMixin
         return super().form_valid(form)
 
     def form_invalid(self, form, formset):
-        messages.error(self.request, 'An error occurred while updating the material')
+        messages.error(self.request, 'An error occurred while updating the item')
         return self.render_to_response(
             self.get_context_data(form=form, formset=formset)
         )
 
 
 # Important: No login required for details
-class MaterialDetailView(ActiveMixin, DetailView):
-    model = models.Material
+class ItemDetailView(ActiveMixin, DetailView):
+    model = models.Item
     template_name_suffix = '_detail'
     slug_field = 'identifier'
     slug_url_kwarg = 'identifier'
@@ -141,13 +141,13 @@ class MaterialDetailView(ActiveMixin, DetailView):
 
         if form.is_valid():
             comment = form.save(commit=False)
-            comment.material = self.object
+            comment.item = self.object
             comment.author = request.user
             comment.save()
             url = self.object.get_absolute_url()
             messages.success(
                 self.request,
-                f'Successfully created comment on material <a href="{url}" class="alert-link">{self.object}</a>'
+                f'Successfully created comment on item <a href="{url}" class="alert-link">{self.object}</a>'
             )
             return self.render_to_response(self.get_context_data())
 
@@ -157,10 +157,10 @@ class MaterialDetailView(ActiveMixin, DetailView):
         )
 
 
-class MaterialEditView(ActiveMixin, ViewFormsetHelperMixin, LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    model = models.Material
+class ItemEditView(ActiveMixin, ViewFormsetHelperMixin, LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = models.Item
     template_name_suffix = '_edit'
-    form_class = forms.material.MaterialEditForm
+    form_class = forms.item.ItemEditForm
     formset_class = forms.pictures.PictureFormset
     formset_helper = forms.pictures.PictureFormSetHelper
     related_name = 'pictures'
@@ -169,7 +169,7 @@ class MaterialEditView(ActiveMixin, ViewFormsetHelperMixin, LoginRequiredMixin, 
 
     def get_success_message(self, cleaned_data):
         url = self.object.get_absolute_url()
-        return f'Successfully updated material <a href="{url}" class="alert-link">{self.object}</a>'
+        return f'Successfully updated item <a href="{url}" class="alert-link">{self.object}</a>'
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object(self.queryset)
@@ -199,7 +199,7 @@ class MaterialEditView(ActiveMixin, ViewFormsetHelperMixin, LoginRequiredMixin, 
         return super().form_valid(form)
 
     def form_invalid(self, form, formset):
-        messages.error(self.request, 'An error occurred while updating the material')
+        messages.error(self.request, 'An error occurred while updating the item')
         return self.render_to_response(
             self.get_context_data(form=form, formset=formset)
         )
@@ -226,8 +226,8 @@ class FilteredListView(ListView):
         return context
 
 
-class MaterialListView(ActiveMixin, FilteredListView):
-    model = models.Material
+class ItemListView(ActiveMixin, FilteredListView):
+    model = models.Item
     fields = ['serial_number', 'part_number', 'manufacturer', 'scheme', 'owner', 'tags', 'is_active']
     filterset_class = filters.ItemFilter
     template_name_suffix = '_list'

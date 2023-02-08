@@ -9,7 +9,7 @@
 {% block title %}Edit Borrow for {{ borrow.item }}{% endblock %}
 
 {% block content %}
-<h1>Edit Borrow for {{ material }}?</h1>
+<h1>Edit Borrow for {{ item }}?</h1>
 <form method="post">
   {% csrf_token %}
   {% crispy form %}

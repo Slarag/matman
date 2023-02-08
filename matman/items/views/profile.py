@@ -26,12 +26,12 @@ class HomeView(ActiveMixin, LoginRequiredMixin, TemplateView):
         context['user'] = user
         context['rubrics'] = {
             'borrowed': {
-                'query': models.Material.objects.filter(borrows__borrowed_by=user,
+                'query': models.Item.objects.filter(borrows__borrowed_by=user,
                                                         borrows__returned_at__isnull=True),
                 'title': 'Borrowed Items',
             },
             'lent': {
-                'query': models.Material.objects.exclude(borrows=None).filter(owner=user,
+                'query': models.Item.objects.exclude(borrows=None).filter(owner=user,
                                                                               borrows__returned_at__isnull=True),
                 'title': 'Items borrowed to/by others',
             },
@@ -40,7 +40,7 @@ class HomeView(ActiveMixin, LoginRequiredMixin, TemplateView):
                 'title': 'Bookmarked Items',
             },
             'owned': {
-                'query': models.Material.objects.filter(owner=user),
+                'query': models.Item.objects.filter(owner=user),
                 'title': 'Owned Items',
             },
         }

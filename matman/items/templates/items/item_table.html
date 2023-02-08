@@ -1,5 +1,5 @@
 {% load matman_tags %}
- <table class="table table-striped table-hover sortable-table" id="material_table_{{ prefix }}">
+ <table class="table table-striped table-hover sortable-table" id="item_table_{{ prefix }}">
     <tr>
         {% sortable_fields as fs %}
         {% for slug,title in fs %}
@@ -28,7 +28,7 @@
     </tr>
     {% for object in object_list %}
     <tr>
-        <th><a href="{% url "material-detail" object.identifier %}" class="link-primary">{{ object.identifier }}</a></th>
+        <th><a href="{% url "item-detail" object.identifier %}" class="link-primary">{{ object.identifier }}</a></th>
         <td>{{ object.short_text }}</td>
         <td>{{ object.serial_number }}</td>
         <td>{{ object.part_number }}</td>
@@ -37,7 +37,7 @@
         <td><a href="{% url "profile" object.owner %}" class="link-primary">{{ object.owner }}</a></td>
         <td>
             {% for tag in object.tags.all %}
-            <a href="{% url "list-material" %}?tags__name={{ tag }}" class="badge text-bg-light">{{ tag }}</a>
+            <a href="{% url "list-item" %}?tags__name={{ tag }}" class="badge text-bg-light">{{ tag }}</a>
             {% endfor %}
         </td>
         <td>{% bool_icon object.is_active %}</td>
@@ -48,8 +48,8 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="{% url "borrow" object.identifier %}">Borrow</a></li>
-                    <li><a class="dropdown-item" href="{% url "material-edit" object.identifier %}">Edit</a></li>
-                    <li><a class="dropdown-item" href="{% url "add-material" %}?reference={{ object.identifier }}">Copy/Clone</a></li>
+                    <li><a class="dropdown-item" href="{% url "item-edit" object.identifier %}">Edit</a></li>
+                    <li><a class="dropdown-item" href="{% url "add-item" %}?reference={{ object.identifier }}">Copy/Clone</a></li>
                 </ul>
             </div>
             {% if user.is_authenticated %}

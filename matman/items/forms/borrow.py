@@ -17,8 +17,8 @@ class UserField(forms.CharField):
 class ItemField(forms.CharField):
     def clean(self, value):
         try:
-            item = models.Material.objects.get(identifier=value)
-        except models.Material.DoesNotExist:
+            item = models.Item.objects.get(identifier=value)
+        except models.Item.DoesNotExist:
             raise forms.ValidationError('Item does not exist')
         if not item.is_active:
             raise forms.ValidationError('Item was marked as not active')

@@ -5,7 +5,7 @@ from crispy_forms.layout import Layout, Field, Div
 from .. import models
 
 
-PictureFormset = forms.inlineformset_factory(models.Material, models.MaterialPicture,
+PictureFormset = forms.inlineformset_factory(models.Item, models.ItemPicture,
                                              fields=['file', 'title', 'description'],
                                              extra=1, can_order=True)
 # PictureFormset.ordering_widget = forms.HiddenInput()
@@ -23,9 +23,9 @@ class PictureFormSetHelper(FormHelper):
                 Field('ORDER'),
                 Field('file'),
                 Field('DELETE'),
-                # id and material are automatically added when form is initialized with instance keyword
+                # id and item are automatically added when form is initialized with instance keyword
                 Field('id'),
-                Field('material'),
+                Field('item'),
                 css_class='card p-2 m-1 draggable formset-form',
                 draggable="true",
             ),

@@ -27,7 +27,7 @@ class QuickBorrowView(SuccessMessageMixin, CreateView):
     def get_success_message(self, cleaned_data):
         item = self.object.item
         url = item.get_absolute_url()
-        return f'Borrowed material <a href="{url}" class="alert-link">{item}</a>'
+        return f'Borrowed item <a href="{url}" class="alert-link">{item}</a>'
 
     def get_success_url(self):
         return self.request.path_info
@@ -73,16 +73,16 @@ class BorrowCreateView(SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['item'] = get_object_or_404(models.Material, identifier=self.kwargs['identifier'])
+        context['item'] = get_object_or_404(models.Item, identifier=self.kwargs['identifier'])
         return context
 
     def get_success_message(self, cleaned_data):
         item = self.get_context_data()['item']
         url = item.get_absolute_url()
-        return f'Borrowed material <a href="{url}" class="alert-link">{item}</a>'
+        return f'Borrowed item <a href="{url}" class="alert-link">{item}</a>'
 
     def get_success_url(self):
-        return reverse_lazy('material-detail', kwargs={'identifier': self.object.item.identifier})
+        return reverse_lazy('item-detail', kwargs={'identifier': self.object.item.identifier})
 
     def form_valid(self, form):
         form.instance.item = self.get_context_data()['item']
@@ -103,7 +103,7 @@ class BorrowEditView(SuccessMessageMixin, UpdateView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
-        return reverse_lazy('material-detail', kwargs={'identifier': self.object.item.identifier})
+        return reverse_lazy('item-detail', kwargs={'identifier': self.object.item.identifier})
 
 
 class BorrowCloseView(SuccessMessageMixin, UpdateView):
@@ -127,16 +127,16 @@ class BorrowCloseView(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['material'] = self.object.item
+        context['item'] = self.object.item
         return context
 
     def get_success_url(self):
-        return reverse_lazy('material-detail', kwargs={'identifier': self.object.item.identifier})
+        return reverse_lazy('item-detail', kwargs={'identifier': self.object.item.identifier})
 
     def form_valid(self, form):
         self.object.returned_at = now()
         self.object.save()
-        material = self.object.item
-        messages.success(self.request, f'You have returned {material}')
-        return redirect(reverse_lazy('material-detail',
-                                     kwargs={'identifier': self.get_context_data()['material'].identifier}))
+        item = self.object.item
+        messages.success(self.request, f'You have returned {item}')
+        return redirect(reverse_lazy('item-detail',
+                                     kwargs={'identifier': self.get_context_data()['item'].identifier}))

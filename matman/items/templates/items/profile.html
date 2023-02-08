@@ -2,14 +2,14 @@
 {% load static %}
 {% load matman_tags %}
 
-{% block title %}My Materials{% endblock %}
+{% block title %}My Items{% endblock %}
 {% block scripts %}
 <script type="text/javascript" src="{% static "js/autocomplete.js" %}"></script>
 {% endblock %}
 
 {% block content %}
 {% if is_home %}
-<h1>My Materials</h1>
+<h1>My Items</h1>
 {% else %}
 <h1>{{ user }}'s Profile</h1>
 {% endif %}
@@ -23,7 +23,7 @@
         </h2>
         <div id="id_collapse_{{ name }}" class="accordion-collapse collapse {% if rubric.is_open %}show{% endif %}" aria-labelledby="collapse_{{ name }}">
             <div class="accordion-body">
-                {% include "items/material_table.html" with prefix=name|add:"_" orderby=rubric.orderby direction=rubric.direction page=rubric.page_obj object_list=rubric.object_list %}
+                {% include "items/item_table.html" with prefix=name|add:"_" orderby=rubric.orderby direction=rubric.direction page=rubric.page_obj object_list=rubric.object_list %}
             </div>
         </div>
     </div>

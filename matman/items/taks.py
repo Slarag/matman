@@ -5,7 +5,7 @@ from django.utils.html import strip_tags
 from celery import shared_task, Celery
 from celery.schedules import crontab
 
-from .models import Borrow, Material
+from .models import Borrow, Item
 
 
 # https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html

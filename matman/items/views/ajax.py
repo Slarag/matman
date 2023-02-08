@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 
 from taggit.models import Tag
-from ..models import Material
+from ..models import Item
 
 
 @require_GET
@@ -28,10 +28,10 @@ def user_suggestions(request):
 @require_POST
 def toggle_bookmark(request):
     identifier = json.loads(request.body).get('identifier', '')
-    material = get_object_or_404(Material, identifier=identifier)
+    item = get_object_or_404(Item, identifier=identifier)
     profile = request.user.profile
-    if profile.has_bookmarked(material):
-        profile.unbookmark(material)
+    if profile.has_bookmarked(item):
+        profile.unbookmark(item)
     else:
-        profile.bookmark(material)
-    return JsonResponse({'material': material.identifier, 'bookmarked': profile.has_bookmarked(material)})
+        profile.bookmark(item)
+    return JsonResponse({'item': item.identifier, 'bookmarked': profile.has_bookmarked(item)})

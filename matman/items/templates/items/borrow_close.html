@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 
-{% block title %}Return {{ material }}{% endblock %}
+{% block title %}Return {{ item }}{% endblock %}
 
 {% block content %}
-<h1>Return {{ material }}?</h1>
-<p>Do you want to return {{ material }}?</p>
-<p>IMPORTANT: Only do this when you physically return the material! Not anytime before!</p>
+<h1>Return {{ item }}?</h1>
+<p>Do you want to return {{ item }}?</p>
+<p>IMPORTANT: Only do this when you physically return the item! Not anytime before!</p>
 <form method="post">
   {% csrf_token %}
   {% crispy form %}

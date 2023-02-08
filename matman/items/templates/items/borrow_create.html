@@ -6,11 +6,11 @@
 {% init_mde "id_notes" %}
 {% endblock %}
 
-{% block title %}Borrow {{ material }}{% endblock %}
+{% block title %}Borrow {{ item }}{% endblock %}
 
 {% block content %}
-  <h1>Borrow {{ material }}?</h1>
-  <p>Do you want to borrow {{ material }}?</p>
+  <h1>Borrow {{ item }}?</h1>
+  <p>Do you want to borrow {{ item }}?</p>
 <form method="post">
   {% csrf_token %}
   {% crispy form %}

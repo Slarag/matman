@@ -5,7 +5,7 @@ import django_filters.widgets
 import django_filters.views
 from taggit.models import Tag
 
-from .models import Material
+from .models import Item
 
 
 class TagWidget(django_filters.widgets.CSVWidget):
@@ -36,5 +36,5 @@ class ItemFilter(django_filters.FilterSet):
     is_active = django_filters.BooleanFilter()
 
     class Meta:
-        model = Material
+        model = Item
         fields = ['identifier', 'serial_number', 'part_number', 'manufacturer', 'location', 'tags__name']

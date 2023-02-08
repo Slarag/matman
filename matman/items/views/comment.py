@@ -33,7 +33,7 @@ class CommentEditView(SuccessMessageMixin, DeletionMixin, UpdateView):
         return result
 
     def get_success_url(self):
-        return reverse_lazy('material-detail', kwargs={'identifier': self.object.material.identifier})
+        return reverse_lazy('item-detail', kwargs={'identifier': self.object.item.identifier})
 
     def get_success_message(self, cleaned_data):
             return 'Comment successfully updated'

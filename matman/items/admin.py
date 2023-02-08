@@ -9,13 +9,13 @@ from . import models
 admin.site.register(models.Scheme, SimpleHistoryAdmin)
 admin.site.register(models.Borrow, SimpleHistoryAdmin)
 # admin.site.register(models.UserProfile)
-admin.site.register(models.MaterialPicture, SimpleHistoryAdmin)
+admin.site.register(models.ItemPicture, SimpleHistoryAdmin)
 admin.site.register(models.Comment, SimpleHistoryAdmin)
-# admin.site.register(models.MaterialBookmark)
+# admin.site.register(models.ItemBookmark)
 
 
-@admin.register(models.Material)
-class MaterialAdmin(SimpleHistoryAdmin):
+@admin.register(models.Item)
+class ItemAdmin(SimpleHistoryAdmin):
     list_display = ['identifier', 'serial_number', 'part_number', 'manufacturer', 'scheme',
                     'owner', 'is_active', 'creation_date', 'last_updated']
     list_filter = ['is_active', 'creation_date', 'last_updated']

@@ -16,7 +16,7 @@
 
 {% block content %}
   <h1>Quick borrow/return</h1>
-<!--  <p>Do you want to borrow {{ material }}?</p>-->
+<!--  <p>Do you want to borrow {{ item }}?</p>-->
 <form method="post">
     {% csrf_token %}
     {% crispy form %}

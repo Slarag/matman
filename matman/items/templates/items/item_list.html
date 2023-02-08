@@ -3,7 +3,7 @@
 {% load matman_tags %}
 {% load crispy_forms_tags %}
 
-{% block title %}Material{% endblock %}
+{% block title %}Item{% endblock %}
 
 {% block scripts %}
 <script type="text/javascript" src="{% static "js/autocomplete.js" %}"></script>
@@ -15,7 +15,7 @@
 {% endblock %}
 
 {% block content %}
-<h1>Materials</h1>
+<h1>Items</h1>
 <div class="accordion" id="accordionExample">
   <div class="accordion-item">
     <h2 class="accordion-header" id="headingOne">
@@ -31,7 +31,7 @@
               <i class="bi bi-search"></i>
               <span>Search</span>
           </button>
-          <button href="{% url "list-material" %}" class="btn btn-secondary">
+          <button href="{% url "list-item" %}" class="btn btn-secondary">
               <i class="bi bi-arrow-counterclockwise"></i>
               <span>Reset</span>
           </button>
@@ -41,6 +41,6 @@
   </div>
 </div>
 
-{% include "items/material_table.html" with prefix="" orderby=orderby direction=direction page=page_obj object_list=object_list %}
+{% include "items/item_table.html" with prefix="" orderby=orderby direction=direction page=page_obj object_list=object_list %}
 {% csrf_token %}
 {% endblock %}

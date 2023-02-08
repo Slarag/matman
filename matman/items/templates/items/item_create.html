@@ -3,7 +3,7 @@
 {% load matman_tags %}
 {% load crispy_forms_tags %}
 
-{% block title %}New Material{% endblock %}
+{% block title %}New Item{% endblock %}
 
 {% block scripts %}
 <script type="text/javascript" src="{% static "js/dynamic_formset.js" %}" defer></script>
@@ -17,7 +17,7 @@
 {% endblock %}
 
 {% block content %}
-<h1>New Material</h1>
+<h1>New Item</h1>
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% crispy form %}

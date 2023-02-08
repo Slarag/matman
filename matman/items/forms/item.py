@@ -5,7 +5,7 @@ from crispy_forms.layout import Layout, Field, Div
 from .. import models
 
 
-class MaterialCreateForm(forms.ModelForm):
+class ItemCreateForm(forms.ModelForm):
     reference = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     def __init__(self, *args, **kwargs):
@@ -17,7 +17,7 @@ class MaterialCreateForm(forms.ModelForm):
             Field('reference'),
             Div(
                 Div(Field('serial_number', placeholder="Serial Number", autofocus=True), css_class='col'),
-                Div(Field('part_number', placeholder='Material Number'), css_class='col'),
+                Div(Field('part_number', placeholder='Item Number'), css_class='col'),
                 Div(Field('revision', placeholder='Revision'), css_class='col'),
                 Div(Field('manufacturer', placeholder='Manufacturer'), css_class='col'),
                 css_class='row'),
@@ -30,17 +30,17 @@ class MaterialCreateForm(forms.ModelForm):
                 Field('short_text', placeholder='Short description'),
                 Field('tags', placeholder='tag1,tag2,tag3,...', autocomplete='off'),
                 Field('is_active'),
-                Field('description', placeholder='Enter material description here (supports markdown syntax)...'),
+                Field('description', placeholder='Enter item description here (supports markdown syntax)...'),
             ),
         )
 
     class Meta:
-        model = models.Material
+        model = models.Item
         fields = ['serial_number', 'part_number', 'revision', 'manufacturer', 'description', 'scheme', 'owner',
                   'short_text', 'tags', 'is_active', 'location']
 
 
-class MaterialEditForm(forms.ModelForm):
+class ItemEditForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -48,7 +48,7 @@ class MaterialEditForm(forms.ModelForm):
         self.helper.layout = Layout(
             Div(
                 Div(Field('serial_number', placeholder="Serial Number", autofocus=True), css_class='col'),
-                Div(Field('part_number', placeholder='Material Number'), css_class='col'),
+                Div(Field('part_number', placeholder='Item Number'), css_class='col'),
                 Div(Field('revision', placeholder='Revision'), css_class='col'),
                 Div(Field('manufacturer', placeholder='Manufacturer'), css_class='col'),
                 css_class='row'),
@@ -60,12 +60,12 @@ class MaterialEditForm(forms.ModelForm):
                 Field('short_text', placeholder='Short description'),
                 Field('tags', placeholder='tag1,tag2,tag3,...', autocomplete='off'),
                 Field('is_active'),
-                Field('description', placeholder='Enter material description here (supports markdown syntax)...'),
+                Field('description', placeholder='Enter item description here (supports markdown syntax)...'),
             ),
         )
 
     class Meta:
-        model = models.Material
+        model = models.Item
         fields = ['serial_number', 'part_number', 'revision', 'manufacturer', 'description', 'owner',
                   'short_text', 'tags', 'is_active', 'location']
 
