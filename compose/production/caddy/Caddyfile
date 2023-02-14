@@ -1,0 +1,21 @@
+# /etc/caddy/Caddyfile
+https://mydomain:443 {
+    @static {
+        path /static/*
+    }
+    @media {
+        path /media/*
+    }
+    @daphne {
+        path *
+        not path /static/*
+        not path /media/*
+    }
+    reverse_proxy @daphne localhost:8000
+    file_server @static {
+        root PROJECTDIR/files/static/
+    }
+    file_server @media {
+        root PROJECTDIR/files/static/
+    }
+}

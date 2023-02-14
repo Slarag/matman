@@ -1,0 +1,98 @@
+version: '3.7'
+
+services:
+  caddy:
+    image: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./compose/production/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./site:/srv
+      - caddy_data:/data
+      - caddy_config:/config
+      - ./files/static:/files/static
+      - ./files/media:/files/media
+
+  db:
+    image: postgres
+    restart: unless-stopped
+    env_file:
+      - matman.env
+
+  redis:
+    image: redis:latest-alpine
+
+  daphne:
+    image: matman_daphne
+    restart: unless-stopped
+    build:
+      context: matman
+      dockerfile: ./compose/production/django/Dockerfile
+    command: /start-daphne.sh
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - matman.env
+    volumes:
+      - ./matman:/app
+      - ./files/static:/files/static
+      - ./files/media:/files/media
+
+  # https://testdriven.io/courses/django-celery/docker/
+
+  celery_worker:
+    build:
+      context: matman
+      dockerfile: ./compose/production/django/Dockerfile
+    image: matman_celery_worker
+    command: /start-celeryworker.sh
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - matman.env
+    volumes:
+      - ./matman:/app
+      - ./files/static:/files/static
+      - ./files/media:/files/media
+
+  celery_beat:
+    build:
+      context: matman
+      dockerfile: ./compose/production/django/Dockerfile
+    image: matman_celery_beat
+    command: /start-celerybeat.sh
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - matman.env
+    volumes:
+      - ./matman:/app
+      - ./files/static:/files/static
+      - ./files/media:/files/media
+
+  flower:
+    build:
+      context: matman
+      dockerfile: ./compose/production/django/Dockerfile
+    image: matman_flower
+    command: /start-flower.sh
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - matman.env
+    volumes:
+      - ./matman:/app
+    ports:
+      - 5555:5555
+
+volumes:
+  caddy_data:
+    external: true
+  caddy_config:
