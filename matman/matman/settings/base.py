@@ -71,15 +71,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'matman.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
@@ -99,9 +90,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
-LANGUAGE_CODE = 'de-de'
+LANGUAGE_CODE = 'en-en'
 TIME_ZONE = 'GMT'
-USE_I18N = True
+USE_I18N = False
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
@@ -125,36 +116,12 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'files', 'media/')
 
 # Celery Configuration Options
-CELERY_TIMEZONE = "Europe/Berlin"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
 # login and registration config
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
-ALLOW_REGISTRATION = True
-ALLOW_CHANGE_PASSWORD = True
-ALLOW_RESET_PASSWORD = True
-
-# Security
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
-# SECURE_HSTS_SECONDS = 3600
-DISABLE_SEC = os.environ.get('DJANGO_DISABLE_SEC', '').lower() == 'true'
-if DISABLE_SEC:
-    CSRF_COOKIE_SECURE = False
-    SESSION_COOKIE_SECURE = False
-    SECURE_SSL_REDIRECT = False
-    # SECURE_HSTS_SECONDS = 3600
-
-# Read SECRET_KEY from an environment variable
-SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', '').lower() == 'true'
-if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 EXTERNAL_RESOURCES = {
     'Bootstrap5': {
