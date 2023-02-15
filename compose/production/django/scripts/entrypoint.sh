@@ -15,9 +15,9 @@ import psycopg2
 
 try:
     psycopg2.connect(
-        dbname="${DB_NAME}",
-        user="${DB_USER}",
-        password="${DB_PASSWORD}",
+        dbname="${POSTGRES_DB_NAME}",
+        user="${POSTGRES_USER}",
+        password="${POSTGRES_PASSWORD}",
         host="db",
     )
 except psycopg2.OperationalError:
