@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = not os.environ.get('DJANGO_DEBUG', '').lower() == 'true'
+DEBUG = os.environ.get('DJANGO_DEBUG', '').lower() == 'true'
 
 ALLOWED_HOSTS = ['*']
 
@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'simple_history',
     'django_filters',
+    'django_celery_beat',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -94,6 +96,32 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Database
+# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ['POSTGRES_DB_NAME'],
+        'USER': os.environ['POSTGRES_USER'],
+        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
+        'HOST': 'db',
+        'PORT': 5432,
+    }
+}
+
+# Internationalization
+# https://docs.djangoproject.com/en/4.0/topics/i18n/
+LANGUAGE_CODE = 'en-en'
+TIME_ZONE = os.environ.get('TIME_ZONE', 'GMT')
+USE_I18N = False
+USE_TZ = 'true'
+
+# Security
+CSRF_COOKIE_SECURE = not os.environ.get('DJANGO_DISABLE_SECURITY', '').lower() == 'true'
+SESSION_COOKIE_SECURE = not os.environ.get('DJANGO_DISABLE_SECURITY', '').lower() == 'true'
+SECURE_SSL_REDIRECT = not os.environ.get('DJANGO_DISABLE_SECURITY', '').lower() == 'true'
+# SECURE_HSTS_SECONDS = 3600
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 STATIC_URL = 'static/'
@@ -117,9 +145,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'files', 'media/')
 # Celery Configuration Options
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
-CELERY_TIMEZONE = os.environ.get('CELERY_TIMEZONE', 'Europe/Berlin')
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER")
 CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND")
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
 
 # login and registration config
 LOGIN_REDIRECT_URL = 'home'
@@ -160,32 +191,6 @@ EXTERNAL_RESOURCES = {
         ]
     }
 }
-
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ['POSTGRES_DB_NAME'],
-        'USER': os.environ['POSTGRES_USER'],
-        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
-        'HOST': 'db',
-        'PORT': 5423,
-    }
-}
-
-# Internationalization
-# https://docs.djangoproject.com/en/4.0/topics/i18n/
-LANGUAGE_CODE = 'en-en'
-TIME_ZONE = os.environ.get('TIME_ZONE', 'GMT')
-USE_I18N = False
-USE_TZ = 'true'
-
-# Security
-CSRF_COOKIE_SECURE = not os.environ.get('DJANGO_DISABLE_SECURITY', '').lower() == 'true'
-SESSION_COOKIE_SECURE = not os.environ.get('DJANGO_DISABLE_SECURITY', '').lower() == 'true'
-SECURE_SSL_REDIRECT = not os.environ.get('DJANGO_DISABLE_SECURITY', '').lower() == 'true'
-# SECURE_HSTS_SECONDS = 3600
 
 # Mail
 EMAIL_USE_TLS = os.environ.get('ALLOW_REGISTRATION', 'EMAIL_USE_TLS').lower() == 'true'
