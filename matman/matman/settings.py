@@ -19,6 +19,12 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+# Read SECRET_KEY from an environment variable
+SECRET_KEY = os.environ['SECRET_KEY']
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = not os.environ.get('DJANGO_DEBUG', '').lower() == 'true'
+
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -88,13 +94,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/4.0/topics/i18n/
-LANGUAGE_CODE = 'en-en'
-TIME_ZONE = 'GMT'
-USE_I18N = False
-USE_TZ = True
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 STATIC_URL = 'static/'
@@ -118,10 +117,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'files', 'media/')
 # Celery Configuration Options
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_TIMEZONE = os.environ.get('CELERY_TIMEZONE', 'Europe/Berlin')
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND")
 
 # login and registration config
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
+ALLOW_REGISTRATION = os.environ.get('ALLOW_REGISTRATION', '').lower() == 'true'
+ALLOW_CHANGE_PASSWORD = os.environ.get('ALLOW_CHANGE_PASSWORD', '').lower() == 'true'
+ALLOW_RESET_PASSWORD = os.environ.get('ALLOW_RESET_PASSWORD', '').lower() == 'true'
+
 
 EXTERNAL_RESOURCES = {
     'Bootstrap5': {
@@ -155,3 +161,35 @@ EXTERNAL_RESOURCES = {
     }
 }
 
+# Database
+# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ['POSTGRES_DB_NAME'],
+        'USER': os.environ['POSTGRES_USER'],
+        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
+        'HOST': 'db',
+        'PORT': 5423,
+    }
+}
+
+# Internationalization
+# https://docs.djangoproject.com/en/4.0/topics/i18n/
+LANGUAGE_CODE = 'en-en'
+TIME_ZONE = os.environ.get('TIME_ZONE', 'GMT')
+USE_I18N = False
+USE_TZ = 'true'
+
+# Security
+CSRF_COOKIE_SECURE = not os.environ.get('DJANGO_DISABLE_SECURITY', '').lower() == 'true'
+SESSION_COOKIE_SECURE = not os.environ.get('DJANGO_DISABLE_SECURITY', '').lower() == 'true'
+SECURE_SSL_REDIRECT = not os.environ.get('DJANGO_DISABLE_SECURITY', '').lower() == 'true'
+# SECURE_HSTS_SECONDS = 3600
+
+# Mail
+EMAIL_USE_TLS = os.environ.get('ALLOW_REGISTRATION', 'EMAIL_USE_TLS').lower() == 'true'
+EMAIL_HOST = os.environ.get('ALLOW_REGISTRATION', 'EMAIL_HOST').lower() == 'true'
+EMAIL_PORT = os.environ.get('ALLOW_REGISTRATION', 'EMAIL_PORT').lower() == 'true'
+EMAIL_HOST_USER = os.environ.get('ALLOW_REGISTRATION', 'EMAIL_HOST_USER').lower() == 'true'
+EMAIL_HOST_PASSWORD = os.environ.get('ALLOW_REGISTRATION', 'EMAIL_HOST_PASSWORD').lower() == 'true'
