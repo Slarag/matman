@@ -23,13 +23,13 @@ services:
       - matman.env
 
   redis:
-    image: redis:latest-alpine
+    image: redis
 
   daphne:
     image: matman_daphne
     restart: unless-stopped
     build:
-      context: matman
+      context: .
       dockerfile: ./compose/production/django/Dockerfile
     command: /start-daphne.sh
     depends_on:
@@ -46,7 +46,7 @@ services:
 
   celery_worker:
     build:
-      context: matman
+      context: .
       dockerfile: ./compose/production/django/Dockerfile
     image: matman_celery_worker
     command: /start-celeryworker.sh
@@ -62,7 +62,7 @@ services:
 
   celery_beat:
     build:
-      context: matman
+      context: .
       dockerfile: ./compose/production/django/Dockerfile
     image: matman_celery_beat
     command: /start-celerybeat.sh
@@ -78,7 +78,7 @@ services:
 
   flower:
     build:
-      context: matman
+      context: .
       dockerfile: ./compose/production/django/Dockerfile
     image: matman_flower
     command: /start-flower.sh
@@ -94,5 +94,4 @@ services:
 
 volumes:
   caddy_data:
-    external: true
   caddy_config:

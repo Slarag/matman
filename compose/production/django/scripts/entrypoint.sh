@@ -15,11 +15,10 @@ import psycopg2
 
 try:
     psycopg2.connect(
-        dbname="${SQL_DATABASE}",
-        user="${SQL_USER}",
-        password="${SQL_PASSWORD}",
-        host="${SQL_HOST}",
-        port="${SQL_PORT}",
+        dbname="${DB_NAME}",
+        user="${DB_USER}",
+        password="${DB_PASSWORD}",
+        host="db",
     )
 except psycopg2.OperationalError:
     sys.exit(-1)

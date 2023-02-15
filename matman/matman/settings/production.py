@@ -7,9 +7,9 @@ from .base import *
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'matman',
-        'USER': os.environ['POSTGRES_USER'],
-        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
+        'NAME': os.environ['DB_NAME'],
+        'USER': os.environ['DB_USER'],
+        'PASSWORD': os.DB_PASSWORD['POSTGRES_PASSWORD'],
         'HOST': 'db',
         'PORT': 5423,
     }
@@ -47,3 +47,6 @@ EMAIL_HOST = os.environ.get('ALLOW_REGISTRATION', 'EMAIL_HOST').lower() == 'true
 EMAIL_PORT = os.environ.get('ALLOW_REGISTRATION', 'EMAIL_PORT').lower() == 'true'
 EMAIL_HOST_USER = os.environ.get('ALLOW_REGISTRATION', 'EMAIL_HOST_USER').lower() == 'true'
 EMAIL_HOST_PASSWORD = os.environ.get('ALLOW_REGISTRATION', 'EMAIL_HOST_PASSWORD').lower() == 'true'
+
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_BACKEND")

@@ -13,4 +13,4 @@ RUN chmod +x /*.sh
 RUN mkdir /files/
 WORKDIR /app
 
-ENTRYPOINT ["/entrypoint"]
+ENTRYPOINT ["/entrypoint.sh"]
