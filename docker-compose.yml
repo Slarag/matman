@@ -18,6 +18,9 @@ services:
 
   db:
     image: postgres
+    build:
+      context: .
+      dockerfile: ./compose/production/db/Dockerfile
     restart: unless-stopped
     env_file:
       - matman.env
