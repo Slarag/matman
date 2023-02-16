@@ -56,3 +56,5 @@ https://mydomain:443 {
     }
 }
 ```
+
+docker exec -it matman-daphne-1 ./manage.py createsuperuser

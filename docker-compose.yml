@@ -13,8 +13,8 @@ services:
       - ./site:/srv
       - caddy_data:/data
       - caddy_config:/config
-      - ./files/static:/files/static
-      - ./files/media:/files/media
+      - ./files/static:/srv/static
+      - ./files/media:/srv/media
 
   db:
     image: postgres
