@@ -193,9 +193,13 @@ EXTERNAL_RESOURCES = {
     }
 }
 
-# Mail
-EMAIL_USE_TLS = os.environ.get('ALLOW_REGISTRATION', 'EMAIL_USE_TLS').lower() == 'true'
-EMAIL_HOST = os.environ.get('ALLOW_REGISTRATION', 'EMAIL_HOST').lower() == 'true'
-EMAIL_PORT = os.environ.get('ALLOW_REGISTRATION', 'EMAIL_PORT').lower() == 'true'
-EMAIL_HOST_USER = os.environ.get('ALLOW_REGISTRATION', 'EMAIL_HOST_USER').lower() == 'true'
-EMAIL_HOST_PASSWORD = os.environ.get('ALLOW_REGISTRATION', 'EMAIL_HOST_PASSWORD').lower() == 'true'
+# Mail"
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'false').lower() in ('true', '1', 'yes', 'on')
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'true').lower() in ('true', '1', 'yes', 'on')
+EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '465'))
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', '')
+EMAIL_SUBJECT_PREFIX = 'MatMan - '
