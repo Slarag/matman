@@ -15,17 +15,8 @@ import os.path
 
 from pathlib import Path
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-
-# Read SECRET_KEY from an environment variable
-SECRET_KEY = os.environ['SECRET_KEY']
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', '').lower() == 'true'
-
-ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
@@ -96,32 +87,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ['POSTGRES_DB_NAME'],
-        'USER': os.environ['POSTGRES_USER'],
-        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
-        'HOST': 'db',
-        'PORT': 5432
-        ,
-    }
-}
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 LANGUAGE_CODE = 'en-en'
 TIME_ZONE = os.environ.get('TIME_ZONE', 'GMT')
 USE_I18N = False
 USE_TZ = 'true'
-
-# Security
-CSRF_COOKIE_SECURE = not os.environ.get('DJANGO_DISABLE_SECURITY', '').lower() == 'true'
-SESSION_COOKIE_SECURE = not os.environ.get('DJANGO_DISABLE_SECURITY', '').lower() == 'true'
-SECURE_SSL_REDIRECT = not os.environ.get('DJANGO_DISABLE_SECURITY', '').lower() == 'true'
-# SECURE_HSTS_SECONDS = 3600
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
@@ -192,14 +163,3 @@ EXTERNAL_RESOURCES = {
         ]
     }
 }
-
-# Mail"
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'false').lower() in ('true', '1', 'yes', 'on')
-EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'true').lower() in ('true', '1', 'yes', 'on')
-EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '465'))
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', '')
-EMAIL_SUBJECT_PREFIX = 'MatMan - '
