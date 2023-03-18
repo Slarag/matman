@@ -133,8 +133,6 @@ dmypy.json
 files/media/
 files/static/
 
-*/*/migrations/*
-!*/*/migrations/__init__.py
 db.sqlite3*
 
 # Folder used/created by docker compose
