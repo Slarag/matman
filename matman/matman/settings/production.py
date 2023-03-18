@@ -1,4 +1,4 @@
-from base import *
+from .base import *
 
 # Read SECRET_KEY from an environment variable
 SECRET_KEY = os.environ['SECRET_KEY']
