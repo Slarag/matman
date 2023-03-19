@@ -1,5 +1,10 @@
 from .base import *
 
+
+def env_getboolean(varname: str, default: bool = False) -> bool:
+    return os.environ.get(varname, 'true' if default else 'false').lower() in ('true', '1', 'yes', 'on')
+
+
 # Read SECRET_KEY from an environment variable
 SECRET_KEY = os.environ['SECRET_KEY']
 
@@ -28,15 +33,15 @@ SECURE_SSL_REDIRECT = True
 
 # Mail
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'false').lower() in ('true', '1', 'yes', 'on')
-EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'true').lower() in ('true', '1', 'yes', 'on')
-EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
+EMAIL_USE_TLS = env_getboolean('EMAIL_USE_TLS', False)
+EMAIL_USE_SSL = env_getboolean('EMAIL_USE_SSL', True)
+EMAIL_HOST = os.environ['EMAIL_HOST']
 EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '465'))
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', '')
+EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+DEFAULT_FROM_EMAIL = os.environ['DEFAULT_FROM_EMAIL']
 EMAIL_SUBJECT_PREFIX = 'MatMan - '
 
-ALLOW_REGISTRATION = os.environ.get('ALLOW_REGISTRATION', '').lower() == 'true'
-ALLOW_CHANGE_PASSWORD = os.environ.get('ALLOW_CHANGE_PASSWORD', '').lower() == 'true'
-ALLOW_RESET_PASSWORD = os.environ.get('ALLOW_RESET_PASSWORD', '').lower() == 'true'
+ALLOW_REGISTRATION = env_getboolean('ALLOW_REGISTRATION', False)
+ALLOW_CHANGE_PASSWORD = env_getboolean('ALLOW_CHANGE_PASSWORD', False)
+ALLOW_RESET_PASSWORD = env_getboolean('ALLOW_RESET_PASSWORD', False)
