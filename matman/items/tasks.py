@@ -1,6 +1,7 @@
 from django.core import mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.conf import settings
 
 from celery import shared_task, Celery
 from celery.schedules import crontab
@@ -48,7 +49,7 @@ def send_reminders():
         subject = 'MatMan - Borrow expiration reminder'
         html_message = strip_tags(render_to_string('items/mail/borrow_reminder.html', {'borrow': borrow}))
         plain_message = strip_tags(html_message)
-        from_email = 'From <from@example.com>'
+        from_email = f'From {settings.DEFAULT_FROM_EMAIL}'
         to = borrow.borrowed_by.email
         mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
 
