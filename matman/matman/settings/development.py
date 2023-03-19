@@ -22,3 +22,7 @@ SECURE_SSL_REDIRECT = False
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'dummymail@dummy.dummy'
 EMAIL_SUBJECT_PREFIX = 'MatMan - '
+
+ALLOW_REGISTRATION = True
+ALLOW_CHANGE_PASSWORD = True
+ALLOW_RESET_PASSWORD = True

@@ -17,7 +17,13 @@
 {% endblock %}
 
 {% block content %}
-<h1>New Item</h1>
+<h1>
+    New Item
+    <a class="btn btn-outline-secondary float-end" href="{% url "item-csv-import" %}">
+        <i class="bi bi-box-arrow-in-down"></i>
+        Import CSV
+    </a>
+</h1>
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% crispy form %}

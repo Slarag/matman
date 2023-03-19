@@ -127,10 +127,6 @@ CELERY_TIMEZONE = TIME_ZONE
 # login and registration config
 LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
-ALLOW_REGISTRATION = os.environ.get('ALLOW_REGISTRATION', '').lower() == 'true'
-ALLOW_CHANGE_PASSWORD = os.environ.get('ALLOW_CHANGE_PASSWORD', '').lower() == 'true'
-ALLOW_RESET_PASSWORD = os.environ.get('ALLOW_RESET_PASSWORD', '').lower() == 'true'
-
 
 EXTERNAL_RESOURCES = {
     'Bootstrap5': {

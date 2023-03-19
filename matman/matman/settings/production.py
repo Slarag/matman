@@ -36,3 +36,7 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', '')
 EMAIL_SUBJECT_PREFIX = 'MatMan - '
+
+ALLOW_REGISTRATION = os.environ.get('ALLOW_REGISTRATION', '').lower() == 'true'
+ALLOW_CHANGE_PASSWORD = os.environ.get('ALLOW_CHANGE_PASSWORD', '').lower() == 'true'
+ALLOW_RESET_PASSWORD = os.environ.get('ALLOW_RESET_PASSWORD', '').lower() == 'true'
