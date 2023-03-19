@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+{% load matman_tags %}
+{% load crispy_forms_tags %}
+
+{% block title %}Import CSV{% endblock %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block content %}
+<h1>Import items from CSV file</h1>
+<p>
+    The following fields can be imported from csv:
+    <ul>
+        {% for fieldname in csv_fieldnames %}
+        <li>{{ fieldname }}</li>
+        {% endfor %}
+    </ul>
+    Values/field names must not contain leading or trailing whitespaces!
+</p>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% crispy form %}
+    <div class="form-buttons m-1">
+        <button id="buttonSave" type="submit" value="Import" name="import" class="btn btn-primary">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <i class="bi bi-save2"></i>
+            <span class="button-text">Import</span>
+        </button>
+    </div>
+</form>
+{% endblock %}

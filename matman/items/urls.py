@@ -14,6 +14,7 @@ urlpatterns = [
     path('item/<slug:identifier>/detail', views.item.ItemDetailView.as_view(), name='item-detail'),
     path('item/<slug:identifier>/edit', views.item.ItemEditView.as_view(), name='item-edit'),
     path('item/<slug:identifier>/borrow', views.borrow.BorrowCreateView.as_view(), name='borrow'),
+    path('item/import', views.item.ItemCsvImportView.as_view(), name='item-csv-import'),
 
     path('borrow/<int:pk>/edit', views.borrow.BorrowEditView.as_view(), name='borrow-edit'),
     path('borrow/<int:pk>/close', views.borrow.BorrowCloseView.as_view(), name='return'),

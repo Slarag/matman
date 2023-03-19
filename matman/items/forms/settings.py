@@ -8,7 +8,7 @@ from .. import models
 class SettingsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['default_scheme'].queryset = models.Scheme.objects.filter(is_active=True)
+        self.fields['default_scheme'].queryset = models.Scheme.active
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.layout = Layout(

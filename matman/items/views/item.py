@@ -1,20 +1,31 @@
+import csv
+import re
 from collections import namedtuple
 import urllib
+import traceback
+import functools
+import io
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import get_user_model, get_user
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic import TemplateView, FormView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import model_to_dict
+from django.db import transaction
+from django.core.exceptions import ValidationError
 
 from .. import models
 from .. import forms
 from .. import filters
 from .mixins import ActiveMixin, ViewFormsetHelperMixin
+
+User = get_user_model()
 
 CronObject = namedtuple('CronObject', ['timestamp', 'type', 'object'])
 
@@ -260,3 +271,161 @@ class ItemListView(ActiveMixin, FilteredListView):
         context['direction'] = direction
         context['orderby'] = orderby
         return context
+
+
+class ItemCsvImportView(LoginRequiredMixin, FormView):
+    form_class = forms.item.ItemCsvImportForm
+    template_name = 'items/item_csv_import.html'
+    csv_fieldnames = [
+        'identifier',
+        'short_text',
+        'serial_number',
+        'revision',
+        'part_number',
+        'manufacturer',
+        'description',
+        'location',
+        'owner',
+        'is_active',
+        'tags'
+    ]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['csv_fieldnames'] = self.csv_fieldnames
+        return context
+
+    def __init__(self):
+        super().__init__()
+        self._csv_cleaning_funcs = {}
+        clean_func_prefix = 'csv_clean_'
+        for x in dir(self):
+            if x.startswith(clean_func_prefix):
+                fieldname = x[len(clean_func_prefix):]
+                func = getattr(self, x)
+                if callable(func):
+                    self._csv_cleaning_funcs[fieldname] = func
+        self.form = None
+        self.identifier_pattern = None
+        self.max_encountered = 0
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['scheme'] = self.request.user.profile.default_scheme
+        return initial
+
+    def csv_clean_tags(self, value: str) -> list[str]:
+        """
+        Split list of tags by according delimiter. Ignore blanks.
+        :param tags: string which is a list of tags
+        :return: list of tags (strings)
+        """
+
+        delimiter = self.form.cleaned_data['tag_delimiter']
+        return [s.strip() for s in value.split(delimiter) if s.strip() != '']
+
+    def csv_clean_is_active(self, value: str) -> bool:
+        """
+        Convert value to bool. This function is case-insensitive and evaluates True for "yes", "true", "1".
+        :param value:
+        """
+        return value.lower() in ['yes', 'true', '1']
+
+    @functools.lru_cache()
+    def csv_clean_owner(self, value: str) -> User:
+        return User.objects.get(username=value)
+
+    def csv_clean_identifier(self, value: str) -> str:
+        match = self.identifier_pattern.fullmatch(value)
+        min_number = self.form.cleaned_data['scheme']._id_counter
+        if not match:
+            raise ValueError(f'Invalid identifier: {value}')
+        number = int(match.group('number'))
+        if number <= min_number:
+            raise ValueError(f'Cannot assign identifier {value} (Number must be greater than {min_number}')
+        if number > self.max_encountered:
+            self.max_encountered = number
+        return value
+
+    def csv_clean(self, linedata: dict[str, str]) -> dict[str]:
+        cleaned = {}
+        for fieldname, value in linedata.items():
+            # Ignore blank values
+            if not value:
+                continue
+            cleaning_funcname = f'csv_clean_{fieldname}'
+            if hasattr(self, cleaning_funcname):
+                cleaned[fieldname] = getattr(self, cleaning_funcname)(value.strip())
+            else:
+                cleaned[fieldname] = value.strip()
+
+        return cleaned
+
+    def form_valid(self, form):
+        self.form = form
+        scheme = form.cleaned_data['scheme']
+        new_items = []
+        file = io.TextIOWrapper(self.request.FILES['file'].file)
+
+
+        scheme = self.form.cleaned_data['scheme']
+        self.identifier_pattern = re.compile(fr'{scheme.prefix}(?P<number>\d{{{scheme.numlen}}}){scheme.postfix}')
+
+        # with open(file, mode='r', encoding='utf-8') as f:
+        reader = csv.DictReader(file, delimiter=form.cleaned_data['delimiter'])
+
+        for name in reader.fieldnames:
+            if name not in self.csv_fieldnames:
+                messages.error(self.request, f'Invalid field name: {name}')
+                return super().render_to_response(context=self.get_context_data())
+
+        for lineno, data in enumerate(reader, start=1):
+            try:
+                data = self.csv_clean(data)
+
+                data['scheme'] = scheme
+
+                # owner
+                if form.cleaned_data['set_owner'] and 'owner' not in data:
+                    data['owner'] = self.request.user
+
+                print(data)
+
+                tags = data.pop('tags', [])
+                item = models.Item(**data)
+                item.full_clean()
+                new_items.append((item, tags))
+            except (ValidationError, ValueError, KeyError) as exc:
+                # exc.lineno = lineno
+                messages.error(self.request, f'Error in line {lineno}: {traceback.format_exception_only(exc)[0]}')
+                return super().render_to_response(context=self.get_context_data())
+
+        try:
+            # with transaction.atomic():
+            # Update scheme from database in case new items were created by other users while parsing csv
+            scheme = models.Scheme.objects.get(pk=scheme.pk)
+            original_count = scheme._id_counter
+            if scheme._id_counter < self.max_encountered:
+                scheme._id_counter = self.max_encountered
+            scheme.save()
+            scheme = models.Scheme.objects.get(pk=scheme.pk)
+            print(scheme._id_counter)
+            # Sort new items in way that items with an already given identifier appear first to avoid conflicts while saving
+            new_items.sort(key=lambda x: (x[0].identifier == '', x[0].identifier))
+            for item, tags in new_items:
+                print(repr(item))
+                print(repr(item.identifier))
+                item.save()
+                item.tags.set(tags)
+        except Exception as exc:
+            messages.error(self.request, f'Unexpected error while saving items: {traceback.format_exception_only(exc)[0]}')
+            for item, tags in new_items:
+                if item.id is not None:
+                    # Item was saved and needs to be deleted
+                    item.delete()
+            scheme._id_counter = original_count
+            scheme.save()
+        else:
+            messages.success(self.request, f'Successfully imported {len(new_items)} items')
+
+        return super().render_to_response(context=self.get_context_data())

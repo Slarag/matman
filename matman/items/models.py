@@ -15,6 +15,11 @@ from taggit.managers import TaggableManager
 from simple_history.models import HistoricalRecords, HistoricForeignKey
 
 
+class ActiveSchemeManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=True)
+
+
 class Scheme(models.Model):
     # Model fields
     name = models.CharField(max_length=30, unique=True)
@@ -29,16 +34,19 @@ class Scheme(models.Model):
     _id_counter = models.PositiveBigIntegerField(default=0)
 
     # # Model managers
-    # active = ActiveManager()
-    # objects = models.Manager()
+    objects = models.Manager()
+    active = ActiveSchemeManager()
 
-    def get_next_id(self) -> str:
+    def get_next_id(self) -> str | None:
         """
         Get the next valid ID from the scheme.
 
         Internal ID counter of the scheme will be incremented in an atomic operation to avoid possible duplicates.
-        :return: New, unused ID from scheme.
+        :return: New, unused ID from scheme or None if scheme is not active.
         """
+
+        if not self.is_active:
+            return None
 
         with transaction.atomic():
             self._id_counter += 1
@@ -96,7 +104,9 @@ class Item(models.Model):
         return self.identifier.upper()
 
     def save(self, *args, **kwargs):
-        if self.identifier == '':
+        if self._state.adding and self.identifier == '':
+            # Reload Scheme from DB to ensure _id_counter is up to date
+            self.scheme.refresh_from_db()
             self.identifier = self.scheme.get_next_id()
         super().save(*args, **kwargs)
 
