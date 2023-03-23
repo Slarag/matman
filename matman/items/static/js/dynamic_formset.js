@@ -27,6 +27,9 @@ function cloneForm() {
 
 function onLoad(clicked) {
     // Disable all submit buttons when form is being submitted and display a spinner on the clicked button
+     if (!clicked.form.checkValidity()) {
+        return;
+    }
     clicked.classList.add('loading');
     submitButtons.forEach( button =>{
         button.classList.add('disabled');
