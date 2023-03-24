@@ -37,7 +37,7 @@
         <td>
             {% if object.owner %}
             <a href="{% url "profile" object.owner %}" class="link-primary">{{ object.owner }}</a>
-            {% else %}
+            {% endif %}
         </td>
         <td>
             {% for tag in object.tags.all %}
