@@ -1,0 +1,83 @@
+version: '3.7'
+
+services:
+
+  db:
+    image: postgres
+    restart: unless-stopped
+    volumes:
+      - ./db:/var/lib/postgresql/data/
+    env_file:
+      - matman.env
+
+  redis:
+    image: redis
+
+  webserver:
+    image: matman_webserver
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./compose/development/django/Dockerfile
+    command: /start-webserver.sh
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - matman.env
+    volumes:
+      - ./matman:/app
+      - ./files/static:/files/static
+      - ./files/media:/files/media
+    ports:
+      - 8000:8000
+
+  # https://testdriven.io/courses/django-celery/docker/
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: ./compose/development/django/Dockerfile
+    image: matman_celery_worker
+    command: /start-celeryworker.sh
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - matman.env
+    volumes:
+      - ./matman:/app
+      - ./files/static:/files/static
+      - ./files/media:/files/media
+
+  celery_beat:
+    build:
+      context: .
+      dockerfile: ./compose/development/django/Dockerfile
+    image: matman_celery_beat
+    command: /start-celerybeat.sh
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - matman.env
+    volumes:
+      - ./matman:/app
+      - ./files/static:/files/static
+      - ./files/media:/files/media
+
+  flower:
+    build:
+      context: .
+      dockerfile: ./compose/development/django/Dockerfile
+    image: matman_flower
+    command: /start-flower.sh
+    depends_on:
+      - redis
+      - db
+    env_file:
+      - matman.env
+    volumes:
+      - ./matman:/app
+    ports:
+      - 5555:5555
