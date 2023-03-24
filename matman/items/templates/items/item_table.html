@@ -34,7 +34,11 @@
         <td>{{ object.part_number }}</td>
         <td>{{ object.manufacturer }}</td>
         <td>{{ object.location }}</td>
-        <td><a href="{% url "profile" object.owner %}" class="link-primary">{{ object.owner }}</a></td>
+        <td>
+            {% if object.owner %}
+            <a href="{% url "profile" object.owner %}" class="link-primary">{{ object.owner }}</a>
+            {% else %}
+        </td>
         <td>
             {% for tag in object.tags.all %}
             <a href="{% url "list-item" %}?tags__name={{ tag }}" class="badge text-bg-light">{{ tag }}</a>
