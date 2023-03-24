@@ -12,11 +12,6 @@ Or do you want to keep track of your test equipment and refer to it in reports/d
 - Search items by applying filters
 - Add pictures of your material
 
-## LDAP Integration
-
-Support for LDAP integrations is planned, but not yet implemented/tested.
-This allows your employees/colleagues to log in with their company credentials without having to register separately.
-
 ## Project Status
 
 This project is still a WIP (Work In Progress).
@@ -24,37 +19,8 @@ This project is still a WIP (Work In Progress).
 ## Quickstart
 
 - Clone repository
-- Generate a new secret key and set it as environment variable: `export DJANGO_SECRET_KEY="..."`, see [Django documentation](https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-SECRET_KEY) for details
-- Setup database: `python ./manage.py makemigrations && python ./manage.py migrate`
-- Create superuser: `python ./manage.py createsuperuser`
-
-## Serve app with Caddy and Daphne (Example)
-
-Serve Django app with Daphne: `daphne matman.asgi:application --port 8000 --proxy-headers`
-
-Use Caddy as proxy and for serving static and media files:
-```
-# /etc/caddy/Caddyfile
-https://mydomain:443 {
-    @static {
-        path /static/*
-    }
-    @media {
-        path /static/*
-    }
-    @daphne {
-        path *
-        not path /static/*
-        not path /media/*
-    }
-    reverse_proxy @daphne localhost:8000
-    file_server @static {
-        root PROJECTDIR/files/static/
-    }
-    file_server @media {
-        root PROJECTDIR/files/static/
-    }
-}
-```
-
-docker exec -it matman-daphne-1 ./manage.py createsuperuser
+- Adapt `matman/matman/settings/production.py` to fit your needs
+  - *IMPORTANT:* Change `DJANGO_SECRET_KEY` variable to a unique value! See [Django documentation](https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-SECRET_KEY) for details
+- Run `docker compose build` to build the container images
+- Start the application by running `docker compose up -d`
+- To create an initial superusers run `docker exec -it matman-daphne-1 python manage.py createsuperuser`
