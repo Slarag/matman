@@ -49,6 +49,8 @@ class Scheme(models.Model):
             return None
 
         with transaction.atomic():
+            # Reload Scheme from DB to ensure _id_counter is up to date
+            self.refresh_from_db()
             self._id_counter += 1
             self.save()
         return f'{self.prefix}{self._id_counter:0{self.numlen}}{self.postfix}'
@@ -105,8 +107,6 @@ class Item(models.Model):
 
     def save(self, *args, **kwargs):
         if self._state.adding and self.identifier == '':
-            # Reload Scheme from DB to ensure _id_counter is up to date
-            self.scheme.refresh_from_db()
             self.identifier = self.scheme.get_next_id()
         super().save(*args, **kwargs)
 
