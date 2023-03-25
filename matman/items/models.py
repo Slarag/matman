@@ -9,10 +9,13 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.utils.timezone import now
-
+from django.contrib.auth import get_user_model
 
 from taggit.managers import TaggableManager
 from simple_history.models import HistoricalRecords, HistoricForeignKey
+
+
+User = get_user_model()
 
 
 class ActiveSchemeManager(models.Manager):
@@ -121,6 +124,32 @@ class Item(models.Model):
 
     def is_bookmarked_by_user(self, user) -> bool:
         return user.profile.bookmarks.filter(pk=self.pk).exists()
+
+
+    @property
+    def is_borrowed(self) -> bool:
+        """
+        :return: True if item is currently borrowed, else None
+        """
+        return self.get_active_borrow() is not None
+
+    @property
+    def borrowed_by(self) -> User | None:
+        """
+        :return: user who has currently borrowed the item, if it is currently borrowed, else None
+        """
+        borrow = self.get_active_borrow()
+        if borrow:
+            return borrow.borrowed_by
+
+    @property
+    def borrowed_since(self) -> date | None:
+        """
+        :return: date since when the item is borrowed, if it is currently borrowed, else None
+        """
+        borrow = self.get_active_borrow()
+        if borrow:
+            return borrow.borrowed_at
 
 
 class ItemPicture(models.Model):

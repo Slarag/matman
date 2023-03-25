@@ -85,7 +85,13 @@ class BorrowCreateView(SuccessMessageMixin, CreateView):
         return reverse_lazy('item-detail', kwargs={'identifier': self.object.item.identifier})
 
     def form_valid(self, form):
-        form.instance.item = self.get_context_data()['item']
+        item = self.get_context_data()['item']
+        active_borrow = item.get_active_borrow()
+        if active_borrow is not None:
+            url = item.get_absolute_url()
+            messages.error(self.request, f'<a href="{url}" class="alert-link">{item}</a> is already borrowed by {active_borrow.borrowed_by}')
+            return redirect(self.request.path_info)
+        form.instance.item = item
         return super().form_valid(form)
 
 
