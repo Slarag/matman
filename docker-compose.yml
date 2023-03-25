@@ -22,7 +22,7 @@ services:
     volumes:
       - ./db:/var/lib/postgresql/data/
     env_file:
-      - matman.env
+      - compose/production/.env
 
   redis:
     image: redis
@@ -38,7 +38,7 @@ services:
       - redis
       - db
     env_file:
-      - matman.env
+      - compose/production/.env
     volumes:
       - ./matman:/app
       - ./files/static:/files/static
@@ -56,7 +56,7 @@ services:
       - redis
       - db
     env_file:
-      - matman.env
+      - compose/production/.env
     volumes:
       - ./matman:/app
       - ./files/static:/files/static
@@ -72,7 +72,7 @@ services:
       - redis
       - db
     env_file:
-      - matman.env
+      - compose/production/.env
     volumes:
       - ./matman:/app
       - ./files/static:/files/static
@@ -88,7 +88,7 @@ services:
       - redis
       - db
     env_file:
-      - matman.env
+      - compose/production/.env
     volumes:
       - ./matman:/app
     ports:

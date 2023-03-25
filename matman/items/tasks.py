@@ -3,47 +3,42 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
 
-from celery import shared_task, Celery
+from celery import shared_task
 from celery.schedules import crontab
 
 from .models import Borrow, Item
 
-
-# https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html
-app = Celery()
-
-
-@app.on_after_configure.connect
-def setup_periodic_tasks(sender, **kwargs):
-    # # Calls test('hello') every 10 seconds.
-    # sender.add_periodic_task(10.0, test.s('hello'), name='add every 10')
-    #
-    # # Calls test('world') every 30 seconds
-    # sender.add_periodic_task(30.0, test.s('world'), expires=10)
-
-    # Executes every Monday morning at 7:30 a.m.
-    sender.add_periodic_task(
-        crontab(hour=9, minute=0),
-        send_reminders.s(),
-    )
+# @app.on_after_configure.connect
+# def setup_periodic_tasks(sender, **kwargs):
+#     # # Calls test('hello') every 10 seconds.
+#     # sender.add_periodic_task(10.0, test.s('hello'), name='add every 10')
+#     #
+#     # # Calls test('world') every 30 seconds
+#     # sender.add_periodic_task(30.0, test.s('world'), expires=10)
+#
+#     # Executes every Monday morning at 7:30 a.m.
+#     sender.add_periodic_task(
+#         crontab(hour=9, minute=0),
+#         send_reminders.s(),
+#     )
 
 
-@app.task
+@shared_task
 def notify_borrow_created(borrow):
     pass
 
 
-@app.task
+@shared_task
 def notify_borrow_updated(borrow):
     pass
 
 
-@app.task
+@shared_task
 def notify_borrow_closed(borrow):
     pass
 
 
-@app.task
+@shared_task
 def send_reminders():
     for borrow in Borrow.due_soon.all():
         subject = 'MatMan - Borrow expiration reminder'
