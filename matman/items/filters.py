@@ -5,7 +5,7 @@ import django_filters.widgets
 import django_filters.views
 from taggit.models import Tag
 
-from .models import Item
+from .models import Item, Scheme
 
 
 class TagWidget(django_filters.widgets.CSVWidget):
@@ -22,7 +22,7 @@ class TagWidget(django_filters.widgets.CSVWidget):
 class ItemFilter(django_filters.FilterSet):
     identifier = django_filters.CharFilter(lookup_expr='icontains', label='Identifier')
     serial_number = django_filters.CharFilter(lookup_expr='icontains', label='Serial Number')
-    part_number = django_filters.CharFilter(lookup_expr='icontains', label='part_number')
+    part_number = django_filters.CharFilter(lookup_expr='icontains', label='Part Number')
     manufacturer = django_filters.CharFilter(lookup_expr='icontains', label='Manufacturer')
     location = django_filters.CharFilter(lookup_expr='icontains', label='Location')
     tags__name = django_filters.ModelMultipleChoiceFilter(
@@ -34,6 +34,10 @@ class ItemFilter(django_filters.FilterSet):
         conjoined=True,
     )
     is_active = django_filters.BooleanFilter()
+    scheme = django_filters.ModelChoiceFilter(
+        label='Scheme',
+        queryset=Scheme.objects.all()
+    )
 
     class Meta:
         model = Item
