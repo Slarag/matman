@@ -19,18 +19,18 @@
     </tr>
     {% for borrow in due %}
     <tr>
-        <th><a href="{{ item.domain }}{% url "item-detail" borrow.item.identifier %}" class="link-primary">{{ borrow.item.identifier }}</a></th>
+        <th><a href="https://{{ site.domain }}{% url "item-detail" borrow.item.identifier %}" class="link-primary">{{ borrow.item.identifier }}</a></th>
         <td>{{ borrow.borrowed_at }}</td>
         <td>{{ borrow.usage_location }}</td>
         <td>
             {% if borrow.item.owner %}
-            <a href="{% url "{{ item.domain }}profile" borrow.item.owner %}" class="link-primary">{{ borrow.item.owner }}</a>
+            <a href="https://{{ site.domain }}{% url "profile" borrow.item.owner %}" class="link-primary">{{ borrow.item.owner }}</a>
             {% endif %}
         </td>
         <td>{{ borrow.item.location }}</td>
         <td>{{ borrow.estimated_returndate }}</td>
         <td>
-            <a href="{% url "{{ item.domain }}borrow-edit" borrow.pk %}" class="link-primary">Edit Borrow details</a>
+            <a href="https://{{ site.domain }}{% url "borrow-edit" borrow.pk %}" class="link-primary">Edit Borrow details</a>
         </td>
     </tr>
     {% empty %}

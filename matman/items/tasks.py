@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.sites.models import Site
 
 from celery import shared_task
 from celery.schedules import crontab
@@ -55,7 +55,7 @@ def send_reminders():
             'due': user.borrows.filter(estimated_returndate__lte=today,
                                        returned_at__isnull=True),
             'user': user,
-            'site': get_current_site(),
+            'site': Site.objects.get_current().domain,
         }
         if not context['due'].count():
             # Nothing to do, continue with next user
