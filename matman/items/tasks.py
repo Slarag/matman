@@ -55,7 +55,7 @@ def send_reminders():
             'due': user.borrows.filter(estimated_returndate__lte=today,
                                        returned_at__isnull=True),
             'user': user,
-            'site': Site.objects.get_current().domain,
+            'site': Site.objects.get_current(),
         }
         if not context['due'].count():
             # Nothing to do, continue with next user
@@ -63,7 +63,7 @@ def send_reminders():
 
         html_message = render_to_string('items/mail/borrow_reminder.html', context)
         plain_message = strip_tags(html_message)
-        from_email = f'From {settings.DEFAULT_FROM_EMAIL}'
+        from_email = settings.DEFAULT_FROM_EMAIL
         to = user.email
         mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
 
