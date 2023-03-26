@@ -41,8 +41,8 @@ services:
       - compose/production/.env
     volumes:
       - ./matman:/app
-      - ./files/static:/files/static
-      - ./files/media:/files/media
+      - ./files/static:/app/files/static
+      - ./files/media:/app/files/media
 
   # https://testdriven.io/courses/django-celery/docker/
 
@@ -59,8 +59,8 @@ services:
       - compose/production/.env
     volumes:
       - ./matman:/app
-      - ./files/static:/files/static
-      - ./files/media:/files/media
+      - ./files/static:/app/files/static
+      - ./files/media:/app/files/media
 
   celery_beat:
     build:
@@ -75,8 +75,8 @@ services:
       - compose/production/.env
     volumes:
       - ./matman:/app
-      - ./files/static:/files/static
-      - ./files/media:/files/media
+      - ./files/static:/app/files/static
+      - ./files/media:/app/files/media
 
   flower:
     build:
