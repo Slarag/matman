@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.sites.shortcuts import get_current_site
 
 from celery import shared_task
 from celery.schedules import crontab
@@ -51,14 +52,16 @@ def send_reminders():
     for user in User.objects.all():
         context = {
             # 'overdue': user.borrows.active.filter(estimated_returndate__lte=yesterday),
-            'due': user.borrows.active.filter(estimated_returndate__lte=today),
+            'due': user.borrows.filter(estimated_returndate__lte=today,
+                                       returned_at__isnull=True),
             'user': user,
+            'site': get_current_site(),
         }
         if not context['due'].count():
             # Nothing to do, continue with next user
             continue
 
-        html_message = strip_tags(render_to_string('items/mail/borrow_reminder.html', context))
+        html_message = render_to_string('items/mail/borrow_reminder.html', context)
         plain_message = strip_tags(html_message)
         from_email = f'From {settings.DEFAULT_FROM_EMAIL}'
         to = user.email
