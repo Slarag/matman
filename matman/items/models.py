@@ -1,12 +1,10 @@
-from datetime import date, timedelta
+from datetime import date
 
 from django.db import models
 from django.conf import settings
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.utils.timezone import now
 from django.contrib.auth import get_user_model
@@ -171,20 +169,6 @@ class ActiveBorrowsManager(models.Manager):
         return super().get_queryset().filter(returned_at__isnull=True)
 
 
-class OverdueManager(models.Manager):
-    def get_queryset(self):
-        today = now().date
-        tomorrow = today + timedelta(days=1)
-        return super().get_queryset().filter(returned_at__isnull=True, estimated_returndate__lte=tomorrow)
-
-
-class DueSoonManager(models.Manager):
-    def get_queryset(self):
-        today = now().date
-        tomorrow = today + timedelta(days=1)
-        return super().get_queryset().filter(returned_at__isnull=True, estimated_returndate__lte=tomorrow)
-
-
 class Borrow(models.Model):
     # Model fields
     item = models.ForeignKey(Item, verbose_name='Item', on_delete=models.CASCADE, related_name='borrows')
@@ -201,8 +185,6 @@ class Borrow(models.Model):
 
     objects = models.Manager()
     active = ActiveBorrowsManager()
-    due = OverdueManager()
-    due_soon = DueSoonManager()
 
     def close(self, returned_by, returned_at=None):
         if returned_at is None:

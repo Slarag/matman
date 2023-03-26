@@ -1,7 +1,11 @@
+from datetime import timedelta
+
+from django.utils.timezone import now
 from django.core import mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
+from django.contrib.auth import get_user_model
 
 from celery import shared_task
 from celery.schedules import crontab
@@ -40,11 +44,23 @@ def notify_borrow_closed(borrow):
 
 @shared_task
 def send_reminders():
-    for borrow in Borrow.due_soon.all():
-        subject = 'MatMan - Borrow expiration reminder'
-        html_message = strip_tags(render_to_string('items/mail/borrow_reminder.html', {'borrow': borrow}))
+    User = get_user_model()
+    today = now().date()
+    # yesterday = today - timedelta(days=1)
+    subject = 'MatMan - Borrow expiration reminder'
+    for user in User.objects.all():
+        context = {
+            # 'overdue': user.borrows.active.filter(estimated_returndate__lte=yesterday),
+            'due': user.borrows.active.filter(estimated_returndate__lte=today),
+            'user': user,
+        }
+        if not context['due'].count():
+            # Nothing to do, continue with next user
+            continue
+
+        html_message = strip_tags(render_to_string('items/mail/borrow_reminder.html', context))
         plain_message = strip_tags(html_message)
         from_email = f'From {settings.DEFAULT_FROM_EMAIL}'
-        to = borrow.borrowed_by.email
+        to = user.email
         mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
 
