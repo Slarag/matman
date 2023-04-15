@@ -35,7 +35,7 @@ class QuickBorrowView(SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         borrowed_by = form.cleaned_data['borrowed_by']
         item = form.cleaned_data['item']
-        active_borrow = item.get_active_borrow()
+        active_borrow = item.active_borrow
         if 'return' in self.request.POST:
             if active_borrow is None:
                 messages.error(self.request, 'Can\'t return item that was not borrowed!')
@@ -86,7 +86,7 @@ class BorrowCreateView(SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         item = self.get_context_data()['item']
-        active_borrow = item.get_active_borrow()
+        active_borrow = item.active_borrow
         if active_borrow is not None:
             url = item.get_absolute_url()
             messages.error(self.request, f'<a href="{url}" class="alert-link">{item}</a> is already borrowed by {active_borrow.borrowed_by}')

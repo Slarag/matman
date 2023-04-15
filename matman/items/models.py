@@ -1,3 +1,5 @@
+from __future__ import  annotations
+
 from datetime import date
 
 from django.db import models
@@ -114,7 +116,8 @@ class Item(models.Model):
     def get_absolute_url(self):
         return reverse('item-detail', kwargs={'identifier': self.identifier})
 
-    def get_active_borrow(self):
+    @property
+    def active_borrow(self) -> Borrow | None:
         try:
             return self.borrows.filter(returned_at__isnull=True).get()
         except ObjectDoesNotExist:
@@ -129,31 +132,13 @@ class Item(models.Model):
         """
         :return: True if item is currently borrowed, else None
         """
-        return self.get_active_borrow() is not None
-
-    @property
-    def borrowed_by(self) -> User | None:
-        """
-        :return: user who has currently borrowed the item, if it is currently borrowed, else None
-        """
-        borrow = self.get_active_borrow()
-        if borrow:
-            return borrow.borrowed_by
-
-    @property
-    def borrowed_since(self) -> date | None:
-        """
-        :return: date since when the item is borrowed, if it is currently borrowed, else None
-        """
-        borrow = self.get_active_borrow()
-        if borrow:
-            return borrow.borrowed_at
+        return self.active_borrow is not None
 
 
 class ItemPicture(models.Model):
     # Model fields
     item = HistoricForeignKey(Item, verbose_name='Item', related_name='pictures',
-                                  on_delete=models.CASCADE, blank=True)
+                              on_delete=models.CASCADE, blank=True)
     title = models.CharField('Title', max_length=30, blank=True)
     description = models.CharField('Description', max_length=100, blank=True)
     file = models.ImageField(upload_to='pictures/', verbose_name='File')

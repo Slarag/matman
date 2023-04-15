@@ -11,11 +11,11 @@
 {% endblock %}
 
 {% block content %}
-{% with borrow=object.get_active_borrow %}
+{% with borrow=object.active_borrow %}
 <h1>{{ object }}</h1>
 <!--    Buttons    -->
 <section class="btn-group" role="group" aria-label="Basic example"">
-    {% if not object.get_active_borrow and object.is_active %}
+    {% if not object.is_borrowed and object.is_active %}
     <a class="btn btn-outline-primary" href="{% url "borrow" object.identifier %}">
         <i class="bi bi-cart2"></i>
         <span>Borrow</span>
@@ -25,8 +25,8 @@
         <i class="bi bi-pencil-square"></i>
         <spa>Edit</spa>
     </a>
-    {% if object.get_active_borrow %}
-    <a class="btn btn-outline-primary" href="{% url "return" object.get_active_borrow.pk %}">
+    {% if object.is_borrowed %}
+    <a class="btn btn-outline-primary" href="{% url "return" object.active_borrow.pk %}">
         <i class="bi bi-arrow-counterclockwise"></i>
         <spa>Return Item</spa>
     </a>
@@ -95,7 +95,7 @@
             </tr>
             <tr>
                 <th>Borrowed since:</th>
-                <td>{{ object.get_active_borrow.borrowed_at|date }}</td>
+                <td>{{ object.active_borrow.borrowed_at|date }}</td>
             </tr>
         </table>
     </section>

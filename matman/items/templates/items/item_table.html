@@ -54,7 +54,7 @@
                     {% if not object.is_borrowed %}
                     <li><a class="dropdown-item" href="{% url "borrow" object.identifier %}">Borrow</a></li>
                     {% elif object.borrowed_by == request.user %}
-                    <li><a class="dropdown-item" href="{% url "return" object.get_active_borrow.pk %}">Return</a></li>
+                    <li><a class="dropdown-item" href="{% url "return" object.active_borrow.pk %}">Return</a></li>
                     {% endif %}
                     <li><a class="dropdown-item" href="{% url "item-edit" object.identifier %}">Edit</a></li>
                     <li><a class="dropdown-item" href="{% url "add-item" %}?reference={{ object.identifier }}">Copy/Clone</a></li>
