@@ -16,7 +16,9 @@ from .models import Borrow, Item, Comment
 User = get_user_model()
 
 @shared_task
-def send_item_notifications(item: Item, created: bool, editor: User | None):
+def send_item_notifications(item_pk: int, created: bool, editor_pk: int | None):
+    item = Item.objects.get(pk=item_pk)
+    editor = User.objects.get(pk=editor_pk)
     context = {
         'item': item,
         'created': created,
@@ -33,7 +35,7 @@ def send_item_notifications(item: Item, created: bool, editor: User | None):
         plain_message = strip_tags(html_message)
         to = item.owner.email
         mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
-    if editor is not None and editor != item.owner and editor.emai:
+    if editor is not None and editor != item.owner and editor.email:
         # Send notification to creator
         context['recipient'] = editor
         html_message = render_to_string('items/mail/item_notification.html', context)
@@ -42,7 +44,10 @@ def send_item_notifications(item: Item, created: bool, editor: User | None):
         mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
 
 
-def send_comment_notifications(comment: Comment, created: bool, editor: User | None):
+@shared_task
+def send_comment_notifications(comment_pk: int, created: bool, editor_pk: int | None):
+    comment = Comment.objects.get(pk=comment_pk)
+    editor = User.objects.get(pk=editor_pk)
     context = {
         'item': comment.item,
         'comment': comment,
@@ -61,7 +66,7 @@ def send_comment_notifications(comment: Comment, created: bool, editor: User | N
         plain_message = strip_tags(html_message)
         to = item.owner.email
         mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
-    if editor is not None and editor != item.owner and editor.emai:
+    if editor is not None and editor != item.owner and editor.email:
         # Send notification to creator
         context['recipient'] = editor
         html_message = render_to_string('items/mail/comment_notification.html', context)
@@ -81,7 +86,9 @@ def send_comment_notifications(comment: Comment, created: bool, editor: User | N
 
 
 @shared_task
-def send_borrow_notifications(borrow: Borrow, created: bool, returned: bool, editor: User | None):
+def send_borrow_notifications(borrow_pk: int, created: bool, returned: bool, editor_pk: int | None):
+    borrow = Borrow.objects.get(pk=borrow_pk)
+    editor = User.objects.get(pk=editor_pk)
     context = {
         'borrow': borrow,
         'created': created,
@@ -105,12 +112,19 @@ def send_borrow_notifications(borrow: Borrow, created: bool, returned: bool, edi
         plain_message = strip_tags(html_message)
         to = item.owner.email
         mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
-    if editor is not None and editor != item.owner and editor.emai:
+    if editor is not None and editor != item.owner and editor.email:
         # Send notification to creator
         context['recipient'] = editor
         html_message = render_to_string('items/mail/borrow_notification.html', context)
         plain_message = strip_tags(html_message)
         to = editor.email
+        mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+    if borrow.borrowed_by not in (editor, item.owner) and borrow.borrowed_by.email:
+        # Send notification to creator
+        context['recipient'] = borrow.borrowed_by
+        html_message = render_to_string('items/mail/borrow_notification.html', context)
+        plain_message = strip_tags(html_message)
+        to = borrow.borrowed_by.email
         mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
 
 

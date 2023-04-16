@@ -2,7 +2,7 @@ import datetime
 
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
-from django.views.generic.base import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView, DeletionMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
@@ -10,6 +10,7 @@ from django.utils.timezone import now
 
 from .. import models
 from .. import forms
+from .. import tasks
 
 
 class QuickBorrowView(SuccessMessageMixin, CreateView):
@@ -46,12 +47,16 @@ class QuickBorrowView(SuccessMessageMixin, CreateView):
             active_borrow.close(borrowed_by)
             url = item.get_absolute_url()
             messages.success(self.request, f'Successfully returned <a href="{url}" class="alert-link">{item}</a>')
+            tasks.send_borrow_notifications.delay(active_borrow.pk, created=False, returned=True, editor_pk=borrowed_by.pk)
             return redirect(self.request.path_info)
         if active_borrow is not None:
             url = item.get_absolute_url()
             messages.error(self.request, f'<a href="{url}" class="alert-link">{item}</a> is already borrowed by {active_borrow.borrowed_by}')
             return redirect(self.request.path_info)
-        return super().form_valid(form)
+
+        result = super().form_valid(form)
+        tasks.send_borrow_notifications.delay(self.object.pk, created=True, returned=False, editor_pk=borrowed_by.pk)
+        return result
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -59,7 +64,7 @@ class QuickBorrowView(SuccessMessageMixin, CreateView):
         return context
 
 
-class BorrowCreateView(SuccessMessageMixin, CreateView):
+class BorrowCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = models.Borrow
     form_class = forms.borrow.BorrowForm
     template_name_suffix = '_create'
@@ -92,10 +97,12 @@ class BorrowCreateView(SuccessMessageMixin, CreateView):
             messages.error(self.request, f'<a href="{url}" class="alert-link">{item}</a> is already borrowed by {active_borrow.borrowed_by}')
             return redirect(self.request.path_info)
         form.instance.item = item
-        return super().form_valid(form)
+        result = super().form_valid(form)
+        tasks.send_borrow_notifications.delay(self.object.pk, created=True, returned=False, editor_pk=self.request.user.pk)
+        return result
 
 
-class BorrowEditView(SuccessMessageMixin, UpdateView):
+class BorrowEditView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = models.Borrow
     form_class = forms.borrow.BorrowEditForm
     template_name_suffix = '_edit'
@@ -111,8 +118,13 @@ class BorrowEditView(SuccessMessageMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('item-detail', kwargs={'identifier': self.object.item.identifier})
 
+    def form_valid(self, form):
+        result = super().form_valid(form)
+        tasks.send_borrow_notifications.delay(self.object.pk, created=False, returned=False, editor_pk=self.request.user.pk)
+        return result
 
-class BorrowCloseView(SuccessMessageMixin, UpdateView):
+
+class BorrowCloseView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = models.Borrow
     form_class = forms.borrow.BorrowCloseForm
     template_name_suffix = '_close'
@@ -144,5 +156,7 @@ class BorrowCloseView(SuccessMessageMixin, UpdateView):
         self.object.save()
         item = self.object.item
         messages.success(self.request, f'You have returned {item}')
+        tasks.send_borrow_notifications.delay(self.object.pk, created=False, returned=True,
+                                              editor_pk=self.request.user.pk)
         return redirect(reverse_lazy('item-detail',
                                      kwargs={'identifier': self.get_context_data()['item'].identifier}))

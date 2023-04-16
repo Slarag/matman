@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 
 from .. import models
 from .. import forms
+from .. import tasks
 
 
 # functionality for creating comments is implemented in item.ItemDetailView
@@ -26,6 +27,8 @@ class CommentEditView(SuccessMessageMixin, DeletionMixin, UpdateView):
             return self.delete(request, *args, **kwargs)
 
         if form.is_valid():
+            tasks.send_comment_notifications.delay(self.object.pk, created=False,
+                                                   editor_pk=self.request.user.pk if self.request.user else None)
             return self.form_valid(form)
 
         return self.form_invalid(form)

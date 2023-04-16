@@ -117,7 +117,8 @@ class ItemCreateView(ActiveMixin, ViewFormsetHelperMixin, LoginRequiredMixin, Su
             formset.instance = form.instance
             formset.save()
 
-        tasks.send_item_notifications(self.object, created=True, editor=self.request.user)
+        tasks.send_item_notifications.delay(self.object.pk, created=True,
+                                            editor_pk=self.request.user.pk if self.request.user else None)
         return super().form_valid(form)
 
     def form_invalid(self, form, formset):
@@ -162,7 +163,8 @@ class ItemDetailView(ActiveMixin, DetailView):
                 self.request,
                 f'Successfully created comment on item <a href="{url}" class="alert-link">{self.object}</a>'
             )
-            tasks.send_comment_notifications(comment, created=True, editor=self.request.user)
+            tasks.send_comment_notifications.delay(comment.pk, created=True,
+                                                   editor_pk=self.request.user.pk if self.request.user else None)
             return self.render_to_response(self.get_context_data())
 
         messages.error(self.request, 'Error while creating comment')
@@ -209,7 +211,8 @@ class ItemEditView(ActiveMixin, ViewFormsetHelperMixin, LoginRequiredMixin, Succ
     def form_valid(self, form, formset):
         self.object = form.save()
         formset.save()
-        tasks.send_item_notifications(self.object, created=False, editor=self.request.user)
+        tasks.send_item_notifications.delay(self.object.pk, created=False,
+                                            editor_pk=self.request.user.pk if self.request.user else None)
 
         return super().form_valid(form)
 
