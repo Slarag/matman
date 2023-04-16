@@ -103,7 +103,7 @@ class BorrowEditView(SuccessMessageMixin, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if self.object.returned_at is not None:
+        if self.object.is_closed:
             messages.error(request, 'Cannot edit Borrow as its already closed!')
             return redirect(self.get_success_url())
         return super().dispatch(request, *args, **kwargs)
@@ -126,7 +126,7 @@ class BorrowCloseView(SuccessMessageMixin, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if self.object.returned_at is not None:
+        if self.object.is_closed:
             messages.error(request, 'Borrow is already closed!')
             return redirect(self.get_success_url())
         return super().dispatch(request, *args, **kwargs)

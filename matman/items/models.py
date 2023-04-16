@@ -191,6 +191,10 @@ class Borrow(models.Model):
         days = (self.estimated_returndate - today).days
         return days
 
+    @property
+    def is_closed(self) -> bool:
+        return self.returned_at is not None
+
 
 class UserProfile(models.Model):
     # Model fields

@@ -1,0 +1,27 @@
+{% extends "items/mail/base.html" %}
+
+{% block body %}
+<p>
+    Hello {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %},<br>
+    <br>
+    {% if recipient == editor %}
+    You have
+    {% else %}
+    <a href="https://{{ site.domain }}{% url "profile" editor.pk %}" class="link-primary">
+        {% if editor.first_name %}
+        {{ editor.first_name }} {{ editor.first_name }}
+        {% else %}
+        {{ editor.username }}
+        {% endif %}
+    </a>
+    has
+    {% endif %}
+    {% if created %}commented on {% else %}edited a comment on {% endif %}
+    <a href="https://{{ site.domain }}{% url "item-detail" item.identifier %}" class="link-primary">
+        {{ item.identifier }}
+    </a>:
+</p>
+
+{{ comment.text|markdown }}
+
+{% endblock %}

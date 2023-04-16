@@ -1,0 +1,76 @@
+{% extends "items/mail/base.html" %}
+
+{% block body %}
+<p>
+    Hello {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %},<br>
+    <br>
+    {% if recipient == editor %}
+    You have
+    {% else %}
+    <a href="https://{{ site.domain }}{% url "profile" editor.pk %}" class="link-primary">
+        {% if editor.first_name %}
+        {{ editor.first_name }} {{ editor.first_name }}
+        {% else %}
+        {{ editor.username }}
+        {% endif %}
+    </a>
+    has
+    {% endif %}
+    just {% if created %}borrowed{% elif returned %}returned{% else %}updated the currently active borrow of{% endif %}
+    <a href="https://{{ site.domain }}{% url "item-detail" item.identifier %}" class="link-primary">
+        {{ item.identifier }}
+    </a>:
+</p>
+
+<table class="table table-striped table-hover d-inline-flex my-3">
+    <tr>
+        <th>Item:</th>
+        <td>
+            <a href="https://{{ site.domain }}{% url "item-detail" borrow.item.identifier %}" class="link-primary">
+                {{ borrow.item.identifier }}
+            </a>:
+        </td>
+    </tr>
+    <tr>
+        <th>Borrowed at:</th>
+        <td>{{ borrow.borrowed_at }}</td>
+    </tr>
+    <tr>
+        <th>Borrowed by:</th>
+        <td>
+            <a href="https://{{ site.domain }}{% url "profile" borrow.borrowed_by.pk %}" class="link-primary">
+                {% if borrow.borrowed_by.first_name %}
+                {{ borrow.borrowed_by.first_name }} {{ borrow.borrowed_by.first_name }}
+                {% else %}
+                {{ borrow.borrowed_by.username }}
+                {% endif %}
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <th>Usage Location:</th>
+        <td>{{ borrow.usage_location }}</td>
+    </tr>
+    <tr>
+        <th>Notes:</th>
+        <td>{{ borrow.notes|markdown }}</td>
+    </tr>
+    {% if returned %}
+    <tr>
+        <th>Returned at:</th>
+        <td>{{ borrow.returned_at }}</td>
+    </tr>
+    <tr>
+        <th>Returned by:</th>
+        <td>{{ borrow.returned_by }}</td>
+    </tr>
+    {% else %}
+    <tr>
+        <th>Estimated Returndate:</th>
+        <td>{{ borrow.estimated_returndate }}</td>
+    </tr>
+    {% endif %}
+</table>
+{{ item.description|markdown }}
+
+{% endblock %}

@@ -5,47 +5,117 @@ from django.core import mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
+from django.contrib.auth import get_user_model
 
 from celery import shared_task
-from celery.schedules import crontab
 
-from .models import Borrow, Item
+from .models import Borrow, Item, Comment
 
-# @app.on_after_configure.connect
-# def setup_periodic_tasks(sender, **kwargs):
-#     # # Calls test('hello') every 10 seconds.
-#     # sender.add_periodic_task(10.0, test.s('hello'), name='add every 10')
-#     #
-#     # # Calls test('world') every 30 seconds
-#     # sender.add_periodic_task(30.0, test.s('world'), expires=10)
-#
-#     # Executes every Monday morning at 7:30 a.m.
-#     sender.add_periodic_task(
-#         crontab(hour=9, minute=0),
-#         send_reminders.s(),
-#     )
+
+User = get_user_model()
+
+@shared_task
+def send_item_notifications(item: Item, created: bool, editor: User | None):
+    context = {
+        'item': item,
+        'created': created,
+        'editor': editor,
+        'site': Site.objects.get_current(),
+    }
+    from_email = settings.DEFAULT_FROM_EMAIL
+    subject = f'MatMan - Item {item.identifier} {"created" if created else "updated"}'
+
+    if item.owner is not None and item.owner.email:
+        # Send notification to owner
+        context['recipient'] = item.owner
+        html_message = render_to_string('items/mail/item_notification.html', context)
+        plain_message = strip_tags(html_message)
+        to = item.owner.email
+        mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+    if editor is not None and editor != item.owner and editor.emai:
+        # Send notification to creator
+        context['recipient'] = editor
+        html_message = render_to_string('items/mail/item_notification.html', context)
+        plain_message = strip_tags(html_message)
+        to = editor.email
+        mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+
+
+def send_comment_notifications(comment: Comment, created: bool, editor: User | None):
+    context = {
+        'item': comment.item,
+        'comment': comment,
+        'created': created,
+        'editor': editor,
+        'site': Site.objects.get_current(),
+    }
+    item = comment.item
+    from_email = settings.DEFAULT_FROM_EMAIL
+    subject = f'MatMan - Comment on {item.identifier} {"created" if created else "updated"}'
+
+    if item.owner is not None and item.owner.email:
+        # Send notification to owner
+        context['recipient'] = item.owner
+        html_message = render_to_string('items/mail/comment_notification.html', context)
+        plain_message = strip_tags(html_message)
+        to = item.owner.email
+        mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+    if editor is not None and editor != item.owner and editor.emai:
+        # Send notification to creator
+        context['recipient'] = editor
+        html_message = render_to_string('items/mail/comment_notification.html', context)
+        plain_message = strip_tags(html_message)
+        to = editor.email
+        mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+    if item.is_borrowed:
+        borrow = item.active_borrow
+        borrowed_by = borrow.borrowed_by
+        if borrowed_by not in (item.owner, editor) and borrowed_by.email:
+            # Also send email to person who has currently borrowed the item
+            context['recipient'] = borrowed_by
+            html_message = render_to_string('items/mail/comment_notification.html', context)
+            plain_message = strip_tags(html_message)
+            to = borrowed_by.email
+            mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
 
 
 @shared_task
-def notify_borrow_created(borrow):
-    pass
+def send_borrow_notifications(borrow: Borrow, created: bool, returned: bool, editor: User | None):
+    context = {
+        'borrow': borrow,
+        'created': created,
+        'returned': returned,
+        'editor': editor,
+        'site': Site.objects.get_current(),
+    }
+    item = borrow.item
+    from_email = settings.DEFAULT_FROM_EMAIL
+    if created:
+        subject = f'MatMan - Item {item.identifier} borrowed'
+    elif returned:
+        subject = f'MatMan - Item {item.identifier} returned'
+    else:
+        subject = f'MatMan - Borrow for item {item.identifier} updated'
 
-
-@shared_task
-def notify_borrow_updated(borrow):
-    pass
-
-
-@shared_task
-def notify_borrow_closed(borrow):
-    pass
+    if item.owner is not None and item.owner.email:
+        # Send notification to owner
+        context['recipient'] = item.owner
+        html_message = render_to_string('items/mail/borrow_notification.html', context)
+        plain_message = strip_tags(html_message)
+        to = item.owner.email
+        mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+    if editor is not None and editor != item.owner and editor.emai:
+        # Send notification to creator
+        context['recipient'] = editor
+        html_message = render_to_string('items/mail/borrow_notification.html', context)
+        plain_message = strip_tags(html_message)
+        to = editor.email
+        mail.send_mail(subject, plain_message, from_email, [to], html_message=html_message)
 
 
 @shared_task
 def send_reminders():
-    User = get_user_model()
     today = now().date()
     # yesterday = today - timedelta(days=1)
     subject = 'MatMan - Borrow expiration reminder'

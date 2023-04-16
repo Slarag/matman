@@ -24,6 +24,7 @@ from .. import models
 from .. import forms
 from .. import filters
 from .mixins import ActiveMixin, ViewFormsetHelperMixin
+from .. import tasks
 
 User = get_user_model()
 
@@ -116,6 +117,7 @@ class ItemCreateView(ActiveMixin, ViewFormsetHelperMixin, LoginRequiredMixin, Su
             formset.instance = form.instance
             formset.save()
 
+        tasks.send_item_notifications(self.object, created=True, editor=self.request.user)
         return super().form_valid(form)
 
     def form_invalid(self, form, formset):
@@ -160,6 +162,7 @@ class ItemDetailView(ActiveMixin, DetailView):
                 self.request,
                 f'Successfully created comment on item <a href="{url}" class="alert-link">{self.object}</a>'
             )
+            tasks.send_comment_notifications(comment, created=True, editor=self.request.user)
             return self.render_to_response(self.get_context_data())
 
         messages.error(self.request, 'Error while creating comment')
@@ -206,6 +209,7 @@ class ItemEditView(ActiveMixin, ViewFormsetHelperMixin, LoginRequiredMixin, Succ
     def form_valid(self, form, formset):
         self.object = form.save()
         formset.save()
+        tasks.send_item_notifications(self.object, created=False, editor=self.request.user)
 
         return super().form_valid(form)
 

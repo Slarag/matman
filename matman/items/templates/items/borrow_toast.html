@@ -14,7 +14,7 @@
         <i class="bi bi-three-dots"></i>
       </button>
       <ul class="dropdown-menu">
-        {%if not borrow.returned_at %}
+        {%if not borrow.is_closed %}
         <li><a class="dropdown-item" href="{% url "return" borrow.pk %}">Return & Close</a></li>
         <li><a class="dropdown-item" href="{{ borrow.get_absolute_url }}">Edit</a></li>
         {% endif %}
@@ -25,7 +25,7 @@
   <div class="toast-body">
     <p>Usage Location: {{ borrow.usage_location }}</p>
     <p>
-      {% if borrow.returned_at %}
+      {% if borrow.is_closed %}
       Returned at: {{ borrow.returned_at|date:"D y-m-d H:m" }}
       {% else %}
       Estimate return date: {{ borrow.estimated_returndate|date:"D y-m-d" }}

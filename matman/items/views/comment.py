@@ -7,6 +7,9 @@ from .. import models
 from .. import forms
 
 
+# functionality for creating comments is implemented in item.ItemDetailView
+
+
 class CommentEditView(SuccessMessageMixin, DeletionMixin, UpdateView):
     model = models.Comment
     template_name_suffix = '_edit'
