@@ -30,8 +30,8 @@
 {% endif %}
 <span>
     Items per page:
-    <a class="link-primary" href="{% update_params prefix|add:"items" 10 %}"{% if onclick %} onclick="{{ onclick }}"{% endif %}>10</a>,
-    <a class="link-primary" href="{% update_params prefix|add:"items" 20 %}"{% if onclick %} onclick="{{ onclick }}"{% endif %}>20</a>,
-    <a class="link-primary" href="{% update_params prefix|add:"items" 50 %}"{% if onclick %} onclick="{{ onclick }}"{% endif %}>50</a>,
-    <a class="link-primary" href="{% update_params prefix|add:"items" 100 %}"{% if onclick %} onclick="{{ onclick }}"{% endif %}>100</a>
+    <a class="link-primary" href="{% update_params prefix|add:"items" 10 prefix|add:"page" "1" %}"{% if onclick %} onclick="{{ onclick }}"{% endif %}>10</a>,
+    <a class="link-primary" href="{% update_params prefix|add:"items" 20 prefix|add:"page" "1" %}"{% if onclick %} onclick="{{ onclick }}"{% endif %}>20</a>,
+    <a class="link-primary" href="{% update_params prefix|add:"items" 50 prefix|add:"page" "1" %}"{% if onclick %} onclick="{{ onclick }}"{% endif %}>50</a>,
+    <a class="link-primary" href="{% update_params prefix|add:"items" 100 prefix|add:"page" "1" %}"{% if onclick %} onclick="{{ onclick }}"{% endif %}>100</a>
 </span>
