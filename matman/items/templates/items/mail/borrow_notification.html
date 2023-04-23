@@ -8,7 +8,7 @@
     {% if recipient == editor %}
     You have
     {% else %}
-    <a href="https://{{ site.domain }}{% url "profile" editor.pk %}" class="link-primary">
+    <a href="https://{{ site.domain }}{% url "profile" editor.username %}" class="link-primary">
         {% if editor.first_name %}
         {{ editor.first_name }} {{ editor.first_name }}
         {% else %}
@@ -39,7 +39,7 @@
     <tr>
         <th>Borrowed by:</th>
         <td>
-            <a href="https://{{ site.domain }}{% url "profile" borrow.borrowed_by.pk %}" class="link-primary">
+            <a href="https://{{ site.domain }}{% url "profile" borrow.borrowed_by.username %}" class="link-primary">
                 {% if borrow.borrowed_by.first_name %}
                 {{ borrow.borrowed_by.first_name }} {{ borrow.borrowed_by.first_name }}
                 {% else %}
