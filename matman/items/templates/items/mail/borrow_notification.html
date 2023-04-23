@@ -3,7 +3,7 @@
 
 {% block body %}
 <p>
-    Hello {{ recipient.get_full_name }},<br>
+    Hello {{ recipient.first_name }},<br>
     <br>
     {% if recipient == editor %}
     You have
