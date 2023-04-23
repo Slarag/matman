@@ -8,7 +8,7 @@
     {% if recipient == editor %}
     You have
     {% else %}
-    <a href="https://{{ site.domain }}{% url "profile" editor.username %}" class="link-primary">
+    <a href="https://{{ site.domain }}{% url "profile" editor %}" class="link-primary">
         {{ editor.get_full_name }}
     </a>
     has
@@ -22,35 +22,39 @@
 <table class="table table-striped table-hover d-inline-flex my-3">
     <tr>
         <th>Serial Number:</th>
-        <td>{{ object.serial_number }}</td>
+        <td>{{ item.serial_number }}</td>
     </tr>
     <tr>
         <th>Item Number:</th>
-        <td>{{ object.part_number }}</td>
+        <td>{{ item.part_number }}</td>
     </tr>
     <tr>
         <th>Manufacturer:</th>
-        <td>{{ object.manufacturer }}</td>
+        <td>{{ item.manufacturer }}</td>
     </tr>
     <tr>
         <th>Location:</th>
-        <td>{{ object.location }}</td>
+        <td>{{ item.location }}</td>
     </tr>
     <tr>
         <th>Owner:</th>
-        <td><a href="{% url "profile" object.owner %}" class="link-primary">{{ object.owner }}</a></td>
+        <td>
+            {% if item.owner %}
+            <a href="https://{{ site.domain }}{% url "profile" item.owner %}" class="link-primary">{{ item.owner.get_full_name }}</a>
+            {% endif %}
+        </td>
     </tr>
     <tr>
         <th>Tags:</th>
         <td>
-            {% for tag in object.tags.all %}
-            <a href="{% url "list-item" %}?tags__name={{ tag }}" class="badge text-bg-light">{{ tag }}</a>
+            {% for tag in item.tags.all %}
+            <a href="https://{{ site.domain }}{% url "list-item" %}?tags__name={{ tag }}" class="badge text-bg-light">{{ tag }}</a>
             {% endfor %}
         </td>
     </tr>
     <tr>
         <th>Active:</th>
-        <td>{% bool_icon object.is_active %}</td>
+        <td>{% bool_icon item.is_active %}</td>
     </tr>
 </table>
 {{ item.description|markdown }}
