@@ -33,7 +33,7 @@ def check_if_send_notification(user: User | None) -> bool:
     return all([
         user is not None,
         user.email,
-        user.active
+        user.is_active
     ])
 
 
