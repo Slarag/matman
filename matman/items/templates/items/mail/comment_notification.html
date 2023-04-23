@@ -3,17 +3,13 @@
 
 {% block body %}
 <p>
-    Hello {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %},<br>
+    Hello {{ user.get_full_name }},<br>
     <br>
     {% if recipient == editor %}
     You have
     {% else %}
     <a href="https://{{ site.domain }}{% url "profile" editor.username %}" class="link-primary">
-        {% if editor.first_name %}
-        {{ editor.first_name }} {{ editor.first_name }}
-        {% else %}
-        {{ editor.username }}
-        {% endif %}
+        {{ editor.get_full_name }}
     </a>
     has
     {% endif %}

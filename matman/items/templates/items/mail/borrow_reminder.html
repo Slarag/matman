@@ -3,7 +3,7 @@
 
 {% block body %}
 <p>
-    Hello {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %},<br>
+    Hello {{ user.get_full_name }},<br>
     <br>
     You have currently borrowed the following materials and their return date is due:
 </p>
