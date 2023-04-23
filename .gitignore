@@ -140,3 +140,11 @@ db.sqlite3*
 /db/
 /files/
 /site/
+
+docker-compose*.yml
+!docker-compose-*example.yml
+
+compose/*/.env
+!compose/*/example.env
+
+matman/files
