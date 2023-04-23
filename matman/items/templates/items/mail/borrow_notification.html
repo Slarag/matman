@@ -18,8 +18,8 @@
     has
     {% endif %}
     just {% if created %}borrowed{% elif returned %}returned{% else %}updated the currently active borrow of{% endif %}
-    <a href="https://{{ site.domain }}{% url "item-detail" item.identifier %}" class="link-primary">
-        {{ item.identifier }}
+    <a href="https://{{ site.domain }}{% url "item-detail" borrow.item.identifier %}" class="link-primary">
+        {{ borrow.item.identifier }}
     </a>:
 </p>
 
@@ -72,6 +72,6 @@
     </tr>
     {% endif %}
 </table>
-{{ item.description|markdown }}
+{{ borrow.notes|markdown }}
 
 {% endblock %}
