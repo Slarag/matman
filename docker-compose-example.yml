@@ -1,20 +1,19 @@
 version: '3.7'
 
 services:
-  caddy:
-    image: caddy
+  nginx:
+    image: nginx
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
       - "443:443/udp"
     volumes:
-      - ./compose/production/caddy/Caddyfile:/etc/caddy/Caddyfile
-      - ./site:/srv
-      - caddy_data:/data
-      - caddy_config:/config
+      - ./compose/production/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./files/static:/srv/static
       - ./files/media:/srv/media
+    depends_on:
+      - daphne
 
   db:
     image: postgres
@@ -22,7 +21,7 @@ services:
     volumes:
       - ./db:/var/lib/postgresql/data/
     env_file:
-      - compose/production/example.env
+      - compose/production/.env
 
   redis:
     image: redis
@@ -38,7 +37,7 @@ services:
       - redis
       - db
     env_file:
-      - compose/production/example.env
+      - compose/production/.env
     volumes:
       - ./matman:/app
       - ./files/static:/app/files/static
@@ -55,8 +54,9 @@ services:
     depends_on:
       - redis
       - db
+      - daphne
     env_file:
-      - compose/production/example.env
+      - compose/production/.env
     volumes:
       - ./matman:/app
       - ./files/static:/app/files/static
@@ -71,8 +71,9 @@ services:
     depends_on:
       - redis
       - db
+      - daphne
     env_file:
-      - compose/production/example.env
+      - compose/production/.env
     volumes:
       - ./matman:/app
       - ./files/static:/app/files/static
@@ -87,13 +88,11 @@ services:
     depends_on:
       - redis
       - db
+      - celery_beat
+      - celery_worker
     env_file:
-      - compose/production/example.env
+      - compose/production/.env
     volumes:
       - ./matman:/app
     ports:
       - 5555:5555
-
-volumes:
-  caddy_data:
-  caddy_config:
