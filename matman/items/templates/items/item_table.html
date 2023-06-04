@@ -61,7 +61,7 @@
                 </ul>
             </div>
             {% if user.is_authenticated %}
-            {% if object in bookmarked %}
+            {% if object.bookmarked %}
             <button class="btn btn-outline-secondary m-1" type="button" title="Bookmarked" value="{{ object.identifier }}" id="id_button_bookmark_{{ object.identifier }}" onclick="toggle_bookmark(this)">
                 <i class="bi bi-bookmark-check-fill"></i>
             </button>

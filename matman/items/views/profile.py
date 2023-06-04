@@ -2,6 +2,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models import Q
 
 from .. import models
 from .mixins import ActiveMixin
@@ -26,21 +27,35 @@ class HomeView(ActiveMixin, LoginRequiredMixin, TemplateView):
         context['user'] = user
         context['rubrics'] = {
             'borrowed': {
-                'query': models.Item.objects.filter(borrows__borrowed_by=user,
-                                                        borrows__returned_at__isnull=True),
+                'query': (
+                    models.Item.objects
+                    .filter(borrows__borrowed_by=user,borrows__returned_at__isnull=True)
+                    .annotate(bookmarked=Q(bookmarked_by__in=[user.profile]))
+                ),
                 'title': 'Borrowed Items',
             },
             'lent': {
-                'query': models.Item.objects.exclude(borrows=None).filter(owner=user,
-                                                                              borrows__returned_at__isnull=True),
+                'query': (
+                    models.Item.objects
+                    .exclude(borrows=None)
+                    .filter(owner=user, borrows__returned_at__isnull=True)
+                    .annotate(bookmarked=Q(bookmarked_by__in=[user.profile]))
+                ),
                 'title': 'Items borrowed to/by others',
             },
             'bookmarked': {
-                'query': user.profile.bookmarks.all(),
+                'query': (
+                    user.profile.bookmarks.all()
+                    .annotate(bookmarked=Q(bookmarked_by__in=[user.profile]))
+                ),
                 'title': 'Bookmarked Items',
             },
             'owned': {
-                'query': models.Item.objects.filter(owner=user),
+                'query': (
+                    models.Item.objects
+                    .filter(owner=user)
+                    .annotate(bookmarked=Q(bookmarked_by__in=[user.profile]))
+                ),
                 'title': 'Owned Items',
             },
         }

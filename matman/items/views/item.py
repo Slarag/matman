@@ -17,7 +17,9 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import model_to_dict
-from django.db import transaction
+from django.db.models import Q
+from django.contrib.postgres.search import SearchQuery, SearchVector, SearchRank
+from django.contrib.postgres.aggregates import StringAgg
 from django.core.exceptions import ValidationError
 
 from .. import models
@@ -223,29 +225,35 @@ class ItemEditView(ActiveMixin, ViewFormsetHelperMixin, LoginRequiredMixin, Succ
         )
 
 
-# https://gist.github.com/MikaelSantilio/3e761b325c7fd7588207cec06fdcbefb
-class FilteredListView(ListView):
-    filterset_class = None
-    allow_empty = True
+class ItemListView(ActiveMixin, ListView):
+    form_class = forms.item.SearchForm
+    model = models.Item
+    fields = ['serial_number', 'part_number', 'manufacturer', 'scheme', 'owner', 'tags', 'is_active']
+    template_name_suffix = '_list'
+    active_context = 'search'
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        self.filterset = self.filterset_class(self.request.GET, queryset=queryset)
-        return self.filterset.qs.distinct()
+        form = self.form_class(self.request.GET)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # Pass the filterset to the template - it provides the form.
-        context['filterset'] = self.filterset
-        return context
+        if self.request.user.is_authenticated:
+            queryset = queryset.annotate(bookmarked=Q(bookmarked_by__in=[self.request.user.profile]))
 
+        if form.is_valid() and form.cleaned_data['search']:
+            if form.cleaned_data['active_only']:
+                queryset = queryset.filter(is_active=True)
 
-class ItemListView(ActiveMixin, FilteredListView):
-    model = models.Item
-    fields = ['serial_number', 'part_number', 'manufacturer', 'scheme', 'owner', 'tags', 'is_active']
-    filterset_class = filters.ItemFilter
-    template_name_suffix = '_list'
-    active_context = 'search'
+            queryset = queryset.annotate(tags_str=StringAgg('tags__name', delimiter=' '))
+            search_vector = SearchVector('identifier', 'short_text', 'serial_number', 'revision', 'part_number',
+                                         'manufacturer', 'description', 'location', 'owner', 'tags_str')
+            search_query = SearchQuery(form.cleaned_data['search'], search_type='websearch')
+
+            queryset = (
+                queryset.annotate(search=search_vector, rank=SearchRank(search_vector, search_query))
+                .filter(search=search_query)
+                .order_by("-rank")
+                .distinct())
+        return queryset
 
     def get_paginate_by(self, queryset):
         return self.request.GET.get('items', 10)
@@ -262,9 +270,8 @@ class ItemListView(ActiveMixin, FilteredListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['bookmarked'] = []
-        if self.request.user.is_authenticated:
-            context['bookmarked'] = self.request.user.profile.bookmarks.all()
+
+        context['form'] = self.form_class(self.request.GET)
 
         direction = self.request.GET.get('direction', 'asc')
         if direction not in ['asc', 'desc']:

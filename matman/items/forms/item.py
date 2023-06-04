@@ -71,6 +71,17 @@ class ItemEditForm(forms.ModelForm):
                   'short_text', 'tags', 'is_active', 'location']
 
 
+class SearchForm(forms.Form):
+    search = forms.CharField(max_length=200, required=False)
+    active_only = forms.BooleanField(initial=True, label='Show active items only', required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+
+
 class ItemCsvImportForm(forms.Form):
     class Delimiter(TextChoices):
         TAB = '\t', 'Tab'

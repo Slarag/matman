@@ -1,4 +1,4 @@
-from __future__ import  annotations
+from __future__ import annotations
 
 from datetime import date
 
@@ -104,6 +104,7 @@ class Item(models.Model):
     # # Model managers
     # active = ActiveManager()
     # objects = models.Manager()
+
 
     def __str__(self):
         return self.identifier.upper()

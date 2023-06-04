@@ -16,30 +16,16 @@
 
 {% block content %}
 <h1>Items</h1>
-<div class="accordion" id="accordionExample">
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="headingOne">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-        Filters
-      </button>
-    </h2>
-    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <form method="get">
-          {{ filterset.form|crispy }}
-          <button type="submit" class="btn btn-primary">
-              <i class="bi bi-search"></i>
-              <span>Search</span>
-          </button>
-          <button href="{% url "list-item" %}" class="btn btn-secondary">
-              <i class="bi bi-arrow-counterclockwise"></i>
-              <span>Reset</span>
-          </button>
-        </form>
-      </div>
+<form method="get">
+    {% crispy form %}
+    <div class="form-buttons m-1">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-search"></i>
+            <span>Search</span>
+        </button>
     </div>
-  </div>
-</div>
+</form>
+
 
 {% include "items/item_table.html" with prefix="" orderby=orderby direction=direction page=page_obj object_list=object_list %}
 {% csrf_token %}
