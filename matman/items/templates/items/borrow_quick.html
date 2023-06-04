@@ -10,7 +10,6 @@
         suggest_user(document.getElementById("id_borrowed_by"));
     };
 </script>
-<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>>
 <script>
 
 var qrboxFunction = function(viewfinderWidth, viewfinderHeight) {
@@ -71,6 +70,8 @@ html5QrcodeScanner.render(
     </button>
 </form>
 
-<div class="w-50 p-3" id="reader" width="600px"></div>
+<div style="height: 25%;">
+    <div class="w-25 d-inline-block" id="reader" width="600px"></div>
+</div>
 
 {% endblock %}

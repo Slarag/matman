@@ -157,5 +157,10 @@ EXTERNAL_RESOURCES = {
                 'href': 'https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css',
             },
         ]
+    },
+    'Html5-QRCode': {
+        'js': [
+            {'href': 'https://unpkg.com/html5-qrcode'},
+        ],
     }
 }
