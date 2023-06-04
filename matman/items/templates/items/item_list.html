@@ -16,16 +16,7 @@
 
 {% block content %}
 <h1>Items</h1>
-<form method="get">
-    {% crispy form %}
-    <div class="form-buttons m-1">
-        <button type="submit" class="btn btn-primary">
-            <i class="bi bi-search"></i>
-            <span>Search</span>
-        </button>
-    </div>
-</form>
-
+{% crispy form %}
 
 {% include "items/item_table.html" with prefix="" orderby=orderby direction=direction page=page_obj object_list=object_list %}
 {% csrf_token %}

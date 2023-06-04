@@ -1,7 +1,8 @@
 from django import forms
 from django.db.models import TextChoices
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Div
+from crispy_forms.layout import Layout, HTML
+from crispy_forms.bootstrap import FieldWithButtons, Field, Div, StrictButton
 
 from .. import models
 
@@ -73,13 +74,28 @@ class ItemEditForm(forms.ModelForm):
 
 class SearchForm(forms.Form):
     search = forms.CharField(max_length=200, required=False)
-    active_only = forms.BooleanField(initial=True, label='Show active items only', required=False)
+    show_all = forms.BooleanField(initial=True, label='Show inactive', required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_tag = False
+        self.helper.form_tag = True
         self.helper.disable_csrf = True
+        self.helper.form_method = 'GET'
+        self.helper.layout = Layout(
+            FieldWithButtons(
+                Field('search', autofocus=True),
+                StrictButton(
+                    ' Search',
+                    css_class='btn btn-primary bi bi-search',
+                    type='submit'
+                ),
+                input_size="input-group-sm"),
+            Div(
+                Field('show_all', css_class='form-check-input', id='SwitchShowAll', onClick='this.form.submit()'),
+                css_class='form-check form-switch',
+            )
+        )
 
 
 class ItemCsvImportForm(forms.Form):

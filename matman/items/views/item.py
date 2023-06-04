@@ -239,7 +239,7 @@ class ItemListView(ActiveMixin, ListView):
             queryset = queryset.annotate(bookmarked=Q(bookmarked_by__in=[self.request.user.profile]))
 
         if form.is_valid() and form.cleaned_data['search']:
-            if form.cleaned_data['active_only']:
+            if not form.cleaned_data['show_all']:
                 queryset = queryset.filter(is_active=True)
 
             queryset = queryset.annotate(tags_str=StringAgg('tags__name', delimiter=' '))

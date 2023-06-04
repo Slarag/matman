@@ -10,6 +10,47 @@
         suggest_user(document.getElementById("id_borrowed_by"));
     };
 </script>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>>
+<script>
+
+var qrboxFunction = function(viewfinderWidth, viewfinderHeight) {
+    // Square QR Box, with size = 80% of the min edge.
+    var minEdgeSizeThreshold = 250;
+    var edgeSizePercentage = 0.75;
+    var minEdgeSize = (viewfinderWidth > viewfinderHeight) ?
+        viewfinderHeight : viewfinderWidth;
+    var qrboxEdgeSize = Math.floor(minEdgeSize * edgeSizePercentage);
+    if (qrboxEdgeSize < minEdgeSizeThreshold) {
+        if (minEdgeSize < minEdgeSizeThreshold) {
+            return {width: minEdgeSize, height: minEdgeSize};
+        } else {
+            return {
+                width: minEdgeSizeThreshold,
+                height: minEdgeSizeThreshold
+            };
+        }
+    }
+    return {width: qrboxEdgeSize, height: qrboxEdgeSize};
+}
+
+let html5QrcodeScanner = new Html5QrcodeScanner(
+  "reader",
+  {
+    fps: 10,
+    qrbox: qrboxFunction,
+    experimentalFeatures: {
+        useBarCodeDetectorIfSupported: true
+    },
+    rememberLastUsedCamera: true,
+    showTorchButtonIfSupported: true
+  },
+  /* verbose= */ false);
+
+html5QrcodeScanner.render(
+    ((decodedText, decodedResult) => document.getElementById('id_item').value = decodedText),
+    ((error) => {})
+);
+</script>
 {% endblock %}
 
 {% block title %}Quick borrow/return{% endblock %}
@@ -29,5 +70,7 @@
       <span>Return</span>
     </button>
 </form>
+
+<div class="w-50 p-3" id="reader" width="600px"></div>
 
 {% endblock %}
