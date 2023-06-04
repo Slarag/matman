@@ -24,7 +24,6 @@ from django.core.exceptions import ValidationError
 
 from .. import models
 from .. import forms
-from .. import filters
 from .mixins import ActiveMixin, ViewFormsetHelperMixin
 from .. import tasks
 
